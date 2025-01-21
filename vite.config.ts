@@ -9,4 +9,12 @@ export default defineConfig({
     target: 'es2015',
     cssMinify: 'lightningcss',
   },
+  server: {
+    proxy: {
+      '/v1': {
+        target: 'https://backend:5000',
+        changeOrigin: true,
+      },
+    },
+  },
 });

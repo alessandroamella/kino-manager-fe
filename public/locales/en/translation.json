@@ -1,0 +1,16 @@
+{
+  "common": {
+    "title": "Kinó Café"
+  },
+  "header": {
+    "userActions": "User actions",
+    "profile": "Profile",
+    "home": "Home",
+    "movies": "Movies"
+  },
+  "auth": {
+    "logout": "Logout",
+    "login": "login",
+    "signup": "Sign Up"
+  }
+}
