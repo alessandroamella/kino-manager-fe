@@ -15,6 +15,7 @@ import {
   NavbarMenuToggle,
   Image,
   User,
+  Skeleton,
 } from '@heroui/react';
 import { AiOutlineLogout, AiOutlineUser } from 'react-icons/ai';
 import { useTranslation } from 'react-i18next';
@@ -27,17 +28,8 @@ const Header = () => {
   const { t } = useTranslation();
 
   const user = useUserStore((store) => store.user);
+  const loading = useUserStore((store) => store.loading);
   const logout = useUserStore((store) => store.logout);
-
-  function handleLogout() {
-    logout()
-      .then(() => {
-        console.log('Logged out');
-      })
-      .catch((error) => {
-        console.error('Failed to logout', error);
-      });
-  }
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -87,7 +79,9 @@ const Header = () => {
                 <NavbarItem>
                   <User
                     name={user.firstName}
-                    description="Verified User"
+                    description={
+                      user.verificationDate ? 'Verified' : 'Not verified'
+                    }
                     avatarProps={
                       gravatarEmail
                         ? {
@@ -103,7 +97,7 @@ const Header = () => {
                   <AiOutlineUser className="mr-2 inline-block" />
                   {t('header.profile')}
                 </DropdownItem>
-                <DropdownItem key="logout" onPress={handleLogout}>
+                <DropdownItem key="logout" onPress={logout}>
                   <AiOutlineLogout className="mr-2 inline-block" />
                   {t('auth.logout')}
                 </DropdownItem>
@@ -112,19 +106,23 @@ const Header = () => {
           ) : (
             <>
               <NavbarItem>
-                <Button
-                  as={Link}
-                  color="primary"
-                  to="/auth/login"
-                  variant="flat"
-                >
-                  {t('auth.login')}
-                </Button>
+                <Skeleton isLoaded={!loading}>
+                  <Button
+                    as={Link}
+                    color="primary"
+                    to="/auth/login"
+                    variant="flat"
+                  >
+                    {t('auth.login')}
+                  </Button>
+                </Skeleton>
               </NavbarItem>
               <NavbarItem>
-                <Button as={Link} color="primary" to="/auth/signup">
-                  {t('auth.signup')}
-                </Button>
+                <Skeleton isLoaded={!loading}>
+                  <Button as={Link} color="primary" to="/auth/signup">
+                    {t('auth.signup')}
+                  </Button>
+                </Skeleton>
               </NavbarItem>
             </>
           )}

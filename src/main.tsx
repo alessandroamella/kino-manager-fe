@@ -7,6 +7,8 @@ import { HeroUIProvider } from '@heroui/react';
 import Layout from './components/Layout.tsx';
 import Homepage from './pages/Homepage.tsx';
 import Signup from './pages/auth/Signup.tsx';
+import Auth from './pages/auth/index.tsx';
+import Login from './pages/auth/Login.tsx';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -15,7 +17,8 @@ createRoot(document.getElementById('root')!).render(
         <Routes>
           <Route element={<Layout />}>
             <Route element={<Homepage />} index />
-            <Route path="auth">
+            <Route path="auth" element={<Auth />}>
+              <Route path="login" element={<Login />} />
               <Route path="signup" element={<Signup />} />
             </Route>
           </Route>
