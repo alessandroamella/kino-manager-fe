@@ -122,7 +122,9 @@ app.use(
 );
 
 // Serve public directory
-app.use(express.static(join(process.cwd(), '../public')));
+const publicDir = join(process.cwd(), 'public');
+console.log('Serving static files from:', publicDir);
+app.use(express.static(publicDir));
 
 ViteExpress.listen(app, port, () => {
   console.log(`Server is running on port ${port}`);
