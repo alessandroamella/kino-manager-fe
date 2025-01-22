@@ -3,20 +3,20 @@
     "title": "Kinó Café"
   },
   "header": {
-    "userActions": "User actions",
-    "profile": "Profile",
+    "userActions": "Azioni utente",
+    "profile": "Profilo",
     "home": "Home",
-    "movies": "Movies"
+    "movies": "Film"
   },
   "auth": {
-    "logout": "Logout",
-    "login": "Login",
-    "signup": "Sign Up"
+    "logout": "Esci",
+    "login": "Accedi",
+    "signup": "Registrati"
   },
   "errors": {
-    "generic": "An error occurred",
-    "userNotFound": "User not found",
-    "wrongPassword": "Wrong password"
+    "generic": "Si è verificato un errore",
+    "userNotFound": "Utente non trovato",
+    "wrongPassword": "Password errata"
   },
   "countries": {
     "AF": "Afghanistan",
