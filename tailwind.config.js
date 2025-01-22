@@ -1,4 +1,4 @@
-const { heroui } = require('@heroui/react');
+const { heroui, colors } = require('@heroui/react');
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -12,5 +12,19 @@ export default {
   },
   plugins: [],
   darkMode: 'class',
-  plugins: [heroui()],
+  plugins: [
+    heroui({
+      themes: {
+        light: {
+          colors: {
+            primary: {
+              DEFAULT: '#BEF264',
+              foreground: '#000000',
+            },
+            focus: '#BEF264',
+          },
+        },
+      },
+    }),
+  ],
 };

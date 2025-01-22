@@ -8,8 +8,8 @@ import {
   Spacer,
 } from '@heroui/react';
 import { useTranslation } from 'react-i18next';
-import logo from '../assets/IMG_20200724_125212.jpg';
-import { FaClock, FaCalendarAlt } from 'react-icons/fa'; // Import icons
+import logo from '../assets/logo.png';
+import { FaClock, FaCalendarAlt } from 'react-icons/fa';
 import { GiFilmProjector } from 'react-icons/gi';
 import { MdOutlineRestaurantMenu } from 'react-icons/md';
 import { BiMoviePlay } from 'react-icons/bi';

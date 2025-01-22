@@ -16,7 +16,7 @@ import {
 } from '@heroui/react';
 import { AiOutlineHome, AiOutlineLogout, AiOutlineUser } from 'react-icons/ai';
 import { useTranslation } from 'react-i18next';
-import logo from '../../assets/IMG_20200724_125212.jpg';
+import logo from '../../assets/logo_small.png';
 import useUserStore from '../../store/user';
 import { Link, useLocation } from 'react-router';
 import ChangeLanguage from './ChangeLanguage';
@@ -62,11 +62,16 @@ const Header = () => {
           <Image
             src={logo}
             alt="logo"
-            width="50"
-            height="50"
-            className="mr-2"
+            width="64"
+            height="64"
+            className="mr-2 dark:bg-white dark:p-1"
           />
-          <p className="font-bold text-inherit text-xl">{t('common.title')}</p>
+          <div className="flex flex-col">
+            <p className="font-bold text-inherit text-xl">
+              {t('common.title')}
+            </p>
+            <p className="text-small text-foreground-500 -mt-2">San Cesario</p>
+          </div>
         </NavbarBrand>
 
         <NavbarContent justify="end" className="hidden sm:flex">
