@@ -11,7 +11,7 @@ export type Member = {
   codiceFiscale: string | null;
   birthCountry: string;
   birthDate: Date;
-  birthProvince: string | null;
+  birthComune: string | null;
   verificationDate: Date | null;
   verificationMethod: VerificationMethod | null;
   createdAt: Date;

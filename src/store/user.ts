@@ -3,9 +3,15 @@ import { createJSONStorage, persist } from 'zustand/middleware'; // Import the p
 import axios, { isAxiosError } from 'axios';
 import { Member } from '../types/Member';
 import { getErrorMsg } from '../types/error';
+import { sha256 } from '../utils/sha256';
+
+type AugmentedMember = Member & {
+  isVerified: boolean;
+  emailHash: string;
+};
 
 interface UserState {
-  user: Member | null;
+  user: AugmentedMember | null;
   accessToken: string | null;
   loading: boolean;
   error: string | null;
@@ -19,6 +25,7 @@ const useUserStore = create<UserState>()(
     (set) => ({
       user: null,
       accessToken: null,
+      emailHash: null,
       loading: false,
       error: null,
       fetchUser: async (accessToken: string) => {
@@ -31,7 +38,16 @@ const useUserStore = create<UserState>()(
             },
           });
           console.log('User data:', data);
-          set({ user: data, loading: false });
+          const emailHash = await sha256(data.email);
+
+          set({
+            user: {
+              ...data,
+              emailHash,
+              isVerified: !!data.verificationDate,
+            },
+            loading: false,
+          });
         } catch (error) {
           console.error('Fetch user error:', error);
           set({

@@ -3,6 +3,7 @@ import { Form, Input, Button, Alert } from '@heroui/react';
 import { useForm } from 'react-hook-form';
 import useUserStore from '../../store/user';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router';
 
 type FormData = {
   email: string;
@@ -22,10 +23,13 @@ const Login = () => {
   const login = useUserStore((store) => store.login);
   const error = useUserStore((store) => store.error);
 
+  const navigate = useNavigate();
+
   const onSubmit = async (formData: FormData) => {
     setLoginError(null); // Clear previous error on new submit
     console.log('Login Form Data:', formData);
     await login(formData.email, formData.password);
+    navigate('/profile');
   };
 
   const { t } = useTranslation();

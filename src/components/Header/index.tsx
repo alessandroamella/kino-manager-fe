@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   Navbar,
   NavbarBrand,
@@ -10,19 +10,19 @@ import {
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
-  // Avatar,
-  Button,
   NavbarMenuToggle,
   Image,
-  User,
   Skeleton,
 } from '@heroui/react';
 import { AiOutlineLogout, AiOutlineUser } from 'react-icons/ai';
 import { useTranslation } from 'react-i18next';
-import logo from '../assets/IMG_20200724_125212.jpg';
-import useUserStore from '../store/user';
-import { sha256 } from '../shared/sha256';
+import logo from '../../assets/IMG_20200724_125212.jpg';
+import useUserStore from '../../store/user';
 import { Link } from 'react-router';
+import ChangeLanguage from './ChangeLanguage';
+import UserData from './UserData';
+import LoginBtn from '../../pages/auth/LoginBtn';
+import SignupBtn from '../../pages/auth/SignupBtn';
 
 const Header = () => {
   const { t } = useTranslation();
@@ -33,17 +33,10 @@ const Header = () => {
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const [gravatarEmail, setGravatarEmail] = useState<string | null>(null);
-  useEffect(() => {
-    if (user) {
-      sha256(user.email).then(setGravatarEmail).catch(console.error);
-    }
-  }, [user]);
-
   return (
     <Navbar
       isBordered
-      className="dark:bg-gray-900"
+      className="bg-gray-50 dark:bg-gray-900"
       onMenuOpenChange={setIsMenuOpen}
     >
       <NavbarContent>
@@ -52,7 +45,7 @@ const Header = () => {
           className="sm:hidden"
         />
 
-        <NavbarBrand>
+        <NavbarBrand as={Link} to="/">
           <Image
             src={logo}
             alt="logo"
@@ -76,26 +69,16 @@ const Header = () => {
           {user ? (
             <Dropdown placement="bottom-end">
               <DropdownTrigger>
-                <NavbarItem>
-                  <User
-                    name={user.firstName}
-                    description={
-                      user.verificationDate ? 'Verified' : 'Not verified'
-                    }
-                    avatarProps={
-                      gravatarEmail
-                        ? {
-                            src: gravatarEmail,
-                          }
-                        : undefined
-                    }
-                  />
+                <NavbarItem className="cursor-pointer mt-2">
+                  <UserData />
                 </NavbarItem>
               </DropdownTrigger>
               <DropdownMenu aria-label={t('header.userActions')}>
                 <DropdownItem key="profile">
-                  <AiOutlineUser className="mr-2 inline-block" />
-                  {t('header.profile')}
+                  <Link to="/profile" className="w-full inline-block">
+                    <AiOutlineUser className="mr-2 inline-block" />
+                    {t('header.profile')}
+                  </Link>
                 </DropdownItem>
                 <DropdownItem key="logout" onPress={logout}>
                   <AiOutlineLogout className="mr-2 inline-block" />
@@ -104,28 +87,20 @@ const Header = () => {
               </DropdownMenu>
             </Dropdown>
           ) : (
-            <>
+            <div className="flex gap-2 items-center">
               <NavbarItem>
                 <Skeleton isLoaded={!loading}>
-                  <Button
-                    as={Link}
-                    color="primary"
-                    to="/auth/login"
-                    variant="flat"
-                  >
-                    {t('auth.login')}
-                  </Button>
+                  <SignupBtn className="h-9" />
                 </Skeleton>
               </NavbarItem>
               <NavbarItem>
                 <Skeleton isLoaded={!loading}>
-                  <Button as={Link} color="primary" to="/auth/signup">
-                    {t('auth.signup')}
-                  </Button>
+                  <LoginBtn hideText />
                 </Skeleton>
               </NavbarItem>
-            </>
+            </div>
           )}
+          <ChangeLanguage />
         </NavbarContent>
       </NavbarContent>
     </Navbar>

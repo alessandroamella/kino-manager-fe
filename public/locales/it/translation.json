@@ -1,23 +1,4 @@
 {
-  "common": {
-    "title": "Kinó Café"
-  },
-  "header": {
-    "userActions": "Azioni utente",
-    "profile": "Profilo",
-    "home": "Home",
-    "movies": "Film"
-  },
-  "auth": {
-    "logout": "Esci",
-    "login": "Accedi",
-    "signup": "Registrati"
-  },
-  "errors": {
-    "generic": "Si è verificato un errore",
-    "userNotFound": "Utente non trovato",
-    "wrongPassword": "Password errata"
-  },
   "countries": {
     "AD": "Andorra",
     "AE": "Emirati Arabi Uniti",
