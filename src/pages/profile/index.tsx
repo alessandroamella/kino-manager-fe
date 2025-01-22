@@ -24,16 +24,19 @@ import {
 } from 'react-icons/fi';
 import { dateFnsLang } from '../../utils/dateFnsLang';
 import { BiTime } from 'react-icons/bi';
+import useIsMobile from '../../utils/isMobile';
 
 const Profile = () => {
   const { t, i18n } = useTranslation();
 
   const user = useUserStore((store) => store.user);
 
+  const isMobile = useIsMobile();
+
   return (
-    <div className="mx-auto p-3 -mt-2 md:mt-0 md:p-6">
-      <Card className="border-0">
-        <CardHeader className="flex justify-between items-center px-4 py-3 border-b-2 border-gray-200 dark:border-gray-700">
+    <div className="mx-auto py-3 -mt-6 md:mt-0 md:p-6 md:px-12 lg:px-16 xl:px-24">
+      <Card shadow={isMobile ? 'none' : undefined}>
+        <CardHeader className="flex justify-between items-center px-4 md:px-6 py-3 border-b-2 border-gray-200 dark:border-gray-700">
           <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
             {t('profile.myProfile')}
           </h2>

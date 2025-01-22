@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Form, Input, Button, Alert } from '@heroui/react';
+import { Form, Input, Button, Alert, Card } from '@heroui/react';
 import { useForm } from 'react-hook-form';
 import useUserStore from '../../store/user';
 import { useTranslation } from 'react-i18next';
@@ -44,50 +44,54 @@ const Login = () => {
           variant="faded"
         />
       )}
-      <Form
-        onSubmit={handleSubmit(onSubmit)}
-        className="max-w-lg mx-auto mt-2 md:mt-4 p-6 rounded-md shadow-md space-y-4"
-      >
-        <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-4">
-          Accedi al Kinó Café
-        </h2>
-
-        <Input
-          label="Email"
-          placeholder="Inserisci la tua email"
-          type="email"
-          {...register('email', {
-            required: "L'email è obbligatoria",
-            pattern: {
-              value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-              message: "Inserisci un'email valida",
-            },
-          })}
-          isInvalid={Boolean(error === 'errors.userNotFound' || errors.email)}
-          errorMessage={error ? t(error) : errors.email?.message}
-          isRequired
-        />
-        <Input
-          label="Password"
-          placeholder="Inserisci la tua password"
-          type="password"
-          {...register('password', { required: 'La password è obbligatoria' })}
-          isInvalid={Boolean(
-            error === 'errors.wrongPassword' || errors.password,
-          )}
-          errorMessage={error ? t(error) : errors.password?.message}
-          isRequired
-        />
-
-        <Button
-          color="primary"
-          type="submit"
-          className="w-full"
-          isDisabled={!isValid}
+      <Card className="w-fit mx-auto">
+        <Form
+          onSubmit={handleSubmit(onSubmit)}
+          className="max-w-lg md:min-w-[500px] mx-auto mt-2 md:mt-4 p-6 space-y-4"
         >
-          Login
-        </Button>
-      </Form>
+          <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-4">
+            Accedi al Kinó Café
+          </h2>
+
+          <Input
+            label="Email"
+            placeholder="Inserisci la tua email"
+            type="email"
+            {...register('email', {
+              required: "L'email è obbligatoria",
+              pattern: {
+                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                message: "Inserisci un'email valida",
+              },
+            })}
+            isInvalid={Boolean(error === 'errors.userNotFound' || errors.email)}
+            errorMessage={error ? t(error) : errors.email?.message}
+            isRequired
+          />
+          <Input
+            label="Password"
+            placeholder="Inserisci la tua password"
+            type="password"
+            {...register('password', {
+              required: 'La password è obbligatoria',
+            })}
+            isInvalid={Boolean(
+              error === 'errors.wrongPassword' || errors.password,
+            )}
+            errorMessage={error ? t(error) : errors.password?.message}
+            isRequired
+          />
+
+          <Button
+            color="primary"
+            type="submit"
+            className="w-full"
+            isDisabled={!isValid}
+          >
+            Login
+          </Button>
+        </Form>
+      </Card>
     </div>
   );
 };

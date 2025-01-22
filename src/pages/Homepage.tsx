@@ -1,4 +1,5 @@
 import {
+  Button,
   Calendar,
   Card,
   CardBody,
@@ -8,7 +9,7 @@ import {
   Spacer,
 } from '@heroui/react';
 import { useTranslation } from 'react-i18next';
-import logo from '../assets/logo.png';
+import logo from '../assets/images/logo.png';
 import { FaClock, FaCalendarAlt } from 'react-icons/fa';
 import { GiFilmProjector } from 'react-icons/gi';
 import { MdOutlineRestaurantMenu } from 'react-icons/md';
@@ -18,11 +19,17 @@ import SignupBtn from './auth/SignupBtn';
 import { dateToCalendarDate } from '../utils/calendar';
 import { format, parse } from 'date-fns';
 import { dateFnsLang } from '../utils/dateFnsLang';
+import useUserStore from '../store/user';
+import { Link } from 'react-router';
+import { FiArrowRight } from 'react-icons/fi';
+import bg from '../assets/images/homepage-bg.jpg';
 
 const openingDate = parse('2024-01-05', 'yyyy-MM-dd', new Date());
 
 const Homepage = () => {
   const { t, i18n } = useTranslation();
+
+  const user = useUserStore((store) => store.user);
 
   return (
     <div className="relative">
@@ -36,16 +43,29 @@ const Homepage = () => {
             {t('home.kinoCafeSubtitle')}
           </p>
           <div className="flex justify-center space-x-4">
-            <SignupBtn />
-            <LoginBtn className="fill-white border-gray-200 dark:border-inherit" />
+            {user ? (
+              <Button
+                as={Link}
+                to="/profile"
+                variant="bordered"
+                className="flex items-center justify-center"
+              >
+                <FiArrowRight className="text-white inline-block" />
+                <span className="text-white">{t('home.goToMyProfile')}</span>
+              </Button>
+            ) : (
+              <>
+                <SignupBtn />
+                <LoginBtn className="fill-white border-gray-200 dark:border-inherit" />
+              </>
+            )}
           </div>
         </div>
         {/* Background image with subtle blur */}
         <div
-          className="absolute inset-0 opacity-20  bg-cover bg-center blur-sm"
+          className="absolute inset-0 opacity-40 bg-cover bg-center blur-sm"
           style={{
-            backgroundImage:
-              'url(https://images.unsplash.com/photo-1558655177-f100941b7e47?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)',
+            backgroundImage: `url(${bg})`,
           }}
         />
       </section>

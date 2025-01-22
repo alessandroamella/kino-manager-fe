@@ -16,7 +16,8 @@
   "errors": {
     "generic": "Si è verificato un errore",
     "userNotFound": "Utente non trovato",
-    "wrongPassword": "Password errata"
+    "wrongPassword": "Password errata",
+    "userAlreadyExists": "Sembra che tu abbia già un account. Accedi invece."
   },
   "home": {
     "kinoCafeTitle": "Kinó Café: Il tuo spazio, a modo tuo",
@@ -43,7 +44,8 @@
     "dateToBeDefined": "Data da definire",
     "openingDate": "Data di apertura",
     "openingHours": "Orari di apertura",
-    "openDays": "Ogni mercoledì dalle 19:00 alle 23:00"
+    "openDays": "Ogni mercoledì dalle 19:00 alle 23:00",
+    "goToMyProfile": "Vai al mio profilo"
   },
   "profile": {
     "myProfile": "Il mio profilo",
@@ -73,6 +75,16 @@
   "languages": {
     "it": "Italiano",
     "en": "Inglese"
+  },
+  "footer": {
+    "contactUs": "Contattaci",
+    "getDirections": "Ottieni Indicazioni",
+    "social": "Social",
+    "legal": "Legale",
+    "privacyPolicy": "Politica sulla Privacy",
+    "termsOfService": "Termini di Servizio",
+    "partners": "Partner",
+    "rights": "Tutti i diritti riservati"
   },
   "countries": {
     "AD": "Andorra",

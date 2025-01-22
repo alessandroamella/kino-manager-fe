@@ -22,3 +22,7 @@
 1. Crea una build con `pnpm build`
 2. Esegui `pnpm start`
 3. Apri il browser all'indirizzo `http://localhost:3000`
+
+## Note
+
+- Puoi usare le varianti `primary` di HeroUI e i colori `kino-{n}` di Tailwind (i gialli).

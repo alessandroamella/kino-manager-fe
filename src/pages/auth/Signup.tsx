@@ -14,13 +14,15 @@ import {
 import type { CalendarDate } from '@heroui/react';
 import CodiceFiscale from 'codice-fiscale-js';
 import { useForm } from 'react-hook-form';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { Comune } from 'codice-fiscale-js/types/comune';
 import countries from 'i18n-iso-countries';
 import { useTranslation } from 'react-i18next';
 import { parse } from 'date-fns';
 import { getErrorMsg } from '../../types/error';
 import { dateToCalendarDate } from '../../utils/calendar';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Link } from 'react-router';
 
 type FormData = {
   firstName: string;
@@ -220,7 +222,11 @@ const Signup = () => {
       // Optionally redirect or show success message here
     } catch (error) {
       console.error('Error signing up:', error);
-      setSignupError(getErrorMsg(error));
+      setSignupError(
+        (error as AxiosError)?.response?.status === 409
+          ? t('errors.userAlreadyExists')
+          : getErrorMsg(error),
+      );
     }
   };
 
@@ -241,29 +247,47 @@ const Signup = () => {
       : birthDate && birthCountry && (isItalySelected ? birthComune : true));
 
   return (
-    <div className="flex flex-col gap-4">
-      {signupError && (
-        <Alert
-          color="danger"
-          title="Errore di Registrazione"
-          description={signupError}
-          variant="faded"
-        />
-      )}
+    <div className="flex flex-col gap-4 relative">
+      <AnimatePresence>
+        {signupError && (
+          <motion.div
+            className="sticky top-4 md:top-20 mx-4 md:w-fit md:ml-auto z-50"
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -50 }}
+            transition={{ duration: 0.3, ease: 'easeInOut' }}
+          >
+            <Alert
+              color="danger"
+              title="Errore nella registrazione"
+              description={signupError}
+              variant="faded"
+              onClose={() => setSignupError(null)}
+              closeButtonProps={{
+                'aria-label': 'Chiudi avviso di errore',
+                type: 'button',
+                onPress: () => setSignupError(null),
+              }}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
       <Form
         onSubmit={handleSubmit(onSubmit)}
-        className="min-w-[500px] max-w-lg mx-auto mt-2 md:mt-4 p-6 rounded-md shadow-md space-y-4"
+        className="md:min-w-[500px] max-w-lg mx-auto -mt-2 md:mt-4 p-6 rounded-md shadow-md space-y-4"
       >
         <h2 className="text-2xl font-bold text-foreground mb-4">
           Iscriviti al Kinó Café
         </h2>
 
+        {/* ... rest of your form code ... */}
         <Input
           label="Nome"
           placeholder="Inserisci il tuo nome"
           {...register('firstName', { required: 'Il nome è obbligatorio' })}
           isInvalid={Boolean(errors.firstName)}
           errorMessage={errors.firstName?.message}
+          autoComplete="given-name"
           isRequired
         />
         <Input
@@ -272,6 +296,7 @@ const Signup = () => {
           {...register('lastName', { required: 'Il cognome è obbligatorio' })}
           isInvalid={Boolean(errors.lastName)}
           errorMessage={errors.lastName?.message}
+          autoComplete="family-name"
           isRequired
         />
         <Input
@@ -286,6 +311,7 @@ const Signup = () => {
             },
           })}
           isInvalid={Boolean(errors.email)}
+          autoComplete="email"
           errorMessage={errors.email?.message}
           isRequired
         />
@@ -296,6 +322,7 @@ const Signup = () => {
           {...register('password', { required: 'La password è obbligatoria' })}
           isInvalid={Boolean(errors.password)}
           errorMessage={errors.password?.message}
+          autoComplete="new-password"
           isRequired
         />
 
@@ -408,6 +435,20 @@ const Signup = () => {
         >
           Registrati
         </Button>
+
+        <div className="flex flex-col gap-1 mt-4 items-center w-full">
+          <p className="text-foreground-600 text-small">Hai già un account? </p>
+          <Button
+            as={Link}
+            to="/auth/login"
+            size="sm"
+            type="button"
+            variant="bordered"
+            className="text-small w-full"
+          >
+            Accedi
+          </Button>
+        </div>
       </Form>
     </div>
   );

@@ -16,7 +16,8 @@
   "errors": {
     "generic": "An error occurred",
     "userNotFound": "User not found",
-    "wrongPassword": "Wrong password"
+    "wrongPassword": "Wrong password",
+    "userAlreadyExists": "It seems like you already have an account. Please log in instead."
   },
   "home": {
     "kinoCafeTitle": "Kinó Café: Your Space, Your Way",
@@ -43,7 +44,8 @@
     "dateToBeDefined": "Date to be defined",
     "openingDate": "Opening date",
     "openingHours": "Opening hours",
-    "openDays": "Every Wednesday from 7PM to 11PM"
+    "openDays": "Every Wednesday from 7PM to 11PM",
+    "goToMyProfile": "Go to my profile"
   },
   "profile": {
     "myProfile": "My Profile",
@@ -73,6 +75,16 @@
   "languages": {
     "it": "Italian",
     "en": "English"
+  },
+  "footer": {
+    "contactUs": "Contact Us",
+    "getDirections": "Get Directions",
+    "social": "Social",
+    "legal": "Legal",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "partners": "Partners",
+    "rights": "All rights reserved"
   },
   "countries": {
     "AF": "Afghanistan",
