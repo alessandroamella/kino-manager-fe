@@ -14,7 +14,7 @@ const SignupBtn = ({ className, ...rest }: ButtonProps) => {
       className={className}
       {...rest}
     >
-      <FaUserPlus className="mr-2 hidden sm:inline-block" />
+      <FaUserPlus className="mr-2" />
       {t('home.signup')}
     </Button>
   );

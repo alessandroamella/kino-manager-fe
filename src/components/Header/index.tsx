@@ -14,15 +14,16 @@ import {
   Image,
   Skeleton,
 } from '@heroui/react';
-import { AiOutlineLogout, AiOutlineUser } from 'react-icons/ai';
+import { AiOutlineHome, AiOutlineLogout, AiOutlineUser } from 'react-icons/ai';
 import { useTranslation } from 'react-i18next';
 import logo from '../../assets/IMG_20200724_125212.jpg';
 import useUserStore from '../../store/user';
-import { Link } from 'react-router';
+import { Link, useLocation } from 'react-router';
 import ChangeLanguage from './ChangeLanguage';
 import UserData from './UserData';
 import LoginBtn from '../../pages/auth/LoginBtn';
 import SignupBtn from '../../pages/auth/SignupBtn';
+import ToggleTheme from './ToggleTheme';
 
 const Header = () => {
   const { t } = useTranslation();
@@ -31,7 +32,18 @@ const Header = () => {
   const loading = useUserStore((store) => store.loading);
   const logout = useUserStore((store) => store.logout);
 
+  const location = useLocation();
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  function handleClickItem() {
+    setIsMenuOpen(false);
+    document.querySelector<HTMLButtonElement>('#menu-toggle')?.click();
+    setTimeout(() => {
+      setIsMenuOpen(false);
+      document.querySelector<HTMLButtonElement>('#menu-toggle')?.click();
+    }, 50);
+  }
 
   return (
     <Navbar
@@ -43,6 +55,7 @@ const Header = () => {
         <NavbarMenuToggle
           aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
           className="sm:hidden"
+          id="menu-toggle"
         />
 
         <NavbarBrand as={Link} to="/">
@@ -56,16 +69,8 @@ const Header = () => {
           <p className="font-bold text-inherit text-xl">{t('common.title')}</p>
         </NavbarBrand>
 
-        <NavbarMenu>
-          <NavbarMenuItem>
-            <a href="#">{t('header.home')}</a>
-          </NavbarMenuItem>
-          <NavbarMenuItem>
-            <a href="#">{t('header.movies')}</a>
-          </NavbarMenuItem>
-        </NavbarMenu>
-
         <NavbarContent justify="end" className="hidden sm:flex">
+          {/* Add other desktop NavbarItems here if needed, e.g., "Movies" or other features */}
           {user ? (
             <Dropdown placement="bottom-end">
               <DropdownTrigger>
@@ -101,7 +106,59 @@ const Header = () => {
             </div>
           )}
           <ChangeLanguage />
+          <ToggleTheme />
         </NavbarContent>
+
+        <NavbarMenu className="gap-4">
+          <NavbarMenuItem
+            onClick={handleClickItem}
+            className="mt-4"
+            isActive={location.pathname === '/'}
+          >
+            <Link to="/">
+              <AiOutlineHome className="mr-2 inline-block" />
+              {t('header.home')}
+            </Link>
+          </NavbarMenuItem>
+          {user ? (
+            <>
+              <NavbarMenuItem
+                onClick={handleClickItem}
+                isActive={location.pathname === '/profile'}
+              >
+                <Link to="/profile">
+                  <AiOutlineUser className="mr-2 inline-block" />
+                  {t('header.profile')}
+                </Link>
+              </NavbarMenuItem>
+              <NavbarMenuItem onClick={handleClickItem}>
+                <button onClick={logout} className="w-full text-left">
+                  <AiOutlineLogout className="mr-2 inline-block" />
+                  {t('auth.logout')}
+                </button>
+              </NavbarMenuItem>
+            </>
+          ) : (
+            <>
+              <NavbarMenuItem onClick={handleClickItem}>
+                <Skeleton isLoaded={!loading}>
+                  <SignupBtn className="w-full" />
+                </Skeleton>
+              </NavbarMenuItem>
+              <NavbarMenuItem onClick={handleClickItem}>
+                <Skeleton isLoaded={!loading}>
+                  <LoginBtn variant="faded" className="w-full text-black" />
+                </Skeleton>
+              </NavbarMenuItem>
+            </>
+          )}
+          <NavbarMenuItem onClick={handleClickItem} className="mt-4">
+            <ChangeLanguage className="w-full" />
+          </NavbarMenuItem>
+          <NavbarMenuItem onClick={handleClickItem}>
+            <ToggleTheme className="w-full" />
+          </NavbarMenuItem>
+        </NavbarMenu>
       </NavbarContent>
     </Navbar>
   );

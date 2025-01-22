@@ -1,30 +1,18 @@
-import { useState } from 'react';
 import {
   Card,
   CardBody,
   CardHeader,
   Code,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  Select,
-  SelectItem,
   Spacer,
   Tooltip,
   Button,
-  Form,
-  Alert,
   Skeleton,
   Divider,
   Avatar,
+  Alert,
 } from '@heroui/react';
-import { useForm } from 'react-hook-form';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
-import { getErrorMsg } from '../../types/error';
-import axios from 'axios';
 import useUserStore from '../../store/user';
 import {
   FiMail,
@@ -32,52 +20,18 @@ import {
   FiMapPin,
   FiCheckCircle,
   FiAlertTriangle,
-  FiSend,
-  FiX,
-  FiMessageSquare,
   FiCode,
 } from 'react-icons/fi';
 import { dateFnsLang } from '../../utils/dateFnsLang';
 import { BiTime } from 'react-icons/bi';
 
-interface VerificationForm {
-  verificationMethod: 'sms' | 'email';
-}
 const Profile = () => {
-  const [verificationModalOpen, setVerificationModalOpen] = useState(false);
-  const [verificationError, setVerificationError] = useState<string | null>(
-    null,
-  );
-
-  const {
-    register: verificationRegister,
-    handleSubmit: handleVerificationSubmit,
-    formState: { errors: verificationErrors, isValid: isVerificationValid },
-  } = useForm<VerificationForm>({
-    mode: 'onBlur',
-  });
-
   const { t, i18n } = useTranslation();
 
   const user = useUserStore((store) => store.user);
 
-  const openVerificationModal = () => setVerificationModalOpen(true);
-  const closeVerificationModal = () => setVerificationModalOpen(false);
-
-  const handleVerificationChange = async (formData: VerificationForm) => {
-    setVerificationError(null);
-    try {
-      const { data } = await axios.post('/v1/users/verification', formData);
-      console.log('Verification successful:', data);
-      closeVerificationModal();
-    } catch (error) {
-      console.error('Error verification:', error);
-      setVerificationError(getErrorMsg(error));
-    }
-  };
-
   return (
-    <div className="max-w-3xl mx-auto p-6">
+    <div className="mx-auto p-3 -mt-2 md:mt-0 md:p-6">
       <Card className="border-0">
         <CardHeader className="flex justify-between items-center px-4 py-3 border-b-2 border-gray-200 dark:border-gray-700">
           <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
@@ -85,7 +39,18 @@ const Profile = () => {
           </h2>
         </CardHeader>
         {user ? (
-          <CardBody className="px-4 py-4">
+          <CardBody className="px-4 pt-4 pb-6">
+            {!user.isVerified && (
+              <div className="w-full flex items-center my-3">
+                <Alert color="warning" title="Verifica account">
+                  <p className="text-small">
+                    Per poter accedere al Kinó Café, è necessario verificare il
+                    proprio account. È sufficiente presentarsi presso la sede
+                    con un documento d&apos;identità in corso di validità.
+                  </p>
+                </Alert>
+              </div>
+            )}
             <div className="flex items-center space-x-4 mb-4 mx-auto">
               <Avatar
                 size="lg"
@@ -126,7 +91,7 @@ const Profile = () => {
             </div>
             <Divider className="mb-4" />
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-4 md:px-8 lg:px-12">
               <div>
                 <div className="flex items-center space-x-2 mb-2">
                   <FiMail className="text-gray-500" />
@@ -204,17 +169,17 @@ const Profile = () => {
             </div>
             <Spacer y={6} />
             <Divider className="mb-4" />
-            <div className="flex justify-between items-center mt-4">
+            <div className="flex justify-center gap-4 items-center">
               <div className="flex items-center space-x-2">
                 <span className="font-semibold text-gray-700 dark:text-gray-300">
                   {t('profile.verified')}:
                 </span>
               </div>
-              {user.verificationMethod && user.verificationDate ? (
+              {user.isVerified ? (
                 <Tooltip
                   content={`${t('profile.verifiedVia')} ${t(
                     'verificationMethod.' + user.verificationMethod,
-                  )} on ${format(user.verificationDate, 'dd MMMM yyyy HH:mm', {
+                  )} on ${format(user.verificationDate!, 'dd MMMM yyyy HH:mm', {
                     locale: dateFnsLang(i18n),
                   })}`}
                 >
@@ -225,7 +190,6 @@ const Profile = () => {
                 </Tooltip>
               ) : (
                 <Button
-                  onPress={openVerificationModal}
                   size="sm"
                   color="warning"
                   variant="flat"
@@ -245,73 +209,6 @@ const Profile = () => {
           </CardBody>
         )}
       </Card>
-      <Modal
-        isOpen={verificationModalOpen}
-        onClose={closeVerificationModal}
-        aria-label="Verification Methods"
-        placement="center"
-      >
-        <ModalContent className="bg-white dark:bg-gray-900">
-          <ModalHeader className="flex flex-col items-center justify-center pb-2 border-b border-gray-200 dark:border-gray-700">
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-              {t('profile.selectVerificationMethod')}
-            </h2>
-          </ModalHeader>
-          <ModalBody className="p-6 space-y-4">
-            {verificationError && (
-              <Alert
-                color="danger"
-                title={t('profile.verificationErrorTitle')}
-                description={verificationError}
-                variant="faded"
-              />
-            )}
-            <Form
-              onSubmit={handleVerificationSubmit(handleVerificationChange)}
-              className="max-w-md mx-auto space-y-4"
-            >
-              <Select
-                label={t('profile.selectVerificationMethod')}
-                placeholder={t('profile.selectVerificationMethodPlaceholder')}
-                {...verificationRegister('verificationMethod', {
-                  required: t('profile.verificationMethodRequired'),
-                })}
-                isInvalid={Boolean(verificationErrors.verificationMethod)}
-                errorMessage={verificationErrors.verificationMethod?.message}
-                isRequired
-              >
-                <SelectItem key="sms">
-                  <FiMessageSquare className="inline-block mr-1" />
-                  {t('profile.verificationMethod.sms')}
-                </SelectItem>
-                <SelectItem key="email">
-                  <FiMail className="inline-block mr-1" />
-                  {t('profile.verificationMethod.email')}
-                </SelectItem>
-              </Select>
-
-              <Button
-                color="primary"
-                type="submit"
-                isDisabled={!isVerificationValid}
-              >
-                <FiSend />
-                {t('profile.sendVerificationCode')}
-              </Button>
-            </Form>
-          </ModalBody>
-          <ModalFooter className="justify-end pt-4 border-t border-gray-200 dark:border-gray-700">
-            <Button
-              variant="light"
-              onPress={closeVerificationModal}
-              className="gap-2"
-            >
-              <FiX />
-              {t('profile.close')}
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
     </div>
   );
 };

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 const Footer = () => {
   const { t } = useTranslation();
   return (
-    <footer className="flex flex-col gap-6 bg-gray-100 dark:bg-gray-800 py-4 text-center">
+    <footer className="flex flex-col gap-6 bg-gray-50 dark:bg-gray-800 py-4 text-center">
       <div className="grid grid-cols-1 md:grid-cols-2">
         <p className="text-white w-52 text-center mx-auto font-medium text-wrap bg-red-500">
           TODO: metti link social

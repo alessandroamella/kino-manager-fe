@@ -14,12 +14,6 @@ i18n
     debug: true,
     supportedLngs: ['en', 'it'],
     fallbackLng: 'it',
-  })
-  .then(() => {
-    console.log('i18n initialized');
-  })
-  .catch((error) => {
-    console.error('i18n initialization failed', error);
   });
 
 export default i18n;

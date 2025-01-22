@@ -6,18 +6,21 @@ import {
   Autocomplete,
   AutocompleteItem,
   DatePicker,
-  Alert, // Import Alert component
+  Alert,
+  Divider,
+  Tab,
+  Tabs, // Import Alert component
 } from '@heroui/react';
 import type { CalendarDate } from '@heroui/react';
-import { CalendarDate as ICalendarDate } from '@internationalized/date';
 import CodiceFiscale from 'codice-fiscale-js';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import { Comune } from 'codice-fiscale-js/types/comune';
 import countries from 'i18n-iso-countries';
 import { useTranslation } from 'react-i18next';
-import { getDay, getMonth, getYear, parse } from 'date-fns';
+import { parse } from 'date-fns';
 import { getErrorMsg } from '../../types/error';
+import { dateToCalendarDate } from '../../utils/calendar';
 
 type FormData = {
   firstName: string;
@@ -33,14 +36,6 @@ type FormData = {
 interface Country {
   alpha2: string;
   name: string;
-}
-
-function dateToCalendarDate(date: Date): CalendarDate {
-  const year = getYear(date);
-  const month = getMonth(date) + 1;
-  const day = getDay(date);
-
-  return new ICalendarDate(year, month, day) as unknown as CalendarDate;
 }
 
 const Signup = () => {
@@ -141,6 +136,7 @@ const Signup = () => {
 
   const handleDateChange = useCallback(
     (date: CalendarDate | null) => {
+      console.log('Date selected:', date);
       setValue('birthDate', date ? date.toDate('UTC') : null);
       trigger('birthDate');
     },
@@ -149,10 +145,14 @@ const Signup = () => {
 
   const handleComuneChange = useCallback(
     (key: React.Key | null) => {
+      console.log('Comune selected:', key);
+      if (!key && !birthComune) {
+        return;
+      }
       setValue('birthComune', key?.toString());
       trigger('birthComune');
     },
-    [setValue, trigger],
+    [birthComune, setValue, trigger],
   );
 
   const handleComuneInputChange = useCallback((value: string) => {
@@ -161,6 +161,7 @@ const Signup = () => {
 
   const handleCountryChange = useCallback(
     (key: React.Key | null) => {
+      console.log('Country selected:', key);
       if (key) {
         setValue('birthCountry', key as string);
         trigger('birthCountry');
@@ -184,6 +185,10 @@ const Signup = () => {
           const { data } = await axios.get<Comune[]>(
             `/v1/istat/comune?q=${comuneSearchTerm}`,
           );
+          console.log(
+            'Setting comune suggestions:',
+            data.map((e) => e.nome).join(', '),
+          );
           setComuneSuggestions(data);
         } catch (error) {
           console.error('Error fetching comuni:', error);
@@ -197,6 +202,7 @@ const Signup = () => {
 
       return () => clearTimeout(timeoutId);
     } else {
+      console.log('Clearing comune suggestions');
       setComuneSuggestions([]);
     }
   }, [comuneSearchTerm]);
@@ -246,9 +252,9 @@ const Signup = () => {
       )}
       <Form
         onSubmit={handleSubmit(onSubmit)}
-        className="max-w-lg mx-auto mt-2 md:mt-4 p-6 rounded-md shadow-md space-y-4"
+        className="min-w-[500px] max-w-lg mx-auto mt-2 md:mt-4 p-6 rounded-md shadow-md space-y-4"
       >
-        <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-4">
+        <h2 className="text-2xl font-bold text-foreground mb-4">
           Iscriviti al Kinó Café
         </h2>
 
@@ -293,120 +299,106 @@ const Signup = () => {
           isRequired
         />
 
-        <hr />
+        <Divider className="my-4" />
 
-        <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">
-          Dati Anagrafici
-        </h2>
-
-        <div className="flex flex-col gap-3 w-full">
-          <p className="text-gray-800 dark:text-gray-100">
-            Hai un codice fiscale?
+        <div>
+          <h2 className="text-lg font-bold text-foreground">Dati Anagrafici</h2>
+          <p className="text-foreground-500 text-small">
+            Se hai un codice fiscale, inseriscilo per compilare automaticamente
+            i tuoi dati anagrafici.
+            <br />
+            Se non hai un codice fiscale, clicca su &quot;Manuale&quot; per
+            inserire i dati manualmente.
           </p>
-          <div className="flex mx-auto space-x-4">
-            <Button
-              color="primary"
-              onPress={() => setUseCodiceFiscale(true)}
-              className="w-1/2"
-              isDisabled={useCodiceFiscale}
-            >
-              Sì
-            </Button>
-            <Button
-              color="warning"
-              onPress={() => setUseCodiceFiscale(false)}
-              className="w-1/2"
-              isDisabled={!useCodiceFiscale}
-            >
-              No
-            </Button>
-          </div>
         </div>
 
-        {useCodiceFiscale && (
-          <Input
-            label="Codice Fiscale"
-            placeholder="Inserisci il tuo codice fiscale"
-            isRequired
-            {...register('codiceFiscale', {
-              required: useCodiceFiscale
-                ? 'Il codice fiscale è obbligatorio'
-                : false,
-              validate: useCodiceFiscale
-                ? (value) => {
-                    if (!value) return true; // required handles empty case
-                    if (value.length !== 16)
-                      return 'Il codice fiscale deve essere di 16 caratteri';
-                    if (!cfOkay) {
-                      return 'Codice fiscale non valido';
+        <Tabs aria-label="Registrazione con o senza codice fiscale" fullWidth>
+          <Tab key="codice-fiscale" title="Codice fiscale" className="w-full">
+            <Input
+              label="Codice Fiscale"
+              placeholder="Inserisci il tuo codice fiscale"
+              isRequired
+              {...register('codiceFiscale', {
+                required: useCodiceFiscale
+                  ? 'Il codice fiscale è obbligatorio'
+                  : false,
+                validate: useCodiceFiscale
+                  ? (value) => {
+                      if (!value) return true; // required handles empty case
+                      if (value.length !== 16)
+                        return 'Il codice fiscale deve essere di 16 caratteri';
+                      if (!cfOkay) {
+                        return 'Codice fiscale non valido';
+                      }
+                      return true;
                     }
-                    return true;
-                  }
-                : undefined,
-            })}
-            isInvalid={Boolean(errors.codiceFiscale)}
-            errorMessage={errors.codiceFiscale?.message}
-            maxLength={16}
-            description="Inserisci il tuo codice fiscale per compilare automaticamente i dati anagrafici"
-          />
-        )}
-
-        {!useCodiceFiscale && (
-          <div className="space-y-5 w-full">
-            <DatePicker
-              label="Data di Nascita"
-              onChange={handleDateChange}
-              value={birthDate ? dateToCalendarDate(birthDate) : null}
-              isRequired
-              labelPlacement="outside"
-              // {...register('birthDate', {
-              //   required: !useCodiceFiscale ? 'La data di nascita è obbligatoria' : false,
-              // })}
-              isInvalid={Boolean(errors.birthDate)}
-              errorMessage={errors.birthDate?.message}
+                  : undefined,
+              })}
+              isInvalid={Boolean(errors.codiceFiscale)}
+              errorMessage={errors.codiceFiscale?.message}
+              maxLength={16}
+              description="Inserisci il tuo codice fiscale per compilare automaticamente i dati anagrafici"
             />
-            <Autocomplete
-              label="Paese di Nascita"
-              placeholder="Inizia a digitare il paese"
-              defaultItems={countrySuggestions}
-              items={countrySuggestions}
-              onInputChange={handleCountryInputChange}
-              onSelectionChange={handleCountryChange}
-              isRequired
-              labelPlacement="outside"
-              isInvalid={Boolean(errors.birthCountry)}
-              errorMessage={errors.birthCountry?.message}
-            >
-              {(item) => (
-                <AutocompleteItem key={item.alpha2}>
-                  {t('countries.' + item.alpha2)}
-                </AutocompleteItem>
-              )}
-            </Autocomplete>
-
-            {isItalySelected && (
-              <Autocomplete
-                label="Comune di Nascita"
-                placeholder="Inizia a digitare il comune"
-                defaultItems={comuneSuggestions}
-                defaultSelectedKey={birthComune}
-                selectedKey={birthComune}
-                onSelectionChange={handleComuneChange}
-                onInputChange={handleComuneInputChange}
+          </Tab>
+          <Tab key="manual" title="Manuale" className="w-full">
+            <div className="space-y-5 w-full">
+              <DatePicker
+                label="Data di Nascita"
+                onChange={handleDateChange}
+                value={birthDate ? dateToCalendarDate(birthDate) : null}
                 isRequired
                 labelPlacement="outside"
-                isInvalid={Boolean(errors.birthComune)}
-                errorMessage={errors.birthComune?.message}
+                // {...register('birthDate', {
+                //   required: !useCodiceFiscale ? 'La data di nascita è obbligatoria' : false,
+                // })}
+                isInvalid={Boolean(errors.birthDate)}
+                errorMessage={errors.birthDate?.message}
+              />
+              <Autocomplete
+                label="Paese di Nascita"
+                placeholder="Inizia a digitare il paese"
+                defaultItems={countrySuggestions}
+                defaultInputValue="IT"
+                items={countrySuggestions}
+                onInputChange={handleCountryInputChange}
+                onSelectionChange={handleCountryChange}
+                isRequired
+                labelPlacement="outside"
+                isInvalid={Boolean(errors.birthCountry)}
+                errorMessage={errors.birthCountry?.message}
               >
                 {(item) => (
-                  <AutocompleteItem key={item.nome}>
-                    {item.nome}
+                  <AutocompleteItem key={item.alpha2}>
+                    {t('countries.' + item.alpha2)}
                   </AutocompleteItem>
                 )}
               </Autocomplete>
-            )}
-          </div>
-        )}
+
+              {isItalySelected && (
+                <Autocomplete
+                  label="Comune di Nascita"
+                  placeholder="Inizia a digitare il comune"
+                  // defaultItems={comuneSuggestions}
+                  // defaultSelectedKey={birthComune}
+                  items={comuneSuggestions}
+                  // selectedKey={birthComune}
+                  onSelectionChange={handleComuneChange}
+                  onInputChange={handleComuneInputChange}
+                  isRequired
+                  labelPlacement="outside"
+                  isInvalid={Boolean(errors.birthComune)}
+                  errorMessage={errors.birthComune?.message}
+                >
+                  {(item) => (
+                    <AutocompleteItem key={item.nome}>
+                      {item.nome}
+                    </AutocompleteItem>
+                  )}
+                </Autocomplete>
+              )}
+            </div>
+          </Tab>
+        </Tabs>
 
         <Button
           color="primary"

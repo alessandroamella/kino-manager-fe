@@ -1,4 +1,79 @@
 {
+  "common": {
+    "title": "Kinó Café"
+  },
+  "header": {
+    "userActions": "Azioni utente",
+    "profile": "Profilo",
+    "home": "Home",
+    "movies": "Film"
+  },
+  "auth": {
+    "logout": "Esci",
+    "login": "Accedi",
+    "signup": "Registrati"
+  },
+  "errors": {
+    "generic": "Si è verificato un errore",
+    "userNotFound": "Utente non trovato",
+    "wrongPassword": "Password errata"
+  },
+  "home": {
+    "kinoCafeTitle": "Kinó Café: Il tuo spazio, a modo tuo",
+    "kinoCafeSubtitle": "Un posto per rilassarsi, creare, connettersi e festeggiare - tutto sotto lo stesso tetto!",
+    "signup": "Registrati",
+    "login": "Accedi",
+    "aboutUsTitle": "Cos'è Kinó Café?",
+    "aboutUsText1": "Kinó Café non è solo un altro bar; è un vivace centro ricreativo pensato per TE. Siamo qui per essere un punto di riferimento per studiare, lavorare, socializzare, giocare, leggere, gustare buon cibo o semplicemente trovare un posto per rilassarsi.",
+    "aboutUsText2": "Che tu stia cercando un angolo tranquillo o una serata vivace, Kinó Café è la tua casa lontano da casa. Le nostre porte sono aperte a tutti, indipendentemente dall'età, dal background o dagli interessi.",
+    "activitiesTitle": "Cosa succede al Kinó?",
+    "blandeActivitiesTitle": "Serate tranquille infrasettimanali",
+    "blandeActivitiesText1": "Durante la settimana, rilassati al Kinó. Siamo aperti dalle 19:30 fino a tardi. È il posto perfetto per uscire senza doverti spostare altrove.",
+    "blandeActivitiesItem1": "Bar self-service con caffè, tè, snack e bevande semplici.",
+    "blandeActivitiesItem2": "Console di gioco (come PlayStation) collegate a una TV.",
+    "blandeActivitiesItem3": "Calcio balilla e freccette.",
+    "blandeActivitiesItem4": "Giochi da tavolo e carte.",
+    "blandeActivitiesText2": "Goditi conversazioni, sessioni di studio, pasti e altro ancora, con musica rilassante in sottofondo.",
+    "serieActivitiesTitle": "Serate di divertimento nel fine settimana",
+    "serieActivitiesText1": "Se le nostre serate tranquille hanno successo, alzeremo il livello ogni venerdì o sabato! Vieni a trovarci a partire dalle 21:00 per una serata fuori.",
+    "serieActivitiesItem1": "DJ set con console musicale.",
+    "serieActivitiesItem2": "Illuminazione ambientale e LED.",
+    "serieActivitiesItem3": "Un'area relax con luci al neon, calcio balilla e freccette.",
+    "starting": "A partire dal {{date}}",
+    "dateToBeDefined": "Data da definire",
+    "openingDate": "Data di apertura",
+    "openingHours": "Orari di apertura",
+    "openDays": "Ogni mercoledì dalle 19:00 alle 23:00"
+  },
+  "profile": {
+    "myProfile": "Il mio profilo",
+    "edit": "Modifica",
+    "editProfile": "Modifica profilo",
+    "save": "Salva",
+    "close": "Chiudi",
+    "email": "Email",
+    "codiceFiscale": "Codice Fiscale",
+    "birthDate": "Data di nascita",
+    "birthComune": "Comune di nascita",
+    "birthCountry": "Paese di nascita",
+    "verified": "Verificato",
+    "verifiedVia": "Verificato tramite",
+    "yes": "Sì",
+    "notVerified": "Non verificato",
+    "selectVerificationMethod": "Seleziona il metodo di verifica",
+    "sendVerificationCode": "Invia codice di verifica",
+    "verificationMethod": {
+      "sms": "SMS",
+      "email": "Email"
+    },
+    "memberSince": "Membro dal",
+    "verifiedOn": "Account verificato il {{date}}",
+    "toBeVerified": "Il tuo account non è ancora verificato"
+  },
+  "languages": {
+    "it": "Italiano",
+    "en": "Inglese"
+  },
   "countries": {
     "AD": "Andorra",
     "AE": "Emirati Arabi Uniti",

@@ -5,11 +5,15 @@ import {
   DropdownMenu,
   DropdownItem,
   Button,
+  DropdownProps,
 } from '@heroui/react';
 import { Key } from 'react';
 import { CgChevronDown } from 'react-icons/cg';
 
-function ChangeLanguage() {
+function ChangeLanguage({
+  className,
+  ...rest
+}: Omit<DropdownProps, 'children'>) {
   const { t, i18n } = useTranslation();
 
   const changeLanguage = (lng: Key) => {
@@ -17,8 +21,8 @@ function ChangeLanguage() {
   };
 
   return (
-    <Dropdown>
-      <DropdownTrigger>
+    <Dropdown className={className} {...rest}>
+      <DropdownTrigger className={className}>
         <Button variant="bordered" endContent={<CgChevronDown />}>
           {t('languages.' + i18n.language.toLowerCase())}
         </Button>
