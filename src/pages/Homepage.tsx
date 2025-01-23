@@ -8,6 +8,7 @@ import {
   Image,
   Spacer,
 } from '@heroui/react';
+import { Parallax } from 'react-parallax';
 import { useTranslation } from 'react-i18next';
 import logo from '../assets/images/logo.png';
 import logoDark from '../assets/images/logo-dark.png';
@@ -19,32 +20,86 @@ import LoginBtn from './auth/LoginBtn';
 import SignupBtn from './auth/SignupBtn';
 import { dateToCalendarDate } from '../utils/calendar';
 import { format } from 'date-fns';
-import { UTCDate } from '@date-fns/utc';
+import { UTCDateMini } from '@date-fns/utc';
 import { dateFnsLang } from '../utils/dateFnsLang';
 import useUserStore from '../store/user';
 import { Link } from 'react-router';
-import { FiArrowRight } from 'react-icons/fi';
+import { FiArrowRight, FiMapPin } from 'react-icons/fi';
 import bg from '../assets/images/homepage-bg.jpg';
+import { address, googleMapsDirectionsUrl } from '../constants/address';
+import Countdown from 'react-countdown';
 
-const openingDate = new UTCDate(2025, 1, 5);
+const openingDate = new UTCDateMini(2025, 1, 5);
 
 const Homepage = () => {
   const { t, i18n } = useTranslation();
 
   const user = useUserStore((store) => store.user);
 
+  const renderer = ({
+    days,
+    hours,
+    minutes,
+    seconds,
+    completed,
+  }: {
+    days: number;
+    hours: number;
+    minutes: number;
+    seconds: number;
+    completed: boolean;
+  }) => {
+    if (completed) {
+      return (
+        <span className="text-xl md:text-2xl font-semibold">
+          {t('home.openingNow')}!
+        </span>
+      );
+    } else {
+      return (
+        <div className="flex space-x-4 justify-center">
+          <div className="countdown-segment">
+            <span className="countdown-value">{days}</span>
+            <span className="countdown-label">{t('home.days')}</span>
+          </div>
+          <div className="countdown-segment">
+            <span className="countdown-value">{hours}</span>
+            <span className="countdown-label">{t('home.hours')}</span>
+          </div>
+          <div className="countdown-segment">
+            <span className="countdown-value">{minutes}</span>
+            <span className="countdown-label">{t('home.minutes')}</span>
+          </div>
+          <div className="countdown-segment">
+            <span className="countdown-value">{seconds}</span>
+            <span className="countdown-label">{t('home.seconds')}</span>
+          </div>
+        </div>
+      );
+    }
+  };
+
   return (
     <div className="relative">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary-400/15 to-primary-600/15 text-white py-16 md:py-24 px-4 md:mt-12 relative overflow-hidden">
+      <section className="text-white py-16 md:py-20 px-4 md:mt-12 relative overflow-hidden">
         <div className="container mx-auto text-center relative z-10">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
             {t('home.kinoCafeTitle')}
           </h1>
-          <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto">
+          <p className="text-lg md:text-xl mb-4 max-w-2xl mx-auto">
             {t('home.kinoCafeSubtitle')}
           </p>
-          <div className="flex justify-center space-x-4">
+          <a
+            href={googleMapsDirectionsUrl}
+            className="text-lg mb-8 block text-foreground hover:text-primary-600 duration-100 transition-colors max-w-2xl mx-auto"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <FiMapPin className="inline-block mr-1" />
+            {address}
+          </a>
+          <div className="flex  justify-center space-x-4">
             {user ? (
               <Button
                 as={Link}
@@ -63,14 +118,41 @@ const Homepage = () => {
             )}
           </div>
         </div>
-        {/* Background image with subtle blur */}
-        <div
-          className="absolute inset-0 opacity-40 bg-cover bg-center blur-sm"
+
+        {/* Parallax Background Image */}
+        <Parallax
+          bgImage={bg}
+          strength={200}
           style={{
-            backgroundImage: `url(${bg})`,
+            position: 'absolute',
+            inset: 0,
           }}
-        />
+        >
+          {/* This div acts as the background styling layer */}
+          <div
+            style={{
+              width: '100%',
+              height: '100%',
+              opacity: 0.4,
+              backgroundColor: 'transparent',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              filter: 'blur(5px)',
+            }}
+          />
+        </Parallax>
       </section>
+
+      <div
+        className={`h-96 bg-gradient-to-br w-full from-purple-950/40 to-primary-600/20 flex items-center justify-center`}
+      >
+        <div>
+          <h2 className="text-2xl md:text-3xl font-semibold text-center text-gray-800 dark:text-white mb-4">
+            {t('home.openingCountdownTitle')}
+          </h2>
+          <Countdown date={openingDate} renderer={renderer} />
+        </div>
+      </div>
 
       {/* About Us Section */}
       <section className="bg-foreground-50 py-12 md:py-20">

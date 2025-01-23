@@ -64,7 +64,9 @@ const Login = () => {
                 message: "Inserisci un'email valida",
               },
             })}
-            isInvalid={Boolean(error === 'errors.userNotFound' || errors.email)}
+            isInvalid={Boolean(
+              error === 'errors.auth.userNotFound' || errors.email,
+            )}
             errorMessage={error ? t(error) : errors.email?.message}
             isRequired
           />
@@ -76,7 +78,7 @@ const Login = () => {
               required: 'La password è obbligatoria',
             })}
             isInvalid={Boolean(
-              error === 'errors.wrongPassword' || errors.password,
+              error === 'errors.auth.wrongPassword' || errors.password,
             )}
             errorMessage={error ? t(error) : errors.password?.message}
             isRequired

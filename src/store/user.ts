@@ -71,9 +71,9 @@ const useUserStore = create<UserState>()(
           set({
             error: isAxiosError(error)
               ? error.response?.status === 401
-                ? 'errors.wrongPassword'
+                ? 'errors.auth.wrongPassword'
                 : error.response?.status === 404
-                ? 'errors.userNotFound'
+                ? 'errors.auth.userNotFound'
                 : 'errors.generic'
               : 'errors.generic',
             loading: false,

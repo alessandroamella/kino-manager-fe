@@ -11,5 +11,6 @@ export function dateToCalendarDate(date: Date): CalendarDate {
 }
 
 export function calendarDate(date: ICalendarDate): CalendarDate {
+  // HeroUI is stupid (ICalendarDate is the same as CalendarDate)
   return date as unknown as CalendarDate;
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, Key } from 'react';
 import {
   Form,
   Input,
@@ -9,30 +9,34 @@ import {
   Alert,
   Divider,
   Tab,
-  Tabs, // Import Alert component
+  Tabs,
+  Card,
 } from '@heroui/react';
 import type { CalendarDate } from '@heroui/react';
 import CodiceFiscale from 'codice-fiscale-js';
 import { useForm } from 'react-hook-form';
 import axios, { AxiosError } from 'axios';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { Comune } from 'codice-fiscale-js/types/comune';
 import countries from 'i18n-iso-countries';
 import { useTranslation } from 'react-i18next';
-import { parse } from 'date-fns';
 import { getErrorMsg } from '../../types/error';
 import { dateToCalendarDate } from '../../utils/calendar';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate } from 'react-router';
 import useUserStore from '../../store/user';
+import { UTCDateMini } from '@date-fns/utc';
+import { signupYupSchema } from '../../validators/signup';
+import { format } from 'date-fns';
 
 type FormData = {
   firstName: string;
   lastName: string;
   email: string;
   password: string;
-  codiceFiscale: string;
+  codiceFiscale: string | null;
   birthDate: Date | null;
-  birthComune?: string;
+  birthComune?: string | null;
   birthCountry: string;
 };
 
@@ -42,6 +46,11 @@ interface Country {
 }
 
 const Signup = () => {
+  const { t } = useTranslation();
+  const validationSchema = useMemo(() => signupYupSchema(t), [t]);
+
+  const [useCodiceFiscale, setUseCodiceFiscale] = useState(true);
+
   const {
     register,
     handleSubmit,
@@ -51,8 +60,16 @@ const Signup = () => {
     formState: { errors, isValid: _isValid },
   } = useForm<FormData>({
     mode: 'onBlur',
+    resolver: yupResolver(validationSchema, {
+      context: { useCodiceFiscale },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    }) as any,
+    defaultValues: {
+      codiceFiscale: null, // Initialize codiceFiscale as null
+      birthComune: null, // Initialize birthComune as null
+    },
   });
-  const [useCodiceFiscale, setUseCodiceFiscale] = useState(true);
+
   const [comuneSuggestions, setComuneSuggestions] = useState<Comune[]>([]);
   const [comuneSearchTerm, setComuneSearchTerm] = useState('');
   const [countriesList, setCountriesList] = useState<Country[]>([]);
@@ -60,12 +77,30 @@ const Signup = () => {
   const [countrySuggestions, setCountrySuggestions] = useState<Country[]>([]);
   const [signupError, setSignupError] = useState<string | null>(null); // State for signup error
 
-  const codiceFiscaleValue = watch('codiceFiscale');
+  const codiceFiscaleValue = watch('codiceFiscale')?.toUpperCase() || ''; // watch can return undefined, handle it
   const birthDate = watch('birthDate');
   const birthComune = watch('birthComune');
   const birthCountry = watch('birthCountry');
 
-  const { t } = useTranslation();
+  const codiceFiscaleData = useMemo(() => {
+    if (
+      codiceFiscaleValue.length !== 16 ||
+      !CodiceFiscale.check(codiceFiscaleValue)
+    ) {
+      return null;
+    }
+
+    try {
+      const data = CodiceFiscale.computeInverse(codiceFiscaleValue);
+      return {
+        ...data,
+        birthDate: new UTCDateMini(data.year, data.month - 1, data.day),
+      };
+    } catch (error) {
+      console.error('Error computing inverse CF:', error);
+      return null;
+    }
+  }, [codiceFiscaleValue]);
 
   useEffect(() => {
     const countryAlpha2Codes = Object.keys(countries.getAlpha2Codes());
@@ -91,51 +126,49 @@ const Signup = () => {
   }, [countrySearchTerm, countriesList, t]);
 
   useEffect(() => {
+    if (!useCodiceFiscale) {
+      return;
+    } else if (!codiceFiscaleData) {
+      setValue('birthDate', null);
+      setValue('birthCountry', '');
+      setValue('birthComune', null); // Set to null to match type
+      trigger(['birthDate', 'birthCountry', 'birthComune']);
+      return;
+    }
+
     if (
       useCodiceFiscale &&
       codiceFiscaleValue &&
-      codiceFiscaleValue.length === 16
+      CodiceFiscale.check(codiceFiscaleValue)
     ) {
-      if (CodiceFiscale.check(codiceFiscaleValue.toUpperCase())) {
-        const data = CodiceFiscale.computeInverse(
-          codiceFiscaleValue.toUpperCase(),
-        );
-        setUseCodiceFiscale(true);
-        // data.year,
-        // data.month,
-        // data.day,
-        const birthDate = parse(
-          `${data.year}-${data.month}-${data.day}`,
-          'yyyy-MM-dd',
-          new Date(),
+      try {
+        const data = CodiceFiscale.computeInverse(codiceFiscaleValue);
+        const birthDateFromCF = new UTCDateMini(
+          data.year,
+          data.month - 1,
+          data.day,
         );
 
-        setValue('birthDate', birthDate);
+        setValue('birthDate', birthDateFromCF);
         setValue('birthCountry', 'IT');
         setValue('birthComune', data.birthplace);
         trigger(['birthDate', 'birthCountry', 'birthComune']);
-      } else {
+      } catch (error) {
+        console.error('Error computing inverse CF:', error);
+        // Handle cases where inverse computation fails, maybe clear fields or show an error
         setValue('birthDate', null);
         setValue('birthCountry', '');
-        setValue('birthComune', '');
-        trigger(['birthDate', 'birthCountry', 'birthComune']); // Clear and trigger validation for these fields
+        setValue('birthComune', null);
+        trigger(['birthDate', 'birthCountry', 'birthComune']);
       }
-    } else if (
-      useCodiceFiscale &&
-      codiceFiscaleValue &&
-      codiceFiscaleValue.length < 16
-    ) {
-      setValue('birthDate', null);
-      setValue('birthCountry', '');
-      setValue('birthComune', '');
-      trigger(['birthDate', 'birthCountry', 'birthComune']);
-    } else if (useCodiceFiscale && !codiceFiscaleValue) {
-      setValue('birthDate', null);
-      setValue('birthCountry', '');
-      setValue('birthComune', '');
-      trigger(['birthDate', 'birthCountry', 'birthComune']);
     }
-  }, [codiceFiscaleValue, setValue, useCodiceFiscale, trigger]);
+  }, [
+    codiceFiscaleValue,
+    setValue,
+    useCodiceFiscale,
+    trigger,
+    codiceFiscaleData,
+  ]);
 
   const handleDateChange = useCallback(
     (date: CalendarDate | null) => {
@@ -152,7 +185,7 @@ const Signup = () => {
       if (!key && !birthComune) {
         return;
       }
-      setValue('birthComune', key?.toString());
+      setValue('birthComune', key?.toString() || null); // Handle null case for setValue
       trigger('birthComune');
     },
     [birthComune, setValue, trigger],
@@ -169,7 +202,7 @@ const Signup = () => {
         setValue('birthCountry', key as string);
         trigger('birthCountry');
         if (key !== 'IT') {
-          setValue('birthComune', undefined); // Clear comune if country is not Italy
+          setValue('birthComune', null); // Clear comune if country is not Italy, set to null
           trigger('birthComune');
         }
       }
@@ -236,7 +269,7 @@ const Signup = () => {
       console.error('Error signing up:', error);
       setSignupError(
         (error as AxiosError)?.response?.status === 409
-          ? t('errors.userAlreadyExists')
+          ? t('errors.auth.userAlreadyExists')
           : getErrorMsg(error),
       );
     }
@@ -244,26 +277,23 @@ const Signup = () => {
 
   const isItalySelected = birthCountry === 'IT';
 
-  const cfOkay = useMemo(() => {
-    return (
-      codiceFiscaleValue &&
-      codiceFiscaleValue.length === 16 &&
-      CodiceFiscale.check(codiceFiscaleValue.toUpperCase())
-    );
-  }, [codiceFiscaleValue]);
+  const isValid = _isValid; // isValid is directly from useForm after yupResolver
 
-  const isValid =
-    _isValid &&
-    (useCodiceFiscale
-      ? cfOkay
-      : birthDate && birthCountry && (isItalySelected ? birthComune : true));
+  function handleSelectionChange(key: Key) {
+    setUseCodiceFiscale(key === 'codice-fiscale');
+    if (key === 'manual') {
+      setValue('birthComune', null);
+      setComuneSuggestions([]);
+      trigger('birthComune');
+    }
+  }
 
   return (
     <div className="flex flex-col gap-4 relative">
       <AnimatePresence>
         {signupError && (
           <motion.div
-            className="sticky top-4 md:top-20 mx-4 md:w-fit md:ml-auto z-50"
+            className="sticky top-4 md:top-20 mx-4 md:w-fit md:ml-auto z-10"
             initial={{ opacity: 0, y: -50 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -50 }}
@@ -272,6 +302,7 @@ const Signup = () => {
             <Alert
               color="danger"
               title="Errore nella registrazione"
+              className="z-20"
               description={signupError}
               variant="faded"
               onClose={() => setSignupError(null)}
@@ -284,188 +315,183 @@ const Signup = () => {
           </motion.div>
         )}
       </AnimatePresence>
-      <Form
-        onSubmit={handleSubmit(onSubmit)}
-        className="md:min-w-[500px] max-w-lg mx-auto -mt-2 md:mt-4 p-6 rounded-md shadow-md space-y-4"
-      >
-        <h2 className="text-2xl font-bold text-foreground mb-4">
-          Iscriviti al Kinó Café
-        </h2>
-
-        {/* ... rest of your form code ... */}
-        <Input
-          label="Nome"
-          placeholder="Inserisci il tuo nome"
-          {...register('firstName', { required: 'Il nome è obbligatorio' })}
-          isInvalid={Boolean(errors.firstName)}
-          errorMessage={errors.firstName?.message}
-          autoComplete="given-name"
-          isRequired
-        />
-        <Input
-          label="Cognome"
-          placeholder="Inserisci il tuo cognome"
-          {...register('lastName', { required: 'Il cognome è obbligatorio' })}
-          isInvalid={Boolean(errors.lastName)}
-          errorMessage={errors.lastName?.message}
-          autoComplete="family-name"
-          isRequired
-        />
-        <Input
-          label="Email"
-          placeholder="Inserisci la tua email"
-          type="email"
-          {...register('email', {
-            required: "L'email è obbligatoria",
-            pattern: {
-              value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-              message: "Inserisci un'email valida",
-            },
-          })}
-          isInvalid={Boolean(errors.email)}
-          autoComplete="email"
-          errorMessage={errors.email?.message}
-          isRequired
-        />
-        <Input
-          label="Password"
-          placeholder="Inserisci la tua password"
-          type="password"
-          {...register('password', { required: 'La password è obbligatoria' })}
-          isInvalid={Boolean(errors.password)}
-          errorMessage={errors.password?.message}
-          autoComplete="new-password"
-          isRequired
-        />
-
-        <Divider className="my-4" />
-
-        <div>
-          <h2 className="text-lg font-bold text-foreground">Dati Anagrafici</h2>
-          <p className="text-foreground-500 text-small">
-            Se hai un codice fiscale, inseriscilo per compilare automaticamente
-            i tuoi dati anagrafici.
-            <br />
-            Se non hai un codice fiscale, clicca su &quot;Manuale&quot; per
-            inserire i dati manualmente.
-          </p>
-        </div>
-
-        <Tabs
-          onSelectionChange={(k) => setUseCodiceFiscale(k === 'codice-fiscale')}
-          aria-label="Registrazione con o senza codice fiscale"
-          fullWidth
+      <Card className="w-fit mx-auto">
+        <Form
+          onSubmit={handleSubmit(onSubmit)}
+          className="md:min-w-[500px] max-w-lg mx-auto -mt-2 md:mt-4 p-6 rounded-md shadow-md space-y-4"
         >
-          <Tab key="codice-fiscale" title="Codice fiscale" className="w-full">
-            <Input
-              label="Codice Fiscale"
-              placeholder="Inserisci il tuo codice fiscale"
-              isRequired
-              {...register('codiceFiscale', {
-                required: useCodiceFiscale
-                  ? 'Il codice fiscale è obbligatorio'
-                  : false,
-                validate: useCodiceFiscale
-                  ? (value) => {
-                      if (!value) return true; // required handles empty case
-                      if (value.length !== 16)
-                        return 'Il codice fiscale deve essere di 16 caratteri';
-                      if (!cfOkay) {
-                        return 'Codice fiscale non valido';
-                      }
-                      return true;
-                    }
-                  : undefined,
-              })}
-              isInvalid={Boolean(errors.codiceFiscale)}
-              errorMessage={errors.codiceFiscale?.message}
-              maxLength={16}
-              description="Inserisci il tuo codice fiscale per compilare automaticamente i dati anagrafici"
-            />
-          </Tab>
-          <Tab key="manual" title="Manuale" className="w-full">
-            <div className="space-y-5 w-full">
-              <DatePicker
-                label="Data di Nascita"
-                onChange={handleDateChange}
-                value={birthDate ? dateToCalendarDate(birthDate) : null}
-                isRequired
-                labelPlacement="outside"
-                // {...register('birthDate', {
-                //   required: !useCodiceFiscale ? 'La data di nascita è obbligatoria' : false,
-                // })}
-                isInvalid={Boolean(errors.birthDate)}
-                errorMessage={errors.birthDate?.message}
-              />
-              <Autocomplete
-                label="Paese di Nascita"
-                placeholder="Inizia a digitare il paese"
-                defaultItems={countrySuggestions}
-                defaultInputValue="IT"
-                items={countrySuggestions}
-                onInputChange={handleCountryInputChange}
-                onSelectionChange={handleCountryChange}
-                isRequired
-                labelPlacement="outside"
-                isInvalid={Boolean(errors.birthCountry)}
-                errorMessage={errors.birthCountry?.message}
-              >
-                {(item) => (
-                  <AutocompleteItem key={item.alpha2}>
-                    {t('countries.' + item.alpha2)}
-                  </AutocompleteItem>
-                )}
-              </Autocomplete>
+          <h2 className="text-2xl font-bold text-foreground mb-4">
+            Iscriviti al Kinó Café
+          </h2>
 
-              {isItalySelected && (
-                <Autocomplete
-                  label="Comune di Nascita"
-                  placeholder="Inizia a digitare il comune"
-                  // defaultItems={comuneSuggestions}
-                  // defaultSelectedKey={birthComune}
-                  items={comuneSuggestions}
-                  // selectedKey={birthComune}
-                  onSelectionChange={handleComuneChange}
-                  onInputChange={handleComuneInputChange}
+          {/* ... rest of your form code ... */}
+          <Input
+            label="Nome"
+            placeholder="Inserisci il tuo nome"
+            {...register('firstName')}
+            isInvalid={Boolean(errors.firstName)}
+            errorMessage={errors.firstName?.message}
+            autoComplete="given-name"
+            isRequired
+          />
+          <Input
+            label="Cognome"
+            placeholder="Inserisci il tuo cognome"
+            {...register('lastName')}
+            isInvalid={Boolean(errors.lastName)}
+            errorMessage={errors.lastName?.message}
+            autoComplete="family-name"
+            isRequired
+          />
+          <Input
+            label="Email"
+            placeholder="Inserisci la tua email"
+            type="email"
+            {...register('email')}
+            description={t('signup.emailDisclaimer')}
+            isInvalid={Boolean(errors.email)}
+            autoComplete="email"
+            errorMessage={errors.email?.message}
+            isRequired
+          />
+          <Input
+            label="Password"
+            placeholder="Inserisci la tua password"
+            type="password"
+            {...register('password')}
+            isInvalid={Boolean(errors.password)}
+            errorMessage={errors.password?.message}
+            minLength={8}
+            autoComplete="new-password"
+            description={t('signup.passwordDisclaimer')}
+            isRequired
+          />
+
+          <Divider className="my-4" />
+
+          <div>
+            <h2 className="text-lg font-bold text-foreground">
+              Dati Anagrafici
+            </h2>
+            <p className="text-foreground-500 text-small">
+              Se hai un codice fiscale, inseriscilo per compilare
+              automaticamente i tuoi dati anagrafici.
+              <br />
+              Se non hai un codice fiscale, clicca su &quot;Manuale&quot; per
+              inserire i dati manualmente.
+            </p>
+          </div>
+
+          <Tabs
+            onSelectionChange={handleSelectionChange}
+            aria-label="Registrazione con o senza codice fiscale"
+            fullWidth
+          >
+            <Tab key="codice-fiscale" title="Codice fiscale" className="w-full">
+              <Input
+                label="Codice Fiscale"
+                placeholder="Inserisci il tuo codice fiscale"
+                isRequired={useCodiceFiscale} // Conditionally require based on tab
+                {...register('codiceFiscale')}
+                isInvalid={Boolean(errors.codiceFiscale)}
+                errorMessage={errors.codiceFiscale?.message}
+                maxLength={16}
+                // description="Inserisci il tuo codice fiscale per compilare automaticamente i dati anagrafici"
+                description={
+                  codiceFiscaleData
+                    ? `Valido: ${format(
+                        codiceFiscaleData.birthDate,
+                        'dd/MM/yyyy',
+                      )} - ${codiceFiscaleData.birthplace}`
+                    : codiceFiscaleValue.length === 16
+                    ? 'Codice fiscale non valido :/'
+                    : 'Inserisci il tuo codice fiscale per compilare automaticamente i dati anagrafici'
+                }
+              />
+            </Tab>
+            <Tab key="manual" title="Manuale" className="w-full">
+              <div className="space-y-5 w-full">
+                <DatePicker
+                  label="Data di Nascita"
+                  onChange={handleDateChange}
+                  onBlur={() => trigger('birthDate')}
+                  value={birthDate ? dateToCalendarDate(birthDate) : null}
                   isRequired
                   labelPlacement="outside"
-                  isInvalid={Boolean(errors.birthComune)}
-                  errorMessage={errors.birthComune?.message}
+                  isInvalid={Boolean(errors.birthDate)}
+                  errorMessage={errors.birthDate?.message}
+                />
+                <Autocomplete
+                  label="Paese di Nascita"
+                  placeholder="Inizia a digitare il paese"
+                  defaultItems={countrySuggestions}
+                  defaultInputValue="IT"
+                  items={countrySuggestions}
+                  onInputChange={handleCountryInputChange}
+                  onSelectionChange={handleCountryChange}
+                  isRequired
+                  labelPlacement="outside"
+                  {...register('birthCountry')}
+                  isInvalid={Boolean(errors.birthCountry)}
+                  errorMessage={errors.birthCountry?.message}
                 >
                   {(item) => (
-                    <AutocompleteItem key={item.nome}>
-                      {item.nome}
+                    <AutocompleteItem key={item.alpha2}>
+                      {t('countries.' + item.alpha2)}
                     </AutocompleteItem>
                   )}
                 </Autocomplete>
-              )}
-            </div>
-          </Tab>
-        </Tabs>
 
-        <Button
-          color="primary"
-          type="submit"
-          className="w-full"
-          isDisabled={!isValid}
-        >
-          Registrati
-        </Button>
+                {isItalySelected && (
+                  <Autocomplete
+                    label="Comune di Nascita"
+                    placeholder="Inizia a digitare il comune"
+                    items={comuneSuggestions}
+                    onSelectionChange={handleComuneChange}
+                    onInputChange={handleComuneInputChange}
+                    isRequired
+                    labelPlacement="outside"
+                    {...register('birthComune')}
+                    isInvalid={Boolean(errors.birthComune)}
+                    errorMessage={errors.birthComune?.message}
+                  >
+                    {(item) => (
+                      <AutocompleteItem key={item.nome}>
+                        {item.nome}
+                      </AutocompleteItem>
+                    )}
+                  </Autocomplete>
+                )}
+              </div>
+            </Tab>
+          </Tabs>
 
-        <div className="flex flex-col gap-1 mt-4 items-center w-full">
-          <p className="text-foreground-600 text-small">Hai già un account? </p>
           <Button
-            as={Link}
-            to="/auth/login"
-            size="sm"
-            type="button"
-            variant="bordered"
-            className="text-small w-full"
+            color="primary"
+            type="submit"
+            className="w-full"
+            isDisabled={!isValid}
           >
-            Accedi
+            Registrati
           </Button>
-        </div>
-      </Form>
+
+          <div className="flex flex-col gap-1 mt-4 items-center w-full">
+            <p className="text-foreground-600 text-small">
+              Hai già un account?{' '}
+            </p>
+            <Button
+              as={Link}
+              to="/auth/login"
+              size="sm"
+              type="button"
+              variant="bordered"
+              className="text-small w-full"
+            >
+              Accedi
+            </Button>
+          </div>
+        </Form>
+      </Card>
     </div>
   );
 };

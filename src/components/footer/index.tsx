@@ -7,14 +7,11 @@ import LogoKinoCampus from '../../assets/images/logo-kino-campus.png';
 import LogoKinoCafe from '../../assets/images/logo_small.png';
 import { Button, Image } from '@heroui/react';
 import { Link } from 'react-router';
+import { address, googleMapsDirectionsUrl } from '../../constants/address';
 
 const Footer = () => {
   const { t } = useTranslation();
   const currentYear = getYear(new Date());
-  const address = 'Via Piave 3, San Cesario sul Panaro, 41018';
-  const googleMapsDirectionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
-    address,
-  )}`;
 
   return (
     <footer className="bg-gray-100 dark:bg-gray-900 py-8 md:py-12">

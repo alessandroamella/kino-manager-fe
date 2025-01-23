@@ -1,16 +1,20 @@
-import { Navigate, Outlet } from 'react-router';
+import { Navigate, Outlet, useLocation } from 'react-router';
 import useUserStore from '../../store/user';
 import { useEffect } from 'react';
 
 const Auth = () => {
   const user = useUserStore((store) => store.user);
 
+  const location = useLocation();
+
   useEffect(() => {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth',
-    });
-  }, []);
+    setTimeout(() => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth',
+      });
+    }, 10);
+  }, [location.pathname]);
 
   return user ? <Navigate to="/" /> : <Outlet />;
 };

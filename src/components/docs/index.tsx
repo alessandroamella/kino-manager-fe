@@ -30,7 +30,7 @@ const Docs = () => {
         console.error('error', error);
         setError(
           (error as AxiosError)?.response?.status === 404
-            ? t('errors.docNotFound')
+            ? t('errors.docs.notFound')
             : getErrorMsg(error),
         );
       } finally {

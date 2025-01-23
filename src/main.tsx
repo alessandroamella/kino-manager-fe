@@ -11,7 +11,7 @@ import Auth from './pages/auth/index.tsx';
 import Login from './pages/auth/Login.tsx';
 import Profile from './pages/profile/index.tsx';
 import ProtectedRoute from './components/ProtectedRoute.tsx';
-import Docs from './components/Docs/index.tsx';
+import Docs from './components/docs/index.tsx';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

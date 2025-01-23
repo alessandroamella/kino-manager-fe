@@ -13,6 +13,10 @@
     "login": "Login",
     "signup": "Sign Up"
   },
+  "signup": {
+    "emailDisclaimer": "We'll send you a confirmation email after you sign up.",
+    "passwordDisclaimer": "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one digit."
+  },
   "docs": {
     "disclaimer": "Translation disclaimer",
     "italianDisclaimer": "This document is written in Italian. You can get an automatic translation by clicking the button below.",
@@ -21,10 +25,21 @@
   },
   "errors": {
     "generic": "An error occurred",
-    "userNotFound": "User not found",
-    "wrongPassword": "Wrong password",
-    "userAlreadyExists": "It seems like you already have an account. Please log in instead.",
-    "docNotFound": "The document you are looking was not found. It may have been moved or deleted."
+    "auth": {
+      "userNotFound": "User not found",
+      "wrongPassword": "Wrong password",
+      "userAlreadyExists": "It seems like you already have an account. Please log in instead."
+    },
+    "docs": {
+      "notFound": "The document you are looking was not found. It may have been moved or deleted."
+    },
+    "password": {
+      "requiredField": "Password is a required field",
+      "tooShort": "Password must be at least 8 characters long",
+      "noUppercase": "Password must contain at least one uppercase letter",
+      "noLowercase": "Password must contain at least one lowercase letter",
+      "noDigit": "Password must contain at least one digit"
+    }
   },
   "home": {
     "kinoCafeTitle": "Kinó Café: Your Space, Your Way",
@@ -52,7 +67,13 @@
     "openingDate": "Opening date",
     "openingHours": "Opening hours",
     "openDays": "Every Wednesday from 7PM to 11PM",
-    "goToMyProfile": "Go to my profile"
+    "goToMyProfile": "Go to my profile",
+    "openingCountdownTitle": "Opening Soon!",
+    "openingNow": "We are Open!",
+    "days": "Days",
+    "hours": "Hours",
+    "minutes": "Minutes",
+    "seconds": "Seconds"
   },
   "profile": {
     "myProfile": "My Profile",

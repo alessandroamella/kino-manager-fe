@@ -16,3 +16,28 @@
   text-indent: revert;
   text-shadow: revert;
 }
+
+/* styles.css or in a <style> block in your component if you prefer */
+.countdown-segment {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+  background-color: rgba(255, 255, 255, 0.8); /* Adjust background as needed */
+  border-radius: 0.5rem;
+  color: #333; /* Adjust text color as needed */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  min-width: 60px; /* Minimum width for each segment */
+}
+
+.countdown-value {
+  font-size: 2rem;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.countdown-label {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  color: #777; /* Adjust label color */
+}
