@@ -20,7 +20,7 @@ export const signupYupSchema = (t: TFunction) =>
       .string()
       .required(t('errors.email.required'))
       .email(t('errors.email.invalid')),
-    password: passwordYupSchema(t, 'signup.password'),
+    password: passwordYupSchema(t, 'auth.password'),
     codiceFiscale: yup
       .string()
       .nullable() // Allow null values
@@ -54,5 +54,6 @@ export const signupYupSchema = (t: TFunction) =>
       .notRequired()
       .min(1, t('errors.birthComune.tooShort'))
       .max(255, t('errors.birthComune.tooLong')),
-    birthDate: yup.date().nullable().required(t('errors.birthDate.required')),
+    birthDate: yup.date().required(t('errors.birthDate.required')),
+    address: yup.string().min(1, t('errors.address.required')),
   });

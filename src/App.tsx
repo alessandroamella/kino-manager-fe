@@ -5,9 +5,10 @@ import { useTranslation } from 'react-i18next';
 import { HeroUIProvider } from '@heroui/react';
 import useThemeStore from './store/theme';
 import { useTheme } from '@heroui/use-theme';
+import { ga4Key } from './constants/ga4';
 import ReactGA from 'react-ga4';
 
-ReactGA.initialize('G-V9357FRGY6');
+ReactGA.initialize(ga4Key);
 
 const App = () => {
   const accessToken = useUserStore((store) => store.accessToken);

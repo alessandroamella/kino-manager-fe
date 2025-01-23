@@ -9,6 +9,7 @@
     "movies": "Movies"
   },
   "auth": {
+    "password": "Password",
     "logout": "Logout",
     "login": "Login",
     "signup": "Sign Up"
@@ -71,6 +72,9 @@
       "required": "Password is required",
       "tooLong": "Password is too long",
       "invalid": "Password does not meet the requirements"
+    },
+    "address": {
+      "required": "Address is required"
     }
   },
   "home": {

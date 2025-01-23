@@ -14,7 +14,7 @@ import {
 } from '@heroui/react';
 import type { CalendarDate } from '@heroui/react';
 import CodiceFiscale from 'codice-fiscale-js';
-import { useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form'; // Removed useController
 import axios, { AxiosError } from 'axios';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Comune } from 'codice-fiscale-js/types/comune';
@@ -29,6 +29,7 @@ import { UTCDateMini } from '@date-fns/utc';
 import { signupYupSchema } from '../../validators/signup';
 import { format } from 'date-fns';
 import ReactGA from 'react-ga4';
+import GoogleMapsAutocomplete from '../../components/GoogleMapsAutocomplete';
 
 type FormData = {
   firstName: string;
@@ -39,6 +40,7 @@ type FormData = {
   birthDate: Date | null;
   birthComune?: string | null;
   birthCountry: string;
+  address: string; // Add address to FormData
 };
 
 interface Country {
@@ -58,7 +60,7 @@ const Signup = () => {
     setValue,
     watch,
     trigger,
-    formState: { errors, isValid: _isValid },
+    formState: { errors, isValid },
   } = useForm<FormData>({
     mode: 'onBlur',
     resolver: yupResolver(validationSchema, {
@@ -68,6 +70,7 @@ const Signup = () => {
     defaultValues: {
       codiceFiscale: null, // Initialize codiceFiscale as null
       birthComune: null, // Initialize birthComune as null
+      address: '', // Initialize address
     },
   });
 
@@ -82,6 +85,7 @@ const Signup = () => {
   const birthDate = watch('birthDate');
   const birthComune = watch('birthComune');
   const birthCountry = watch('birthCountry');
+  const address = watch('address');
 
   const codiceFiscaleData = useMemo(() => {
     if (
@@ -284,8 +288,6 @@ const Signup = () => {
 
   const isItalySelected = birthCountry === 'IT';
 
-  const isValid = _isValid; // isValid is directly from useForm after yupResolver
-
   function handleSelectionChange(key: Key) {
     setUseCodiceFiscale(key === 'codice-fiscale');
     if (key === 'manual') {
@@ -406,7 +408,7 @@ const Signup = () => {
                 // description="Inserisci il tuo codice fiscale per compilare automaticamente i dati anagrafici"
                 description={
                   codiceFiscaleData
-                    ? `Valido: ${format(
+                    ? `Valido! ${format(
                         codiceFiscaleData.birthDate,
                         'dd/MM/yyyy',
                       )} - ${codiceFiscaleData.birthplace}`
@@ -472,6 +474,23 @@ const Signup = () => {
               </div>
             </Tab>
           </Tabs>
+
+          <GoogleMapsAutocomplete
+            label="Indirizzo"
+            placeholder="Inserisci il tuo indirizzo"
+            isInvalid={Boolean(errors.address)}
+            errorMessage={errors.address?.message}
+            isRequired
+            onPlaceSelect={(place) => {
+              setValue('address', place?.formatted_address || ''); // Still use setValue to update form value
+            }}
+            description={
+              address
+                ? `Indirizzo selezionato: ${address}`
+                : 'Inserisci il tuo indirizzo di residenza'
+            }
+            onBlur={() => trigger('address')}
+          />
 
           <Button
             color="primary"

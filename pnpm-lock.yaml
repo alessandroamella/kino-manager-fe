@@ -108,9 +108,6 @@ importers:
       '@types/google.maps':
         specifier: ^3.58.1
         version: 3.58.1
-      '@types/lodash':
-        specifier: ^4.17.14
-        version: 4.17.14
       '@types/react':
         specifier: ^18.3.18
         version: 18.3.18
