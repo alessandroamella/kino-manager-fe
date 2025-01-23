@@ -22,7 +22,8 @@ import { parse } from 'date-fns';
 import { getErrorMsg } from '../../types/error';
 import { dateToCalendarDate } from '../../utils/calendar';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
+import useUserStore from '../../store/user';
 
 type FormData = {
   firstName: string;
@@ -209,6 +210,9 @@ const Signup = () => {
     }
   }, [comuneSearchTerm]);
 
+  const login = useUserStore((store) => store.login);
+  const navigate = useNavigate();
+
   const onSubmit = async (formData: FormData) => {
     setSignupError(null); // Clear previous error on new submit
     console.log('Form Data:', formData);
@@ -217,9 +221,17 @@ const Signup = () => {
       if (!useCodiceFiscale) {
         delete obj.codiceFiscale;
       }
+      console.log(
+        'Sending signup request:',
+        obj,
+        'useCodiceFiscale:',
+        useCodiceFiscale,
+      );
       const { data } = await axios.post('/v1/auth/signup', obj);
       console.log('Signup successful:', data);
       // Optionally redirect or show success message here
+      await login(formData.email, formData.password);
+      navigate('/profile');
     } catch (error) {
       console.error('Error signing up:', error);
       setSignupError(
@@ -339,7 +351,11 @@ const Signup = () => {
           </p>
         </div>
 
-        <Tabs aria-label="Registrazione con o senza codice fiscale" fullWidth>
+        <Tabs
+          onSelectionChange={(k) => setUseCodiceFiscale(k === 'codice-fiscale')}
+          aria-label="Registrazione con o senza codice fiscale"
+          fullWidth
+        >
           <Tab key="codice-fiscale" title="Codice fiscale" className="w-full">
             <Input
               label="Codice Fiscale"

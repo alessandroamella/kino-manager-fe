@@ -13,11 +13,18 @@
     "login": "Login",
     "signup": "Sign Up"
   },
+  "docs": {
+    "disclaimer": "Translation disclaimer",
+    "italianDisclaimer": "This document is written in Italian. You can get an automatic translation by clicking the button below.",
+    "translate": "Translate",
+    "translatedDisclaimer": "The English translation is only for reference. In case of discrepancies, the Italian version prevails."
+  },
   "errors": {
     "generic": "An error occurred",
     "userNotFound": "User not found",
     "wrongPassword": "Wrong password",
-    "userAlreadyExists": "It seems like you already have an account. Please log in instead."
+    "userAlreadyExists": "It seems like you already have an account. Please log in instead.",
+    "docNotFound": "The document you are looking was not found. It may have been moved or deleted."
   },
   "home": {
     "kinoCafeTitle": "Kinó Café: Your Space, Your Way",

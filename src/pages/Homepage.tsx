@@ -10,6 +10,7 @@ import {
 } from '@heroui/react';
 import { useTranslation } from 'react-i18next';
 import logo from '../assets/images/logo.png';
+import logoDark from '../assets/images/logo-dark.png';
 import { FaClock, FaCalendarAlt } from 'react-icons/fa';
 import { GiFilmProjector } from 'react-icons/gi';
 import { MdOutlineRestaurantMenu } from 'react-icons/md';
@@ -24,7 +25,7 @@ import { Link } from 'react-router';
 import { FiArrowRight } from 'react-icons/fi';
 import bg from '../assets/images/homepage-bg.jpg';
 
-const openingDate = parse('2024-01-05', 'yyyy-MM-dd', new Date());
+const openingDate = parse('2025-01-05', 'yyyy-MM-dd', new Date());
 
 const Homepage = () => {
   const { t, i18n } = useTranslation();
@@ -99,7 +100,14 @@ const Homepage = () => {
             <Image
               src={logo}
               alt="Kinó Café Interior"
-              className="object-cover w-full h-full"
+              isZoomed
+              className="dark:hidden object-cover w-full h-full"
+            />
+            <Image
+              src={logoDark}
+              alt="Kinó Café Interior"
+              isZoomed
+              className="hidden dark:block object-cover w-full h-full"
             />
           </div>
         </div>
@@ -192,9 +200,7 @@ const Homepage = () => {
                 isReadOnly
                 aria-label="Date (Read Only)"
                 className="mx-auto scale-90"
-                value={dateToCalendarDate(
-                  parse('2024-01-05', 'yyyy-MM-dd', new Date()),
-                )}
+                value={dateToCalendarDate(openingDate)}
               />
 
               <div className="flex flex-col gap-8 justify-center">

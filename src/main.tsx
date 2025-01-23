@@ -2,7 +2,7 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
 import './i18n.ts';
-import { BrowserRouter, Route, Routes } from 'react-router';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router';
 import { HeroUIProvider } from '@heroui/react';
 import Layout from './components/Layout.tsx';
 import Homepage from './pages/Homepage.tsx';
@@ -11,6 +11,7 @@ import Auth from './pages/auth/index.tsx';
 import Login from './pages/auth/Login.tsx';
 import Profile from './pages/profile/index.tsx';
 import ProtectedRoute from './components/ProtectedRoute.tsx';
+import Docs from './components/Docs/index.tsx';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -23,8 +24,13 @@ createRoot(document.getElementById('root')!).render(
               <Route index element={<Profile />} />
             </Route>
             <Route path="auth" element={<Auth />}>
+              <Route index element={<Navigate to="/auth/login" />} />
               <Route path="login" element={<Login />} />
               <Route path="signup" element={<Signup />} />
+            </Route>
+            <Route path="docs">
+              <Route index element={<Navigate to="/" />} />
+              <Route path=":id" element={<Docs />} />
             </Route>
           </Route>
         </Routes>

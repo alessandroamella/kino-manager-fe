@@ -17,6 +17,7 @@ import {
 import { AiOutlineHome, AiOutlineLogout, AiOutlineUser } from 'react-icons/ai';
 import { useTranslation } from 'react-i18next';
 import logo from '../../assets/images/logo_small.png';
+import logoDark from '../../assets/images/logo-dark.png';
 import useUserStore from '../../store/user';
 import { Link, useLocation } from 'react-router';
 import ChangeLanguage from './ChangeLanguage';
@@ -64,13 +65,20 @@ const Header = () => {
             alt="logo"
             width="64"
             height="64"
-            className="mr-2 dark:bg-white p-1"
+            className="dark:hidden mr-2 p-1"
+          />
+          <Image
+            src={logoDark}
+            alt="logo"
+            width="64"
+            height="64"
+            className="hidden dark:block mr-2 p-1"
           />
           <div className="flex flex-col">
             <p className="font-bold text-inherit text-xl">
               {t('common.title')}
             </p>
-            <p className="text-small text-foreground-400 -mt-2">San Cesario</p>
+            <p className="text-small text-foreground-500 -mt-2">San Cesario</p>
           </div>
         </NavbarBrand>
 

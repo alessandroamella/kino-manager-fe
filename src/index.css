@@ -1,3 +1,18 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.md * {
+  margin: revert;
+  padding: revert;
+  border: revert;
+  font-size: revert;
+  font-weight: revert;
+  vertical-align: revert;
+  list-style: revert;
+  text-align: revert;
+  text-decoration: revert;
+  text-transform: revert;
+  text-indent: revert;
+  text-shadow: revert;
+}

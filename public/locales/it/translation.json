@@ -17,7 +17,8 @@
     "generic": "Si è verificato un errore",
     "userNotFound": "Utente non trovato",
     "wrongPassword": "Password errata",
-    "userAlreadyExists": "Sembra che tu abbia già un account. Accedi invece."
+    "userAlreadyExists": "Sembra che tu abbia già un account. Prova ad accedere.",
+    "docNotFound": "Il documento che stai cercando non è stato trovato. Potrebbe essere stato spostato o eliminato."
   },
   "home": {
     "kinoCafeTitle": "Kinó Café: Il tuo spazio, a modo tuo",
