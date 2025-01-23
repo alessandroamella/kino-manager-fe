@@ -5,6 +5,8 @@ import { useTranslation } from 'react-i18next';
 import { HeroUIProvider } from '@heroui/react';
 import useThemeStore from './store/theme';
 import { useTheme } from '@heroui/use-theme';
+import ReactGA from 'react-ga4';
+ReactGA.initialize('Your-Measurement-ID');
 
 const App = () => {
   const accessToken = useUserStore((store) => store.accessToken);

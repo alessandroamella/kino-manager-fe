@@ -6,6 +6,7 @@ import LogoComune from '../../assets/images/logo-comune.png';
 import LogoKinoCampus from '../../assets/images/logo-kino-campus.png';
 import LogoKinoCafe from '../../assets/images/logo_small.png';
 import { Button, Image } from '@heroui/react';
+import { Link } from 'react-router';
 
 const Footer = () => {
   const { t } = useTranslation();
@@ -55,7 +56,7 @@ const Footer = () => {
                 <FaInstagram size={24} />
               </a>
               <a
-                href="https://tiktok.com"
+                href="https://www.tiktok.com/@kin.caf"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
@@ -63,7 +64,7 @@ const Footer = () => {
                 <FaTiktok size={24} />
               </a>
               <a
-                href="https://facebook.com"
+                href="https://www.facebook.com/people/Kin%C3%B3-Caf%C3%A9-San-Cesario/61572383012873/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
@@ -80,24 +81,20 @@ const Footer = () => {
             </h4>
             <ul className="text-gray-500 dark:text-gray-400 space-y-2">
               <li>
-                <a
-                  href="/privacy-policy"
+                <Link
+                  to="/docs/privacy-policy"
                   className="hover:text-gray-700 dark:hover:text-gray-300"
-                  target="_blank"
-                  rel="noopener noreferrer"
                 >
                   {t('footer.privacyPolicy')}
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="/terms-of-service"
+                <Link
+                  to="/docs/tos"
                   className="hover:text-gray-700 dark:hover:text-gray-300"
-                  target="_blank"
-                  rel="noopener noreferrer"
                 >
                   {t('footer.termsOfService')}
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -112,14 +109,22 @@ const Footer = () => {
                   className="h-12 w-20 object-contain grayscale hover:grayscale-0 transition-all duration-300"
                 />
               </div>
-              <a href="https://www.comune.sancesariosulpanaro.mo.it/">
+              <a
+                href="https://www.comune.sancesariosulpanaro.mo.it/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <Image
                   src={LogoComune}
                   alt="Comune di San Cesario Logo"
                   className="h-12 w-24 object-contain grayscale hover:grayscale-0 transition-all duration-300"
                 />
               </a>
-              <a href="https://www.kinocampus.it/">
+              <a
+                href="https://www.kinocampus.it/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <Image
                   src={LogoKinoCampus}
                   alt="Kino Campus Logo"

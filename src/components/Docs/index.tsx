@@ -18,11 +18,14 @@ const Docs = () => {
   useEffect(() => {
     async function fetchDoc() {
       if (!id || isFetching.current) return;
+      setDocMd(null);
+
       isFetching.current = true;
       try {
         const { data } = await axios.get(`/v1/static/docs/${id}.md`);
         console.log('data', data);
         setDocMd(data);
+        setError(null);
       } catch (error) {
         console.error('error', error);
         setError(
@@ -32,6 +35,11 @@ const Docs = () => {
         );
       } finally {
         isFetching.current = false;
+
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth',
+        });
       }
     }
 

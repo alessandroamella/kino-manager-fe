@@ -18,14 +18,15 @@ import { BiMoviePlay } from 'react-icons/bi';
 import LoginBtn from './auth/LoginBtn';
 import SignupBtn from './auth/SignupBtn';
 import { dateToCalendarDate } from '../utils/calendar';
-import { format, parse } from 'date-fns';
+import { format } from 'date-fns';
+import { UTCDate } from '@date-fns/utc';
 import { dateFnsLang } from '../utils/dateFnsLang';
 import useUserStore from '../store/user';
 import { Link } from 'react-router';
 import { FiArrowRight } from 'react-icons/fi';
 import bg from '../assets/images/homepage-bg.jpg';
 
-const openingDate = parse('2025-01-05', 'yyyy-MM-dd', new Date());
+const openingDate = new UTCDate(2025, 1, 5);
 
 const Homepage = () => {
   const { t, i18n } = useTranslation();
@@ -35,7 +36,7 @@ const Homepage = () => {
   return (
     <div className="relative">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary-400 to-primary-600 text-white py-16 md:py-24 px-4 md:mt-12 relative overflow-hidden">
+      <section className="bg-gradient-to-br from-primary-400/15 to-primary-600/15 text-white py-16 md:py-24 px-4 md:mt-12 relative overflow-hidden">
         <div className="container mx-auto text-center relative z-10">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
             {t('home.kinoCafeTitle')}
@@ -129,7 +130,6 @@ const Homepage = () => {
               {/* Icon for Blande Activities */}
               <p className="text-lg font-medium">
                 {t('home.blandeActivitiesTitle')}
-
                 <Chip className="ml-2" color="primary">
                   {t('home.starting', {
                     date: format(openingDate, 'EEE d MMM', {
