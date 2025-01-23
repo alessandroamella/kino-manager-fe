@@ -33,12 +33,44 @@
     "docs": {
       "notFound": "The document you are looking was not found. It may have been moved or deleted."
     },
+    "firstName": {
+      "required": "First name is required",
+      "tooShort": "First name is too short",
+      "tooLong": "First name is too long"
+    },
+    "lastName": {
+      "required": "Last name is required",
+      "tooShort": "Last name is too short",
+      "tooLong": "Last name is too long"
+    },
+    "email": {
+      "required": "Email is required",
+      "invalid": "Invalid email address"
+    },
+    "codiceFiscale": {
+      "invalid": "Invalid Codice Fiscale"
+    },
+    "birthCountry": {
+      "required": "Birth country is required",
+      "invalid": "Invalid birth country code"
+    },
+    "birthComune": {
+      "tooShort": "Birth comune name is too short",
+      "tooLong": "Birth comune name is too long"
+    },
+    "birthDate": {
+      "required": "Birth date is required",
+      "invalid": "Invalid birth date format"
+    },
     "password": {
       "requiredField": "Password is a required field",
       "tooShort": "Password must be at least 8 characters long",
       "noUppercase": "Password must contain at least one uppercase letter",
       "noLowercase": "Password must contain at least one lowercase letter",
-      "noDigit": "Password must contain at least one digit"
+      "noDigit": "Password must contain at least one digit",
+      "required": "Password is required",
+      "tooLong": "Password is too long",
+      "invalid": "Password does not meet the requirements"
     }
   },
   "home": {

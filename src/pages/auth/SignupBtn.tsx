@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
 import { FaUserPlus } from 'react-icons/fa';
 import { Link } from 'react-router';
+import ReactGA from 'react-ga4';
 
 const SignupBtn = ({ className, ...rest }: ButtonProps) => {
   const { t } = useTranslation();
@@ -13,6 +14,12 @@ const SignupBtn = ({ className, ...rest }: ButtonProps) => {
       to="/auth/signup"
       color="primary"
       className={classNames(className, 'font-semibold')}
+      onPress={() => {
+        ReactGA.event({
+          category: 'User',
+          action: 'Clicked Signup Button',
+        });
+      }}
       {...rest}
     >
       <FaUserPlus className="mr-2" />

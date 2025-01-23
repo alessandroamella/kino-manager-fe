@@ -6,7 +6,8 @@ import { HeroUIProvider } from '@heroui/react';
 import useThemeStore from './store/theme';
 import { useTheme } from '@heroui/use-theme';
 import ReactGA from 'react-ga4';
-ReactGA.initialize('Your-Measurement-ID');
+
+ReactGA.initialize('G-V9357FRGY6');
 
 const App = () => {
   const accessToken = useUserStore((store) => store.accessToken);
@@ -26,6 +27,13 @@ const App = () => {
     // don't add user to the dependencies array
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accessToken]);
+
+  const pageViewSent = useRef(false);
+  useEffect(() => {
+    if (pageViewSent.current) return;
+    pageViewSent.current = true;
+    ReactGA.send({ hitType: 'pageview', page: window.location.pathname });
+  }, []);
 
   const { i18n } = useTranslation();
 

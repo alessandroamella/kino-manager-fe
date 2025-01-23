@@ -13,40 +13,99 @@
     "login": "Accedi",
     "signup": "Registrati"
   },
+  "signup": {
+    "emailDisclaimer": "Ti invieremo un'email di conferma dopo la registrazione.",
+    "passwordDisclaimer": "La password deve essere lunga almeno 8 caratteri e contenere almeno una lettera maiuscola, una minuscola e una cifra."
+  },
+  "docs": {
+    "disclaimer": "Avviso sulla traduzione",
+    "italianDisclaimer": "Questo documento è scritto in italiano. Puoi ottenere una traduzione automatica cliccando sul pulsante qui sotto.",
+    "translate": "Traduci",
+    "translatedDisclaimer": "La traduzione in inglese è fornita solo come riferimento. In caso di discrepanze, fa fede la versione italiana."
+  },
   "errors": {
     "generic": "Si è verificato un errore",
-    "userNotFound": "Utente non trovato",
-    "wrongPassword": "Password errata",
-    "userAlreadyExists": "Sembra che tu abbia già un account. Prova ad accedere.",
-    "docNotFound": "Il documento che stai cercando non è stato trovato. Potrebbe essere stato spostato o eliminato."
+    "auth": {
+      "userNotFound": "Utente non trovato",
+      "wrongPassword": "Password errata",
+      "userAlreadyExists": "Sembra che tu abbia già un account. Effettua l'accesso."
+    },
+    "docs": {
+      "notFound": "Il documento che stai cercando non è stato trovato. Potrebbe essere stato spostato o eliminato."
+    },
+    "firstName": {
+      "required": "Il nome è obbligatorio",
+      "tooShort": "Il nome è troppo corto",
+      "tooLong": "Il nome è troppo lungo"
+    },
+    "lastName": {
+      "required": "Il cognome è obbligatorio",
+      "tooShort": "Il cognome è troppo corto",
+      "tooLong": "Il cognome è troppo lungo"
+    },
+    "email": {
+      "required": "L'email è obbligatoria",
+      "invalid": "Indirizzo email non valido"
+    },
+    "codiceFiscale": {
+      "invalid": "Codice Fiscale non valido"
+    },
+    "birthCountry": {
+      "required": "Il paese di nascita è obbligatorio",
+      "invalid": "Codice paese di nascita non valido"
+    },
+    "birthComune": {
+      "tooShort": "Il nome del comune di nascita è troppo corto",
+      "tooLong": "Il nome del comune di nascita è troppo lungo"
+    },
+    "birthDate": {
+      "required": "La data di nascita è obbligatoria",
+      "invalid": "Formato data di nascita non valido"
+    },
+    "password": {
+      "requiredField": "La password è un campo obbligatorio",
+      "tooShort": "La password deve essere lunga almeno 8 caratteri",
+      "noUppercase": "La password deve contenere almeno una lettera maiuscola",
+      "noLowercase": "La password deve contenere almeno una lettera minuscola",
+      "noDigit": "La password deve contenere almeno una cifra",
+      "required": "La password è obbligatoria",
+      "tooLong": "La password è troppo lunga",
+      "invalid": "La password non soddisfa i requisiti"
+    }
   },
   "home": {
     "kinoCafeTitle": "Kinó Café: Il tuo spazio, a modo tuo",
-    "kinoCafeSubtitle": "Un posto per rilassarsi, creare, conoscersi e festeggiare - tutto sotto lo stesso tetto!",
+    "kinoCafeSubtitle": "Un luogo per rilassarsi, creare, connettersi e festeggiare - tutto sotto lo stesso tetto!",
     "signup": "Registrati",
     "login": "Accedi",
     "aboutUsTitle": "Cos'è Kinó Café?",
     "aboutUsText1": "Kinó Café non è solo un altro bar; è un vivace centro ricreativo pensato per TE. Siamo qui per essere un punto di riferimento per studiare, lavorare, socializzare, giocare, leggere, gustare buon cibo o semplicemente trovare un posto per rilassarsi.",
-    "aboutUsText2": "Che tu stia cercando un angolo tranquillo o una serata vivace, Kinó Café è la tua casa lontano da casa. Le nostre porte sono aperte a tutti, indipendentemente dall'età, dal background o dagli interessi.",
+    "aboutUsText2": "Che tu stia cercando un angolo tranquillo o una serata movimentata, Kinó Café è la tua casa lontano da casa. Le nostre porte sono aperte a tutti, indipendentemente dall'età, dal background o dagli interessi.",
     "activitiesTitle": "Cosa succede al Kinó?",
     "blandeActivitiesTitle": "Serate tranquille infrasettimanali",
-    "blandeActivitiesText1": "Durante la settimana, rilassati al Kinó. Siamo aperti dalle 19:00 fino a tardi. È il posto perfetto per uscire senza doverti spostare altrove.",
+    "blandeActivitiesText1": "Durante la settimana, rilassati al Kinó. Siamo aperti dalle 19:00 fino a tardi. È il posto perfetto per ritrovarsi senza dover andare altrove.",
     "blandeActivitiesItem1": "Bar self-service con caffè, tè, snack e bevande semplici.",
     "blandeActivitiesItem2": "Console di gioco (come PlayStation) collegate a una TV.",
     "blandeActivitiesItem3": "Calcio balilla e freccette.",
     "blandeActivitiesItem4": "Giochi da tavolo e carte.",
-    "blandeActivitiesText2": "Goditi conversazioni, sessioni di studio, pasti e altro ancora, con musica rilassante in sottofondo.",
-    "serieActivitiesTitle": "Serate di divertimento nel fine settimana",
-    "serieActivitiesText1": "Se le nostre serate tranquille hanno successo, alzeremo il livello ogni venerdì o sabato! Vieni a trovarci a partire dalle 21:00 per una serata fuori.",
+    "blandeActivitiesText2": "Goditi conversazioni, sessioni di studio, pasti e altro ancora – con musica rilassante in sottofondo.",
+    "serieActivitiesTitle": "Serate divertenti del fine settimana",
+    "serieActivitiesText1": "Se le nostre serate tranquille sono un successo, alzeremo la posta ogni venerdì o sabato! Vieni a trovarci a partire dalle 21:00 per una serata fuori.",
     "serieActivitiesItem1": "DJ set con console musicale.",
     "serieActivitiesItem2": "Illuminazione ambientale e LED.",
     "serieActivitiesItem3": "Un'area relax con luci al neon, calcio balilla e freccette.",
-    "starting": "A partire da {{date}}",
+    "starting": "A partire dal {{date}}",
     "dateToBeDefined": "Data da definire",
     "openingDate": "Data di apertura",
     "openingHours": "Orari di apertura",
     "openDays": "Ogni mercoledì dalle 19:00 alle 23:00",
-    "goToMyProfile": "Vai al mio profilo"
+    "goToMyProfile": "Vai al mio profilo",
+    "openingCountdownTitle": "Prossima apertura!",
+    "openingNow": "Siamo aperti!",
+    "days": "Giorni",
+    "hours": "Ore",
+    "minutes": "Minuti",
+    "seconds": "Secondi"
   },
   "profile": {
     "myProfile": "Il mio profilo",
@@ -79,11 +138,11 @@
   },
   "footer": {
     "contactUs": "Contattaci",
-    "getDirections": "Ottieni Indicazioni",
+    "getDirections": "Ottieni indicazioni",
     "social": "Social",
-    "legal": "Legale",
-    "privacyPolicy": "Politica sulla Privacy",
-    "termsOfService": "Termini di Servizio",
+    "legal": "Note legali",
+    "privacyPolicy": "Informativa sulla privacy",
+    "termsOfService": "Termini di servizio",
     "partners": "Partner",
     "rights": "Tutti i diritti riservati"
   },

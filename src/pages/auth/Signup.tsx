@@ -28,6 +28,7 @@ import useUserStore from '../../store/user';
 import { UTCDateMini } from '@date-fns/utc';
 import { signupYupSchema } from '../../validators/signup';
 import { format } from 'date-fns';
+import ReactGA from 'react-ga4';
 
 type FormData = {
   firstName: string;
@@ -262,6 +263,12 @@ const Signup = () => {
       );
       const { data } = await axios.post('/v1/auth/signup', obj);
       console.log('Signup successful:', data);
+
+      ReactGA.event({
+        category: 'User',
+        action: 'Signed Up',
+      });
+
       // Optionally redirect or show success message here
       await login(formData.email, formData.password);
       navigate('/profile');
