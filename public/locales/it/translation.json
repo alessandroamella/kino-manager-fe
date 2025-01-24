@@ -1,6 +1,12 @@
 {
   "common": {
-    "title": "Kinó Café"
+    "title": "Kinó Café",
+    "yes": "Sì",
+    "no": "No",
+    "loading": "Caricamento",
+    "cancel": "Annulla",
+    "save": "Salva",
+    "warning": "Attenzione"
   },
   "header": {
     "userActions": "Azioni utente",
@@ -9,19 +15,55 @@
     "movies": "Film"
   },
   "auth": {
+    "password": "Password",
     "logout": "Esci",
     "login": "Accedi",
     "signup": "Registrati"
   },
   "signup": {
+    "title": "Registrati a Kinó Café",
     "emailDisclaimer": "Ti invieremo un'email di conferma dopo la registrazione.",
-    "passwordDisclaimer": "La password deve essere lunga almeno 8 caratteri e contenere almeno una lettera maiuscola, una minuscola e una cifra."
+    "passwordDisclaimer": "La password deve essere lunga almeno 8 caratteri e contenere almeno una lettera maiuscola, una minuscola e un numero.",
+    "phoneNumberDisclaimer": "Potremmo aver bisogno di contattarti per la verifica.",
+    "firstName": "Nome",
+    "firstNamePlaceholder": "Inserisci il tuo nome",
+    "lastName": "Cognome",
+    "lastNamePlaceholder": "Inserisci il tuo cognome",
+    "email": "Email",
+    "emailPlaceholder": "Inserisci la tua email",
+    "phoneNumber": "Numero di telefono",
+    "phoneNumberPlaceholder": "Inserisci il tuo numero di telefono",
+    "password": "Password",
+    "passwordPlaceholder": "Inserisci la tua password",
+    "personalDataHeading": "Dati personali",
+    "personalDataDescription": "Se hai il codice fiscale, inseriscilo per compilare automaticamente i tuoi dati personali.\nSe non hai il codice fiscale, clicca su \"Manuale\" per inserire i dati manualmente.",
+    "cfTab": "Codice Fiscale",
+    "manualTab": "Manuale",
+    "codiceFiscale": "Codice Fiscale",
+    "codiceFiscalePlaceholder": "Inserisci il tuo codice fiscale",
+    "cfValid": "Valido! {{date}} - {{birthplace}}",
+    "cfInvalid": "Codice fiscale non valido :/",
+    "cfDescription": "Inserisci il tuo codice fiscale per compilare automaticamente i tuoi dati personali",
+    "birthDate": "Data di Nascita",
+    "birthCountry": "Paese di Nascita",
+    "birthCountryPlaceholder": "Inizia a digitare il paese",
+    "birthComune": "Comune di Nascita",
+    "birthComunePlaceholder": "Inizia a digitare il comune",
+    "address": "Indirizzo",
+    "addressPlaceholder": "Inserisci il tuo indirizzo",
+    "addressSelected": "Indirizzo selezionato: {{address}}",
+    "addressDescription": "Inserisci il tuo indirizzo di residenza",
+    "registerButton": "Registrati",
+    "alreadyAccount": "Hai già un account?",
+    "errorTitle": "Errore durante la registrazione",
+    "errorCloseAria": "Chiudi avviso di errore",
+    "tabsAriaLabel": "Registrati con o senza codice fiscale"
   },
   "docs": {
-    "disclaimer": "Avviso sulla traduzione",
+    "disclaimer": "Disclaimer sulla traduzione",
     "italianDisclaimer": "Questo documento è scritto in italiano. Puoi ottenere una traduzione automatica cliccando sul pulsante qui sotto.",
     "translate": "Traduci",
-    "translatedDisclaimer": "La traduzione in inglese è fornita solo come riferimento. In caso di discrepanze, fa fede la versione italiana."
+    "translatedDisclaimer": "La traduzione in inglese è solo per riferimento. In caso di discrepanze, fa fede la versione italiana."
   },
   "errors": {
     "generic": "Si è verificato un errore",
@@ -33,75 +75,48 @@
     "docs": {
       "notFound": "Il documento che stai cercando non è stato trovato. Potrebbe essere stato spostato o eliminato."
     },
-    "firstName": {
-      "required": "Il nome è obbligatorio",
-      "tooShort": "Il nome è troppo corto",
-      "tooLong": "Il nome è troppo lungo"
-    },
-    "lastName": {
-      "required": "Il cognome è obbligatorio",
-      "tooShort": "Il cognome è troppo corto",
-      "tooLong": "Il cognome è troppo lungo"
-    },
-    "email": {
-      "required": "L'email è obbligatoria",
-      "invalid": "Indirizzo email non valido"
-    },
-    "codiceFiscale": {
-      "invalid": "Codice Fiscale non valido"
-    },
-    "birthCountry": {
-      "required": "Il paese di nascita è obbligatorio",
-      "invalid": "Codice paese di nascita non valido"
-    },
-    "birthComune": {
-      "tooShort": "Il nome del comune di nascita è troppo corto",
-      "tooLong": "Il nome del comune di nascita è troppo lungo"
-    },
-    "birthDate": {
-      "required": "La data di nascita è obbligatoria",
-      "invalid": "Formato data di nascita non valido"
+    "field": {
+      "required": "{{field}} è obbligatorio",
+      "invalid": "{{field}} non valido",
+      "tooShort": "{{field}} è troppo corto",
+      "tooLong": "{{field}} è troppo lungo"
     },
     "password": {
-      "requiredField": "La password è un campo obbligatorio",
       "tooShort": "La password deve essere lunga almeno 8 caratteri",
       "noUppercase": "La password deve contenere almeno una lettera maiuscola",
       "noLowercase": "La password deve contenere almeno una lettera minuscola",
-      "noDigit": "La password deve contenere almeno una cifra",
-      "required": "La password è obbligatoria",
-      "tooLong": "La password è troppo lunga",
-      "invalid": "La password non soddisfa i requisiti"
+      "noDigit": "La password deve contenere almeno un numero"
     }
   },
   "home": {
     "kinoCafeTitle": "Kinó Café: Il tuo spazio, a modo tuo",
-    "kinoCafeSubtitle": "Un luogo per rilassarsi, creare, conoscersi e festeggiare - tutto sotto lo stesso tetto!",
+    "kinoCafeSubtitle": "Un luogo per rilassarsi, creare, incontrarsi e festeggiare - tutto sotto lo stesso tetto!",
     "signup": "Registrati",
     "login": "Accedi",
     "aboutUsTitle": "Cos'è Kinó Café?",
     "aboutUsText1": "Kinó Café non è solo un altro bar; è un vivace centro ricreativo pensato per TE. Siamo qui per essere un punto di riferimento per studiare, lavorare, socializzare, giocare, leggere, gustare buon cibo o semplicemente trovare un posto per rilassarsi.",
-    "aboutUsText2": "Che tu stia cercando un angolo tranquillo o una serata movimentata, Kinó Café è la tua casa lontano da casa. Le nostre porte sono aperte a tutti, indipendentemente dall'età, dal background o dagli interessi.",
+    "aboutUsText2": "Che tu stia cercando un angolo tranquillo o una serata movimentata, Kinó Café è la tua casa lontano da casa. Le nostre porte sono aperte a tutti, indipendentemente da età, provenienza o interessi.",
     "activitiesTitle": "Cosa succede al Kinó?",
     "blandeActivitiesTitle": "Serate tranquille infrasettimanali",
     "blandeActivitiesText1": "Durante la settimana, rilassati al Kinó. Siamo aperti dalle 19:00 fino a tardi. È il posto perfetto per ritrovarsi senza dover andare altrove.",
     "blandeActivitiesItem1": "Bar self-service con caffè, tè, snack e bevande semplici.",
     "blandeActivitiesItem2": "Console di gioco (come PlayStation) collegate a una TV.",
-    "blandeActivitiesItem3": "Calcio balilla e freccette.",
+    "blandeActivitiesItem3": "Biliardino e freccette.",
     "blandeActivitiesItem4": "Giochi da tavolo e carte.",
-    "blandeActivitiesText2": "Goditi conversazioni, sessioni di studio, pasti e altro ancora – con musica rilassante in sottofondo.",
-    "serieActivitiesTitle": "Serate divertenti del fine settimana",
-    "serieActivitiesText1": "Se le nostre serate tranquille sono un successo, alzeremo la posta ogni venerdì o sabato! Vieni a trovarci a partire dalle 21:00 per una serata fuori.",
+    "blandeActivitiesText2": "Goditi conversazioni, sessioni di studio, pasti e altro – con musica soft in sottofondo.",
+    "serieActivitiesTitle": "Serate divertenti del weekend",
+    "serieActivitiesText1": "Se le nostre serate tranquille avranno successo, alzeremo il volume ogni venerdì o sabato! Vieni a trovarci dalle 21:00 per una serata fuori.",
     "serieActivitiesItem1": "DJ set con console musicale.",
     "serieActivitiesItem2": "Illuminazione ambientale e LED.",
-    "serieActivitiesItem3": "Un'area relax con luci al neon, calcio balilla e freccette.",
+    "serieActivitiesItem3": "Un'area relax con luci al neon, biliardino e freccette.",
     "starting": "A partire dal {{date}}",
     "dateToBeDefined": "Data da definire",
     "openingDate": "Data di apertura",
     "openingHours": "Orari di apertura",
-    "openDays": "Ogni mercoledì dalle 19:00 alle 23:00",
+    "openDays": "Tutti i mercoledì dalle 19:00 alle 23:00",
     "goToMyProfile": "Vai al mio profilo",
-    "openingCountdownTitle": "Prossima apertura!",
-    "openingNow": "Siamo aperti!",
+    "openingCountdownTitle": "Prossima Apertura!",
+    "openingNow": "Siamo Aperti!",
     "days": "Giorni",
     "hours": "Ore",
     "minutes": "Minuti",
@@ -114,22 +129,37 @@
     "save": "Salva",
     "close": "Chiudi",
     "email": "Email",
+    "firstName": "Nome",
+    "lastName": "Cognome",
     "codiceFiscale": "Codice Fiscale",
-    "birthDate": "Data di nascita",
-    "birthComune": "Comune di nascita",
-    "birthCountry": "Paese di nascita",
+    "birthDate": "Data di Nascita",
+    "birthComune": "Comune di Nascita",
+    "birthCountry": "Paese di Nascita",
+    "documentNumber": "Numero documento",
+    "documentType": "Tipo di documento",
+    "documentExpiry": "Scadenza documento",
+    "membershipCardNumber": "Numero tessera",
     "verified": "Verificato",
     "verifiedVia": "Verificato tramite",
-    "yes": "Sì",
     "notVerified": "Non verificato",
-    "selectVerificationMethod": "Seleziona il metodo di verifica",
+    "selectVerificationMethod": "Seleziona metodo di verifica",
     "sendVerificationCode": "Invia codice di verifica",
     "verificationMethod": {
       "sms": "SMS",
       "email": "Email"
     },
+    "memberSince": "Membro dal",
+    "memberSinceDate": "Membro dal {{date}}",
     "verifiedOn": "Account verificato il {{date}}",
-    "toBeVerified": "Il tuo account non è ancora verificato"
+    "toBeVerified": "Il tuo account non è ancora verificato",
+    "verifyAccount": "Verifica account",
+    "verifyAccountDescription": "Per accedere a Kinó Café, devi verificare il tuo account. Presentati al locale con un documento d'identità valido.",
+    "phoneNumber": "Numero di telefono",
+    "address": "Indirizzo",
+    "documentInfo": "Info documento",
+    "expiry": "Data di scadenza",
+    "verificationStatus": "Stato di verifica",
+    "exportExcel": "Esporta in Excel"
   },
   "languages": {
     "it": "Italiano",
@@ -137,13 +167,38 @@
   },
   "footer": {
     "contactUs": "Contattaci",
-    "getDirections": "Ottieni indicazioni",
+    "getDirections": "Indicazioni stradali",
     "social": "Social",
-    "legal": "Note legali",
+    "legal": "Legale",
     "privacyPolicy": "Informativa sulla privacy",
     "termsOfService": "Termini di servizio",
     "partners": "Partner",
     "rights": "Tutti i diritti riservati"
+  },
+  "document": {
+    "CIE": "Carta d'Identità",
+    "PASSPORT": "Passaporto",
+    "DRIVING_LICENSE": "Patente di Guida",
+    "OTHER": "Altro"
+  },
+  "admin": {
+    "adminPanel": "Pannello Admin",
+    "exportToExcel": "Esporta in Excel",
+    "isAdmin": "È Admin",
+    "actions": "Azioni",
+    "userEditSuccess": "Utente modificato con successo",
+    "userVerifySuccess": "Utente verificato con successo",
+    "editUser": "Modifica utente {{user}}",
+    "verifyUserDocument": "Verifica documento utente",
+    "documentData": "Dati documento",
+    "enterDocumentData": "Inserisci dati documento",
+    "verificationDate": "Data di verifica",
+    "verificationMethod": "Metodo di verifica",
+    "verifyUser": "Verifica utente",
+    "noCardAssigned": "Nessuna tessera assegnata",
+    "card": "Tessera n.{{n}}",
+    "verifyUserWarning": "La tessera n.{{number}} sarà assegnata all'utente {{user}}, che verrà verificato. Questa azione è irreversibile. Assicurati di avere i dati corretti prima di cliccare su 'Salva'.",
+    "cardAlreadyAssigned": "A questo utente è già stata assegnata una tessera. Non puoi modificarla."
   },
   "countries": {
     "AD": "Andorra",

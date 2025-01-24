@@ -311,13 +311,13 @@ const Signup = () => {
           >
             <Alert
               color="danger"
-              title="Errore nella registrazione"
+              title={t('signup.errorTitle')}
               className="z-20"
               description={signupError}
               variant="faded"
               onClose={() => setSignupError(null)}
               closeButtonProps={{
-                'aria-label': 'Chiudi avviso di errore',
+                'aria-label': t('signup.errorCloseAria'),
                 type: 'button',
                 onPress: () => setSignupError(null),
               }}
@@ -331,12 +331,12 @@ const Signup = () => {
           className="md:min-w-[500px] max-w-lg mx-auto -mt-2 md:mt-4 p-6 rounded-md shadow-md space-y-4"
         >
           <h2 className="text-2xl font-bold text-foreground mb-4">
-            Iscriviti al Kinó Café
+            {t('signup.title')}
           </h2>
 
           <Input
-            label="Nome"
-            placeholder="Inserisci il tuo nome"
+            label={t('signup.firstName')}
+            placeholder={t('signup.firstNamePlaceholder')}
             {...register('firstName')}
             isInvalid={!!errors.firstName}
             errorMessage={errors.firstName?.message}
@@ -344,8 +344,8 @@ const Signup = () => {
             isRequired
           />
           <Input
-            label="Cognome"
-            placeholder="Inserisci il tuo cognome"
+            label={t('signup.lastName')}
+            placeholder={t('signup.lastNamePlaceholder')}
             {...register('lastName')}
             isInvalid={!!errors.lastName}
             errorMessage={errors.lastName?.message}
@@ -353,8 +353,8 @@ const Signup = () => {
             isRequired
           />
           <Input
-            label="Email"
-            placeholder="Inserisci la tua email"
+            label={t('signup.email')}
+            placeholder={t('signup.emailPlaceholder')}
             type="email"
             {...register('email')}
             description={t('signup.emailDisclaimer')}
@@ -364,8 +364,8 @@ const Signup = () => {
             isRequired
           />
           <Input
-            label="Numero di Telefono"
-            placeholder="Inserisci il tuo numero di telefono"
+            label={t('signup.phoneNumber')}
+            placeholder={t('signup.phoneNumberPlaceholder')}
             type="tel"
             {...register('phoneNumber')}
             description={t('signup.phoneNumberDisclaimer')}
@@ -375,8 +375,8 @@ const Signup = () => {
             isRequired
           />
           <Input
-            label="Password"
-            placeholder="Inserisci la tua password"
+            label={t('signup.password')}
+            placeholder={t('signup.passwordPlaceholder')}
             type="password"
             {...register('password')}
             isInvalid={!!errors.password}
@@ -391,26 +391,26 @@ const Signup = () => {
 
           <div>
             <h2 className="text-lg font-bold text-foreground">
-              Dati Anagrafici
+              {t('signup.personalDataHeading')}
             </h2>
             <p className="text-foreground-500 text-small">
-              Se hai un codice fiscale, inseriscilo per compilare
-              automaticamente i tuoi dati anagrafici.
-              <br />
-              Se non hai un codice fiscale, clicca su &quot;Manuale&quot; per
-              inserire i dati manualmente.
+              {t('signup.personalDataDescription')}
             </p>
           </div>
 
           <Tabs
             onSelectionChange={handleSelectionChange}
-            aria-label="Registrazione con o senza codice fiscale"
+            aria-label={t('signup.tabsAriaLabel')}
             fullWidth
           >
-            <Tab key="codice-fiscale" title="Codice fiscale" className="w-full">
+            <Tab
+              key="codice-fiscale"
+              title={t('signup.cfTab')}
+              className="w-full"
+            >
               <Input
-                label="Codice Fiscale"
-                placeholder="Inserisci il tuo codice fiscale"
+                label={t('signup.codiceFiscale')}
+                placeholder={t('signup.codiceFiscalePlaceholder')}
                 isRequired={useCodiceFiscale}
                 {...register('codiceFiscale')}
                 isInvalid={!!errors.codiceFiscale}
@@ -418,20 +418,20 @@ const Signup = () => {
                 maxLength={16}
                 description={
                   codiceFiscaleData
-                    ? `Valido! ${format(
-                        codiceFiscaleData.birthDate,
-                        'dd/MM/yyyy',
-                      )} - ${codiceFiscaleData.birthplace}`
+                    ? t('signup.cfValid', {
+                        date: format(codiceFiscaleData.birthDate, 'dd/MM/yyyy'),
+                        birthplace: codiceFiscaleData.birthplace,
+                      })
                     : codiceFiscaleValue.length === 16
-                    ? 'Codice fiscale non valido :/'
-                    : 'Inserisci il tuo codice fiscale per compilare automaticamente i dati anagrafici'
+                    ? t('signup.cfInvalid')
+                    : t('signup.cfDescription')
                 }
               />
             </Tab>
-            <Tab key="manual" title="Manuale" className="w-full">
+            <Tab key="manual" title={t('signup.manualTab')} className="w-full">
               <div className="space-y-5 w-full">
                 <DatePicker
-                  label="Data di Nascita"
+                  label={t('signup.birthDate')}
                   onChange={handleDateChange}
                   onBlur={() => trigger('birthDate')}
                   value={birthDate ? dateToCalendarDate(birthDate) : null}
@@ -441,8 +441,8 @@ const Signup = () => {
                   errorMessage={errors.birthDate?.message}
                 />
                 <Autocomplete
-                  label="Paese di Nascita"
-                  placeholder="Inizia a digitare il paese"
+                  label={t('signup.birthCountry')}
+                  placeholder={t('signup.birthCountryPlaceholder')}
                   defaultItems={countrySuggestions}
                   defaultInputValue="IT"
                   items={countrySuggestions}
@@ -463,8 +463,8 @@ const Signup = () => {
 
                 {isItalySelected && (
                   <Autocomplete
-                    label="Comune di Nascita"
-                    placeholder="Inizia a digitare il comune"
+                    label={t('signup.birthComune')}
+                    placeholder={t('signup.birthComunePlaceholder')}
                     items={comuneSuggestions}
                     onSelectionChange={handleComuneChange}
                     onInputChange={handleComuneInputChange}
@@ -486,8 +486,8 @@ const Signup = () => {
           </Tabs>
 
           <GoogleMapsAutocomplete
-            label="Indirizzo"
-            placeholder="Inserisci il tuo indirizzo"
+            label={t('signup.address')}
+            placeholder={t('signup.addressPlaceholder')}
             isInvalid={!!errors.address}
             errorMessage={errors.address?.message}
             isRequired
@@ -496,8 +496,8 @@ const Signup = () => {
             }}
             description={
               address
-                ? `Indirizzo selezionato: ${address}`
-                : 'Inserisci il tuo indirizzo di residenza'
+                ? t('signup.addressSelected', { address: address })
+                : t('signup.addressDescription')
             }
             onBlur={() => trigger('address')}
           />
@@ -508,12 +508,12 @@ const Signup = () => {
             className="w-full"
             isDisabled={!isValid}
           >
-            Registrati
+            {t('signup.registerButton')}
           </Button>
 
           <div className="flex flex-col gap-1 mt-4 items-center w-full">
             <p className="text-foreground-600 text-small">
-              Hai già un account?{' '}
+              {t('signup.alreadyAccount')}{' '}
             </p>
             <Button
               as={Link}
@@ -523,7 +523,7 @@ const Signup = () => {
               variant="bordered"
               className="text-small w-full"
             >
-              Accedi
+              {t('auth.login')}
             </Button>
           </div>
         </Form>
