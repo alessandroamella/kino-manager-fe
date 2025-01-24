@@ -81,58 +81,53 @@ const GoogleMapsAutocomplete = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleInputChange = useCallback(
-    (value: string) => {
-      setInputValue(value); // Update internal input value immediately
+  const handleInputChange = useCallback((value: string) => {
+    setInputValue(value); // Update internal input value immediately
 
-      // Debounce the autocomplete requests
-      if (debounceTimeoutRef.current) {
-        clearTimeout(debounceTimeoutRef.current);
-      }
+    // Debounce the autocomplete requests
+    if (debounceTimeoutRef.current) {
+      clearTimeout(debounceTimeoutRef.current);
+    }
 
-      debounceTimeoutRef.current = setTimeout(() => {
-        if (value.length > 2 && autocompleteServiceRef.current) {
-          // Get autocomplete predictions from Google Maps Places API
-          autocompleteServiceRef.current.getPlacePredictions(
-            {
-              input: value,
-              language: i18n.language,
-              // usually based off Kino Cafe
-              locationBias: sanCesarioCoords,
-              componentRestrictions: { country: [] }, // You can set specific countries here if needed, or leave it empty for all.
-            },
-            (predictions, status) => {
+    debounceTimeoutRef.current = setTimeout(() => {
+      if (value.length > 2 && autocompleteServiceRef.current) {
+        // Get autocomplete predictions from Google Maps Places API
+        autocompleteServiceRef.current.getPlacePredictions(
+          {
+            input: value,
+            // language: i18n.language,
+            language: 'it', // we need italian on the signed doc
+            // usually based off Kino Cafe
+            locationBias: sanCesarioCoords,
+            componentRestrictions: { country: [] }, // You can set specific countries here if needed, or leave it empty for all.
+          },
+          (predictions, status) => {
+            if (
+              status === google.maps.places.PlacesServiceStatus.OK &&
+              predictions
+            ) {
+              // Map predictions to AutocompleteItems format
+              const items = predictions.map((prediction) => ({
+                key: prediction.place_id || prediction.description,
+                label: prediction.description,
+              }));
+              setAutocompleteItems(items);
+            } else {
+              setAutocompleteItems([]); // Clear suggestions on error or no results
               if (
-                status === google.maps.places.PlacesServiceStatus.OK &&
-                predictions
+                status !== google.maps.places.PlacesServiceStatus.ZERO_RESULTS
               ) {
-                // Map predictions to AutocompleteItems format
-                const items = predictions.map((prediction) => ({
-                  key: prediction.place_id || prediction.description,
-                  label: prediction.description,
-                }));
-                setAutocompleteItems(items);
-              } else {
-                setAutocompleteItems([]); // Clear suggestions on error or no results
-                if (
-                  status !== google.maps.places.PlacesServiceStatus.ZERO_RESULTS
-                ) {
-                  console.error(
-                    'Google Maps Places Autocomplete error:',
-                    status,
-                  );
-                }
+                console.error('Google Maps Places Autocomplete error:', status);
               }
-            },
-          );
-        } else {
-          setAutocompleteItems([]); // Clear suggestions if input is too short
-        }
-        debounceTimeoutRef.current = null; // Reset debounce timeout
-      }, DEBOUNCE_DELAY);
-    },
-    [i18n.language],
-  );
+            }
+          },
+        );
+      } else {
+        setAutocompleteItems([]); // Clear suggestions if input is too short
+      }
+      debounceTimeoutRef.current = null; // Reset debounce timeout
+    }, DEBOUNCE_DELAY);
+  }, []);
 
   const handleSelectionChange = useCallback(
     (key: Key | null) => {
