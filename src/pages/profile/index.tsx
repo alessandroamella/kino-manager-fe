@@ -212,6 +212,7 @@ const Profile = () => {
                   </span>
                 </div>
                 <p className="text-gray-900 text-small dark:text-gray-100">
+                  {!user.documentType && '-'}
                   {user.documentType}{' '}
                   {user.documentNumber ? `- ${user.documentNumber}` : ''}
                   {user.documentExpiry
@@ -249,7 +250,7 @@ const Profile = () => {
                         size="sm"
                         color="success"
                         variant="flat"
-                        startContent={<FiCheckCircle />}
+                        startContent={<FiCheckCircle className="mx-[2px]" />}
                       >
                         {t('profile.verified')}
                       </Chip>
@@ -259,7 +260,7 @@ const Profile = () => {
                       size="sm"
                       color="warning"
                       variant="flat"
-                      startContent={<FiAlertTriangle />}
+                      startContent={<FiAlertTriangle className="mx-[2px]" />}
                     >
                       {t('profile.notVerified')}
                     </Chip>

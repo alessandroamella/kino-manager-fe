@@ -139,6 +139,7 @@
     "documentType": "Document Type",
     "documentExpiry": "Document Expiry",
     "membershipCardNumber": "Membership Number",
+    "membershipCardNumberShort": "Card Num.",
     "verified": "Verified",
     "verifiedVia": "Verified via",
     "notVerified": "Not Verified",
@@ -153,13 +154,14 @@
     "verifiedOn": "Account verified on {{date}}",
     "toBeVerified": "Your account is not verified yet",
     "verifyAccount": "Verify Account",
-    "verifyAccountDescription": "To access Kinó Café, you need to verify your account. Just show up at the venue with a valid ID document.",
+    "verifyAccountDescription": "To access Kinó Café, you need to verify your account. You can just show up at the venue during any of our opening hours and we'll take care of the rest.",
     "phoneNumber": "Phone Number",
     "address": "Address",
     "documentInfo": "Document Info",
     "expiry": "Expiry Date",
     "verificationStatus": "Verification Status",
-    "exportExcel": "Export to Excel"
+    "exportExcel": "Export to Excel",
+    "createdAt": "Created At"
   },
   "languages": {
     "it": "Italian",
@@ -197,6 +199,8 @@
     "verifyUser": "Verify User",
     "noCardAssigned": "No card assigned",
     "card": "Card #{{n}}",
+    "cards": "Cards",
+    "assignedTo": "Assigned to",
     "verifyUserWarning": "Card #{{number}} will be assigned to user {{user}}, who will get verified. This is irreversible. Please be sure you have the correct data before clicking 'Save'.",
     "cardAlreadyAssigned": "This user already has a membership card assigned. You cannot change it."
   },

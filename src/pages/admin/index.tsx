@@ -45,6 +45,11 @@ import countries from 'i18n-iso-countries';
 import { dateToCalendarDate } from '../../utils/calendar';
 import { normalize } from '../../utils/normalize';
 import { tryStoi } from '../../utils/tryStoi';
+import { format } from 'date-fns';
+
+interface MembershipCardExtended extends Omit<MembershipCard, 'member'> {
+  member: Member | null;
+}
 
 // this isn't actually enforced by the backend, but it's a good idea
 enum DocumentType {
@@ -128,26 +133,32 @@ const AdminPanel = () => {
   }, [token]);
 
   useEffect(() => {
-    const fetchAvailableCards = async () => {
+    const fetchCards = async () => {
       if (!token) {
-        console.error('No access token found, not fetching available cards');
+        console.error('No access token found, not fetching cards');
+        return;
+      } else if (!users) {
+        console.error('Users not fetched yet, not fetching cards');
         return;
       }
       try {
-        const response = await axios.get<MembershipCard[]>(
-          '/v1/admin/available-cards',
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          },
+        const response = await axios.get<MembershipCard[]>('/v1/admin/cards', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setCards(
+          response.data.map((e) => ({
+            ...e,
+            member:
+              (e.member?.id && users.find((u) => u.id === e.member.id)) || null,
+          })),
         );
-        setAvailableCards(response.data);
       } catch (err) {
-        console.error('Error fetching available cards:', getErrorMsg(err));
+        console.error('Error fetching cards:', getErrorMsg(err));
       }
     };
 
-    fetchAvailableCards();
-  }, [token]);
+    fetchCards();
+  }, [token, users]);
 
   const handleEditUser = (user: Member) => {
     console.log('Editing user:', user);
@@ -208,12 +219,14 @@ const AdminPanel = () => {
       });
 
       if (data.membershipCardNumber && !selectedUser.membershipCardNumber) {
-        // If we assigned a card, remove it from the available list
-        setAvailableCards(
-          availableCards?.filter(
-            (card) => card.number !== data.membershipCardNumber,
-          ) || null,
+        // If we assigned a card, set its member to the user
+        const card = cards?.find(
+          (card) => card.number === data.membershipCardNumber,
         );
+        if (card) {
+          card.member = selectedUser;
+          setCards([...cards!]);
+        }
       }
 
       // Optimistically update the user in the table
@@ -244,9 +257,10 @@ const AdminPanel = () => {
     }
   };
 
-  const [availableCards, setAvailableCards] = useState<MembershipCard[] | null>(
-    null,
-  );
+  const [cards, setCards] = useState<MembershipCardExtended[] | null>(null);
+  const availableCards = useMemo(() => {
+    return cards?.filter((card) => !card.member);
+  }, [cards]);
 
   const countryList = Object.keys(countries.getAlpha2Codes());
 
@@ -302,7 +316,7 @@ const AdminPanel = () => {
   ) : error ? (
     <div>Error: {error}</div>
   ) : (
-    <div className="p-4 md:p-8">
+    <main className="p-4 md:p-8 mb-4">
       <div className="flex items-center mb-4 flex-row justify-between">
         <h1 className="text-2xl font-bold">{t('admin.adminPanel')}</h1>
         <Button
@@ -315,55 +329,116 @@ const AdminPanel = () => {
           {t('admin.exportToExcel')}
         </Button>
       </div>
-      <Table aria-label="Users table" className="table">
-        <TableHeader>
-          <TableColumn>{t('profile.firstName')}</TableColumn>
-          <TableColumn>{t('profile.lastName')}</TableColumn>
-          <TableColumn>{t('profile.email')}</TableColumn>
-          <TableColumn>{t('profile.phoneNumber')}</TableColumn>
-          <TableColumn>{t('admin.isAdmin')}</TableColumn>
-          <TableColumn>{t('profile.verified')}</TableColumn>
-          <TableColumn>{t('admin.actions')}</TableColumn>
-        </TableHeader>
-        <TableBody items={users}>
-          {(user) => (
-            <TableRow key={user.id}>
-              <TableCell>{user.firstName}</TableCell>
-              <TableCell>{user.lastName}</TableCell>
-              <TableCell>{user.email}</TableCell>
-              <TableCell>{user.phoneNumber}</TableCell>
-              <TableCell>
-                {user.isAdmin ? (
-                  <FiCheck className="text-green-300" />
-                ) : (
-                  <FaTimes className="text-red-300" />
-                )}
-              </TableCell>
-              <TableCell>
-                {user.verificationDate ? (
-                  <FiCheck className="text-green-300" />
-                ) : (
-                  <FaTimes className="text-red-300" />
-                )}
-              </TableCell>
-              <TableCell>
-                <div className="flex gap-2">
-                  <Tooltip content="Edit">
-                    <Button
-                      isIconOnly
-                      variant="light"
-                      aria-label="Edit"
-                      onPress={() => handleEditUser(user)}
-                    >
-                      <FiEdit size={18} />
-                    </Button>
-                  </Tooltip>
-                </div>
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
+      <div className="w-fit overflow-x-auto max-w-[92vw] md:max-w-[94vw]">
+        <Table aria-label="Users table" className="table pr-2">
+          <TableHeader>
+            <TableColumn>{t('admin.actions')}</TableColumn>
+            <TableColumn>{t('profile.firstName')}</TableColumn>
+            <TableColumn>{t('profile.lastName')}</TableColumn>
+            <TableColumn>{t('profile.birthDate')}</TableColumn>
+            <TableColumn>{t('profile.birthCountry')}</TableColumn>
+            <TableColumn>{t('profile.email')}</TableColumn>
+            <TableColumn>{t('profile.membershipCardNumberShort')}</TableColumn>
+            <TableColumn>{t('profile.phoneNumber')}</TableColumn>
+            <TableColumn>{t('admin.isAdmin')}</TableColumn>
+            <TableColumn>{t('profile.verified')}</TableColumn>
+            <TableColumn>{t('admin.verificationMethod')}</TableColumn>
+            <TableColumn>{t('profile.createdAt')}</TableColumn>
+            <TableColumn>{t('profile.documentType')}</TableColumn>
+            <TableColumn>{t('profile.documentNumber')}</TableColumn>
+            <TableColumn>{t('profile.documentExpiry')}</TableColumn>
+          </TableHeader>
+          <TableBody items={users}>
+            {(user) => (
+              <TableRow key={user.id}>
+                <TableCell>
+                  <div className="flex gap-2">
+                    <Tooltip content="Edit">
+                      <Button
+                        isIconOnly
+                        variant="light"
+                        aria-label="Edit"
+                        onPress={() => handleEditUser(user)}
+                      >
+                        <FiEdit size={18} />
+                      </Button>
+                    </Tooltip>
+                  </div>
+                </TableCell>
+                <TableCell>{user.firstName}</TableCell>
+                <TableCell>{user.lastName}</TableCell>
+                <TableCell>
+                  {user.birthDate ? format(user.birthDate, 'dd/MM/yyyy') : '-'}
+                </TableCell>
+                {/* Display birthDate */}
+                <TableCell>{t(`countries.${user.birthCountry}`)}</TableCell>
+                {/* Display birthCountry */}
+                <TableCell>{user.email}</TableCell>
+                <TableCell>{user.membershipCardNumber || '-'}</TableCell>
+                <TableCell>{user.phoneNumber}</TableCell>
+                <TableCell>
+                  {user.isAdmin ? (
+                    <FiCheck className="text-green-300" />
+                  ) : (
+                    <FaTimes className="text-red-300" />
+                  )}
+                </TableCell>
+                <TableCell>
+                  {user.verificationDate ? (
+                    <FiCheck className="text-green-300" />
+                  ) : (
+                    <FaTimes className="text-red-300" />
+                  )}
+                </TableCell>
+                <TableCell>{user.verificationMethod || '-'}</TableCell>
+                <TableCell>{format(user.createdAt, 'dd/MM/yyyy')}</TableCell>
+                <TableCell>{t(`document.${user.documentType}`)}</TableCell>
+                <TableCell>{user.documentNumber || '-'}</TableCell>
+                <TableCell>
+                  {user.documentExpiry
+                    ? format(user.documentExpiry, 'dd/MM/yyyy')
+                    : '-'}
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
+
+      <Divider className="my-12" />
+
+      <h2 className="text-2xl font-semibold mb-4">{t('admin.cards')}</h2>
+      {cards ? (
+        <div className="w-fit overflow-x-auto max-w-[92vw] md:max-w-[94vw]">
+          <Table aria-label="Cards table" className="table">
+            <TableHeader>
+              <TableColumn>
+                {t('profile.membershipCardNumberShort')}
+              </TableColumn>
+              <TableColumn>{t('admin.assignedTo')}</TableColumn>
+              <TableColumn>{t('profile.firstName')}</TableColumn>
+              <TableColumn>{t('profile.lastName')}</TableColumn>
+              <TableColumn>{t('profile.email')}</TableColumn>
+            </TableHeader>
+            <TableBody items={cards}>
+              {(card) => (
+                <TableRow key={card.number}>
+                  <TableCell>{card.number}</TableCell>
+                  <TableCell>{card.member?.id || '-'}</TableCell>
+                  <TableCell>{card.member?.firstName || '-'}</TableCell>
+                  <TableCell>{card.member?.lastName || '-'}</TableCell>
+                  <TableCell>{card.member?.email || '-'}</TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
+      ) : (
+        <Skeleton>
+          <div className="w-full h-96" />
+        </Skeleton>
+      )}
+
       {/* Edit User Modal */}
       <Modal
         size="3xl"
@@ -606,11 +681,7 @@ const AdminPanel = () => {
                 </div>
 
                 <Accordion className="mt-4">
-                  <AccordionItem title="DEBUG (ignore this section)">
-                    <h2 className="text-lg font-semibold">
-                      DEBUG (ignore this section)
-                    </h2>
-
+                  <AccordionItem title="DEBUG">
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <Button
@@ -625,7 +696,7 @@ const AdminPanel = () => {
                           <strong>{isValid ? 'true' : 'false'}</strong>
                         </p>
                         <p className="mt-2">
-                          Errors:{' '}
+                          Errors:
                           <pre>
                             <code>{JSON.stringify(errors, null, 2)}</code>
                           </pre>
@@ -664,7 +735,7 @@ const AdminPanel = () => {
           </ModalFooter>
         </ModalContent>
       </Modal>
-    </div>
+    </main>
   );
 };
 

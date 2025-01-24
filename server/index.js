@@ -54,6 +54,7 @@ app.use(
         'https://maps.googleapis.com',
         'https://*.googleapis.com',
         'https://www.googletagmanager.com',
+        'https://*.google-analytics.com',
       ],
       fontSrc: ["'self'", 'https://fonts.gstatic.com'],
       // ... other directives as needed

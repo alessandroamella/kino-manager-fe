@@ -21,7 +21,7 @@
     "signup": "Registrati"
   },
   "signup": {
-    "title": "Registrati a Kinó Café",
+    "title": "Registrati al Kinó Café",
     "emailDisclaimer": "Ti invieremo un'email di conferma dopo la registrazione.",
     "passwordDisclaimer": "La password deve essere lunga almeno 8 caratteri e contenere almeno una lettera maiuscola, una minuscola e un numero.",
     "phoneNumberDisclaimer": "Potremmo aver bisogno di contattarti per la verifica.",
@@ -103,7 +103,7 @@
     "blandeActivitiesItem2": "Console di gioco (come PlayStation) collegate a una TV.",
     "blandeActivitiesItem3": "Biliardino e freccette.",
     "blandeActivitiesItem4": "Giochi da tavolo e carte.",
-    "blandeActivitiesText2": "Goditi conversazioni, sessioni di studio, pasti e altro – con musica soft in sottofondo.",
+    "blandeActivitiesText2": "Goditi conversazioni, sessioni di studio, pasti e altro - con musica soft in sottofondo.",
     "serieActivitiesTitle": "Serate divertenti del weekend",
     "serieActivitiesText1": "Se le nostre serate tranquille avranno successo, alzeremo il volume ogni venerdì o sabato! Vieni a trovarci dalle 21:00 per una serata fuori.",
     "serieActivitiesItem1": "DJ set con console musicale.",
@@ -139,6 +139,7 @@
     "documentType": "Tipo di documento",
     "documentExpiry": "Scadenza documento",
     "membershipCardNumber": "Numero tessera",
+    "membershipCardNumberShort": "Tessera",
     "verified": "Verificato",
     "verifiedVia": "Verificato tramite",
     "notVerified": "Non verificato",
@@ -153,13 +154,14 @@
     "verifiedOn": "Account verificato il {{date}}",
     "toBeVerified": "Il tuo account non è ancora verificato",
     "verifyAccount": "Verifica account",
-    "verifyAccountDescription": "Per accedere a Kinó Café, devi verificare il tuo account. Presentati al locale con un documento d'identità valido.",
+    "verifyAccountDescription": "Per accedere al Kinó Café, devi verificare il tuo account. Puoi semplicemente presentarti al locale durante i nostri orari di apertura e ci occuperemo del resto.",
     "phoneNumber": "Numero di telefono",
     "address": "Indirizzo",
     "documentInfo": "Info documento",
     "expiry": "Data di scadenza",
     "verificationStatus": "Stato di verifica",
-    "exportExcel": "Esporta in Excel"
+    "exportExcel": "Esporta in Excel",
+    "createdAt": "Creato il"
   },
   "languages": {
     "it": "Italiano",
@@ -197,6 +199,8 @@
     "verifyUser": "Verifica utente",
     "noCardAssigned": "Nessuna tessera assegnata",
     "card": "Tessera n.{{n}}",
+    "cards": "Tessere",
+    "assignedTo": "Assegnata a",
     "verifyUserWarning": "La tessera n.{{number}} sarà assegnata all'utente {{user}}, che verrà verificato. Questa azione è irreversibile. Assicurati di avere i dati corretti prima di cliccare su 'Salva'.",
     "cardAlreadyAssigned": "A questo utente è già stata assegnata una tessera. Non puoi modificarla."
   },
