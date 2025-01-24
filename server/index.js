@@ -27,32 +27,35 @@ console.log('BACKEND_URL:', backendUrl);
 app.use(
   helmet.contentSecurityPolicy({
     directives: {
-      defaultSrc: ["'self'"], // Good practice to keep default-src restricted
+      defaultSrc: ["'self'"],
       scriptSrc: [
         "'self'",
         'https://maps.googleapis.com',
         'https://maps.gstatic.com',
-      ], // Allow scripts from your origin and Google Maps
+        'https://www.googletagmanager.com', // Added Google Tag Manager
+      ],
       styleSrc: [
         "'self'",
         "'unsafe-inline'",
         'https://fonts.googleapis.com',
         'https://maps.googleapis.com',
         'https://maps.gstatic.com',
-      ], // Example: Allow inline styles, Google Fonts, and Maps styles
+      ],
       imgSrc: [
         "'self'",
         'data:',
         'https://maps.gstatic.com',
         'https://*.googleapis.com',
-      ], // Example: Allow images from your origin, data URLs, and Google Maps images
+        'https://www.googletagmanager.com',
+      ], // Consider adding to imgSrc if GTM loads images
       connectSrc: [
         "'self'",
         'https://maps.googleapis.com',
         'https://*.googleapis.com',
-      ], // Example: Allow API calls to Google Maps
-      fontSrc: ["'self'", 'https://fonts.gstatic.com'], // Example: Allow fonts from Google Fonts
-      // ... add other directives as needed for your application
+        'https://www.googletagmanager.com',
+      ], // Consider adding to connectSrc if GTM makes API calls
+      fontSrc: ["'self'", 'https://fonts.gstatic.com'],
+      // ... other directives as needed
     },
   }),
 );
