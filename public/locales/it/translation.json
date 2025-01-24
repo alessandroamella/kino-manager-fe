@@ -128,7 +128,6 @@
       "sms": "SMS",
       "email": "Email"
     },
-    "memberSince": "Membro dal",
     "verifiedOn": "Account verificato il {{date}}",
     "toBeVerified": "Il tuo account non è ancora verificato"
   },

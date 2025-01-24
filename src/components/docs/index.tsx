@@ -47,7 +47,7 @@ const Docs = () => {
   }, [id, t]);
 
   return (
-    <div className="mx-4 md:mx-8 flex flex-col gap-8">
+    <div className="mx-4 md:mx-8 pt-4 flex flex-col gap-8">
       {error && (
         <Alert color="danger" title={t('errors.generic')}>
           {error}

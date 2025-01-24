@@ -1,6 +1,11 @@
 {
   "common": {
-    "title": "Kinó Café"
+    "title": "Kinó Café",
+    "yes": "Yes",
+    "no": "No",
+    "loading": "Loading",
+    "cancel": "Cancel",
+    "save": "Save"
   },
   "header": {
     "userActions": "User actions",
@@ -16,7 +21,8 @@
   },
   "signup": {
     "emailDisclaimer": "We'll send you a confirmation email after you sign up.",
-    "passwordDisclaimer": "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one digit."
+    "passwordDisclaimer": "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one digit.",
+    "phoneNumberDisclaimer": "We may need to contact you for verification purposes."
   },
   "docs": {
     "disclaimer": "Translation disclaimer",
@@ -124,7 +130,6 @@
     "birthCountry": "Birth Country",
     "verified": "Verified",
     "verifiedVia": "Verified via",
-    "yes": "Yes",
     "notVerified": "Not Verified",
     "selectVerificationMethod": "Select Verification Method",
     "sendVerificationCode": "Send Verification Code",
@@ -133,8 +138,18 @@
       "email": "Email"
     },
     "memberSince": "Member since",
+    "memberSinceDate": "Member since {{date}}",
     "verifiedOn": "Account verified on {{date}}",
-    "toBeVerified": "Your account is not verified yet"
+    "toBeVerified": "Your account is not verified yet",
+    "verifyAccount": "Verify Account",
+    "verifyAccountDescription": "To access Kinó Café, you need to verify your account. Just show up at the venue with a valid ID document.",
+    "membershipNumber": "Membership Number",
+    "phoneNumber": "Phone Number",
+    "address": "Address",
+    "documentInfo": "Document Info",
+    "expiry": "Expiry Date",
+    "verificationStatus": "Verification Status",
+    "exportExcel": "Export to Excel"
   },
   "languages": {
     "it": "Italian",
@@ -149,6 +164,25 @@
     "termsOfService": "Terms of Service",
     "partners": "Partners",
     "rights": "All rights reserved"
+  },
+  "admin": {
+    "adminPanel": "Admin Panel",
+    "exportToExcel": "Export to Excel",
+    "isAdmin": "Is Admin",
+    "verified": "Verified",
+    "actions": "Actions",
+    "userEditSuccess": "User updated successfully",
+    "userVerifySuccess": "User verified successfully",
+    "editUser": "Edit User",
+    "verifyUserDocument": "Verify User Document",
+    "documentData": "Document Data",
+    "enterDocumentData": "Enter document data",
+    "verificationDate": "Verification Date",
+    "verificationMethod": "Verification Method",
+    "verifyUser": "Verify User",
+    "documentNumber": "Document Number",
+    "documentType": "Document Type",
+    "membershipNumber": "Membership Number"
   },
   "countries": {
     "AF": "Afghanistan",

@@ -1,3 +1,4 @@
+// Signup.tsx
 import React, { useState, useEffect, useCallback, useMemo, Key } from 'react';
 import {
   Form,
@@ -14,7 +15,7 @@ import {
 } from '@heroui/react';
 import type { CalendarDate } from '@heroui/react';
 import CodiceFiscale from 'codice-fiscale-js';
-import { useForm } from 'react-hook-form'; // Removed useController
+import { useForm } from 'react-hook-form';
 import axios, { AxiosError } from 'axios';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Comune } from 'codice-fiscale-js/types/comune';
@@ -35,12 +36,13 @@ type FormData = {
   firstName: string;
   lastName: string;
   email: string;
+  phoneNumber: string;
   password: string;
   codiceFiscale: string | null;
   birthDate: Date | null;
   birthComune?: string | null;
   birthCountry: string;
-  address: string; // Add address to FormData
+  address: string;
 };
 
 interface Country {
@@ -68,9 +70,10 @@ const Signup = () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     }) as any,
     defaultValues: {
-      codiceFiscale: null, // Initialize codiceFiscale as null
-      birthComune: null, // Initialize birthComune as null
-      address: '', // Initialize address
+      codiceFiscale: null,
+      birthComune: null,
+      address: '',
+      birthCountry: 'IT', // Default to Italy, or your preferred default
     },
   });
 
@@ -79,12 +82,12 @@ const Signup = () => {
   const [countriesList, setCountriesList] = useState<Country[]>([]);
   const [countrySearchTerm, setCountrySearchTerm] = useState('');
   const [countrySuggestions, setCountrySuggestions] = useState<Country[]>([]);
-  const [signupError, setSignupError] = useState<string | null>(null); // State for signup error
+  const [signupError, setSignupError] = useState<string | null>(null);
 
-  const codiceFiscaleValue = watch('codiceFiscale')?.toUpperCase() || ''; // watch can return undefined, handle it
+  const codiceFiscaleValue = watch('codiceFiscale')?.toUpperCase() || '';
   const birthDate = watch('birthDate');
   const birthComune = watch('birthComune');
-  const birthCountry = watch('birthCountry');
+  const birthCountry = watch('birthCountry'); // Keep watching birthCountry
   const address = watch('address');
 
   const codiceFiscaleData = useMemo(() => {
@@ -136,7 +139,7 @@ const Signup = () => {
     } else if (!codiceFiscaleData) {
       setValue('birthDate', null);
       setValue('birthCountry', '');
-      setValue('birthComune', null); // Set to null to match type
+      setValue('birthComune', null);
       trigger(['birthDate', 'birthCountry', 'birthComune']);
       return;
     }
@@ -160,7 +163,6 @@ const Signup = () => {
         trigger(['birthDate', 'birthCountry', 'birthComune']);
       } catch (error) {
         console.error('Error computing inverse CF:', error);
-        // Handle cases where inverse computation fails, maybe clear fields or show an error
         setValue('birthDate', null);
         setValue('birthCountry', '');
         setValue('birthComune', null);
@@ -190,7 +192,7 @@ const Signup = () => {
       if (!key && !birthComune) {
         return;
       }
-      setValue('birthComune', key?.toString() || null); // Handle null case for setValue
+      setValue('birthComune', key?.toString() || null);
       trigger('birthComune');
     },
     [birthComune, setValue, trigger],
@@ -204,10 +206,10 @@ const Signup = () => {
     (key: React.Key | null) => {
       console.log('Country selected:', key);
       if (key) {
-        setValue('birthCountry', key as string);
+        setValue('birthCountry', key as string); // Correctly set birthCountry with alpha2 code
         trigger('birthCountry');
         if (key !== 'IT') {
-          setValue('birthComune', null); // Clear comune if country is not Italy, set to null
+          setValue('birthComune', null);
           trigger('birthComune');
         }
       }
@@ -252,7 +254,7 @@ const Signup = () => {
   const navigate = useNavigate();
 
   const onSubmit = async (formData: FormData) => {
-    setSignupError(null); // Clear previous error on new submit
+    setSignupError(null);
     console.log('Form Data:', formData);
     try {
       const obj: Partial<FormData> = { ...formData };
@@ -273,7 +275,6 @@ const Signup = () => {
         action: 'Signed Up',
       });
 
-      // Optionally redirect or show success message here
       await login(formData.email, formData.password);
       navigate('/profile');
     } catch (error) {
@@ -333,7 +334,6 @@ const Signup = () => {
             Iscriviti al Kinó Café
           </h2>
 
-          {/* ... rest of your form code ... */}
           <Input
             label="Nome"
             placeholder="Inserisci il tuo nome"
@@ -361,6 +361,17 @@ const Signup = () => {
             isInvalid={Boolean(errors.email)}
             autoComplete="email"
             errorMessage={errors.email?.message}
+            isRequired
+          />
+          <Input
+            label="Numero di Telefono"
+            placeholder="Inserisci il tuo numero di telefono"
+            type="tel"
+            {...register('phoneNumber')}
+            description={t('signup.phoneNumberDisclaimer')}
+            isInvalid={Boolean(errors.phoneNumber)}
+            errorMessage={errors.phoneNumber?.message}
+            autoComplete="tel"
             isRequired
           />
           <Input
@@ -400,12 +411,11 @@ const Signup = () => {
               <Input
                 label="Codice Fiscale"
                 placeholder="Inserisci il tuo codice fiscale"
-                isRequired={useCodiceFiscale} // Conditionally require based on tab
+                isRequired={useCodiceFiscale}
                 {...register('codiceFiscale')}
                 isInvalid={Boolean(errors.codiceFiscale)}
                 errorMessage={errors.codiceFiscale?.message}
                 maxLength={16}
-                // description="Inserisci il tuo codice fiscale per compilare automaticamente i dati anagrafici"
                 description={
                   codiceFiscaleData
                     ? `Valido! ${format(
@@ -437,10 +447,10 @@ const Signup = () => {
                   defaultInputValue="IT"
                   items={countrySuggestions}
                   onInputChange={handleCountryInputChange}
-                  onSelectionChange={handleCountryChange}
+                  onSelectionChange={handleCountryChange} // Use handleCountryChange to manage value
                   isRequired
                   labelPlacement="outside"
-                  {...register('birthCountry')}
+                  // {...register('birthCountry')}  // REMOVE register here
                   isInvalid={Boolean(errors.birthCountry)}
                   errorMessage={errors.birthCountry?.message}
                 >
@@ -482,7 +492,7 @@ const Signup = () => {
             errorMessage={errors.address?.message}
             isRequired
             onPlaceSelect={(place) => {
-              setValue('address', place?.formatted_address || ''); // Still use setValue to update form value
+              setValue('address', place?.formatted_address || '');
             }}
             description={
               address

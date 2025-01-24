@@ -10,6 +10,7 @@ import {
   Divider,
   Avatar,
   Alert,
+  Chip,
 } from '@heroui/react';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
@@ -21,10 +22,16 @@ import {
   FiCheckCircle,
   FiAlertTriangle,
   FiCode,
+  FiPhone,
+  FiHome,
+  FiFileText,
+  FiClock,
+  FiUserPlus,
 } from 'react-icons/fi';
 import { dateFnsLang } from '../../utils/dateFnsLang';
 import { BiTime } from 'react-icons/bi';
 import useIsMobile from '../../utils/isMobile';
+import { Link } from 'react-router';
 
 const Profile = () => {
   const { t, i18n } = useTranslation();
@@ -34,7 +41,7 @@ const Profile = () => {
   const isMobile = useIsMobile();
 
   return (
-    <div className="mx-auto py-3 -mt-6 md:mt-0 md:p-6 md:px-12 lg:px-16 xl:px-24">
+    <div className="mx-auto py-3 bg-background-50 -mt-6 md:mt-0 md:p-6 md:px-12 lg:px-16 xl:px-24">
       <Card shadow={isMobile ? 'none' : undefined}>
         <CardHeader className="flex justify-between items-center px-4 md:px-6 py-3 border-b-2 border-gray-200 dark:border-gray-700">
           <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
@@ -43,18 +50,16 @@ const Profile = () => {
         </CardHeader>
         {user ? (
           <CardBody className="px-4 pt-4 pb-6">
-            {!user.isVerified && (
-              <div className="w-full flex items-center my-3">
-                <Alert color="warning" title="Verifica account">
+            {!user.verificationMethod && ( // Changed condition to check verificationMethod existence
+              <div className="w-full flex items-center">
+                <Alert color="warning" title={t('profile.verifyAccount')}>
                   <p className="text-small">
-                    Per poter accedere al Kinó Café, è necessario verificare il
-                    proprio account. È sufficiente presentarsi presso la sede
-                    con un documento d&apos;identità in corso di validità.
+                    {t('profile.verifyAccountDescription')}
                   </p>
                 </Alert>
               </div>
             )}
-            <div className="flex items-center space-x-4 mb-4 mx-auto">
+            <div className="flex items-center space-x-4 my-6 mx-auto">
               <Avatar
                 size="lg"
                 src={`https://gravatar.com/avatar/${user.emailHash}`}
@@ -68,8 +73,8 @@ const Profile = () => {
                   <Tooltip
                     showArrow
                     content={t(
-                      user.isVerified
-                        ? 'profile.verifiedOn'
+                      user.verificationMethod
+                        ? 'profile.memberSinceDate'
                         : 'profile.toBeVerified',
                       {
                         date:
@@ -81,8 +86,14 @@ const Profile = () => {
                     )}
                   >
                     <div>
-                      {user.isVerified ? (
-                        <FiCheckCircle style={{ color: 'green' }} />
+                      {user.membershipNumber ? (
+                        <Chip
+                          color="primary"
+                          variant="flat"
+                          startContent={<FiCheckCircle />}
+                        >
+                          {user.membershipNumber}
+                        </Chip>
                       ) : (
                         <BiTime style={{ color: 'grey' }} />
                       )}
@@ -90,6 +101,11 @@ const Profile = () => {
                   </Tooltip>
                 </h3>
                 <p className="text-gray-500 dark:text-gray-400">{user.email}</p>
+                {user.membershipNumber && (
+                  <p className="text-gray-500 dark:text-gray-400">
+                    {t('profile.membershipNumber')}: {user.membershipNumber}
+                  </p>
+                )}
               </div>
             </div>
             <Divider className="mb-4" />
@@ -103,6 +119,28 @@ const Profile = () => {
                   </span>
                 </div>
                 <p className="text-gray-900 dark:text-gray-100">{user.email}</p>
+              </div>
+              <div>
+                <div className="flex items-center space-x-2 mb-2">
+                  <FiPhone className="text-gray-500" />
+                  <span className="font-semibold text-gray-700 dark:text-gray-300">
+                    {t('profile.phoneNumber')}:
+                  </span>
+                </div>
+                <p className="text-gray-900 dark:text-gray-100">
+                  {user.phoneNumber}
+                </p>
+              </div>
+              <div>
+                <div className="flex items-center space-x-2 mb-2">
+                  <FiHome className="text-gray-500" />
+                  <span className="font-semibold text-gray-700 dark:text-gray-300">
+                    {t('profile.address')}:
+                  </span>
+                </div>
+                <p className="text-gray-900 dark:text-gray-100">
+                  {user.address}
+                </p>
               </div>
               <div>
                 <div className="flex items-center space-x-2 mb-2">
@@ -154,7 +192,7 @@ const Profile = () => {
                     {t('profile.codiceFiscale')}:
                   </span>
                 </div>
-                <Code size="md">{user.codiceFiscale}</Code>
+                <Code size="md">{user.codiceFiscale || '-'}</Code>
               </div>
               <div>
                 <div className="flex items-center space-x-2 mb-2">
@@ -169,40 +207,81 @@ const Profile = () => {
                   })}
                 </p>
               </div>
-            </div>
-            <Spacer y={6} />
-            <Divider className="mb-4" />
-            <div className="flex justify-center gap-4 items-center">
-              <div className="flex items-center space-x-2">
-                <span className="font-semibold text-gray-700 dark:text-gray-300">
-                  {t('profile.verified')}:
-                </span>
+              <div>
+                <div className="flex items-center space-x-2 mb-2">
+                  <FiFileText className="text-gray-500" />
+                  <span className="font-semibold text-gray-700 dark:text-gray-300">
+                    {t('profile.documentInfo')}:
+                  </span>
+                </div>
+                <p className="text-gray-900 text-small dark:text-gray-100">
+                  {user.documentType}{' '}
+                  {user.documentNumber ? `- ${user.documentNumber}` : ''}
+                  {user.documentExpiry
+                    ? ` (${t('profile.expiry')}: ${format(
+                        user.documentExpiry,
+                        'dd MMMM yyyy',
+                        {
+                          locale: dateFnsLang(i18n),
+                        },
+                      )})`
+                    : ''}
+                </p>
               </div>
-              {user.isVerified ? (
-                <Tooltip
-                  content={`${t('profile.verifiedVia')} ${t(
-                    'verificationMethod.' + user.verificationMethod,
-                  )} on ${format(user.verificationDate!, 'dd MMMM yyyy HH:mm', {
-                    locale: dateFnsLang(i18n),
-                  })}`}
-                >
-                  <div className="flex items-center space-x-2 text-green-600 dark:text-green-400">
-                    <FiCheckCircle />
-                    <span>{t('profile.yes')}</span>
-                  </div>
-                </Tooltip>
-              ) : (
-                <Button
-                  size="sm"
-                  color="warning"
-                  variant="flat"
-                  className="gap-2"
-                >
-                  <FiAlertTriangle />
-                  {t('profile.notVerified')}
-                </Button>
-              )}
+              <div>
+                <div className="flex items-center space-x-2 mb-2">
+                  <FiClock className="text-gray-500" />
+                  <span className="font-semibold text-gray-700 dark:text-gray-300">
+                    {t('profile.verificationStatus')}:
+                  </span>
+                </div>
+                <div>
+                  {user.verificationMethod ? (
+                    <Tooltip
+                      content={`${t('profile.verifiedVia')} ${t(
+                        'verificationMethod.' + user.verificationMethod,
+                      )} on ${format(
+                        user.verificationDate!,
+                        'dd MMMM yyyy HH:mm',
+                        {
+                          locale: dateFnsLang(i18n),
+                        },
+                      )}`}
+                    >
+                      <Chip
+                        size="sm"
+                        color="success"
+                        variant="flat"
+                        startContent={<FiCheckCircle />}
+                      >
+                        {t('profile.verified')}
+                      </Chip>
+                    </Tooltip>
+                  ) : (
+                    <Chip
+                      size="sm"
+                      color="warning"
+                      variant="flat"
+                      startContent={<FiAlertTriangle />}
+                    >
+                      {t('profile.notVerified')}
+                    </Chip>
+                  )}
+                </div>
+              </div>
             </div>
+            {user.isAdmin && (
+              <>
+                <Spacer y={6} />
+                <Divider className="mb-4" />
+                <div className="flex justify-center">
+                  <Button as={Link} color="danger" to="/admin">
+                    <FiUserPlus className="mr-2" />
+                    {t('admin.adminPanel')}
+                  </Button>
+                </div>
+              </>
+            )}
           </CardBody>
         ) : (
           <CardBody className="px-4 py-4">

@@ -16,7 +16,7 @@ interface UserState {
   loading: boolean;
   error: string | null;
   fetchUser: (accessToken: string) => Promise<void>;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
 }
 
@@ -50,6 +50,11 @@ const useUserStore = create<UserState>()(
           });
         } catch (error) {
           console.error('Fetch user error:', error);
+          if (isAxiosError(error) && error.response?.status === 401) {
+            console.log('Token expired or invalid, logging out...');
+            localStorage.removeItem('token');
+            set({ accessToken: null, user: null });
+          }
           set({
             error: getErrorMsg(error),
             loading: false,
@@ -66,6 +71,7 @@ const useUserStore = create<UserState>()(
           );
           console.log('Login data:', data);
           set({ accessToken: data.access_token, user: null });
+          return true;
         } catch (error) {
           console.error('Login error:', error);
           set({
@@ -78,6 +84,7 @@ const useUserStore = create<UserState>()(
               : 'errors.generic',
             loading: false,
           });
+          return false;
         }
       },
       logout: () => {

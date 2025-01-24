@@ -28,8 +28,10 @@ const Login = () => {
   const onSubmit = async (formData: FormData) => {
     setLoginError(null); // Clear previous error on new submit
     console.log('Login Form Data:', formData);
-    await login(formData.email, formData.password);
-    navigate('/profile');
+    const successful = await login(formData.email, formData.password);
+    if (successful) {
+      navigate('/profile');
+    }
   };
 
   const { t } = useTranslation();

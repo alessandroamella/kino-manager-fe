@@ -1,10 +1,8 @@
-import { Navigate, Outlet, useLocation } from 'react-router';
-import useUserStore from '../../store/user';
+import { Outlet, useLocation } from 'react-router';
 import { useEffect } from 'react';
+import ProtectedRoute from '../../components/ProtectedRoute';
 
 const Auth = () => {
-  const user = useUserStore((store) => store.user);
-
   const location = useLocation();
 
   useEffect(() => {
@@ -16,7 +14,13 @@ const Auth = () => {
     }, 10);
   }, [location.pathname]);
 
-  return user ? <Navigate to="/" /> : <Outlet />;
+  return (
+    <ProtectedRoute mustBeLoggedOut>
+      <div className="pt-8 pb-2">
+        <Outlet />
+      </div>
+    </ProtectedRoute>
+  );
 };
 
 export default Auth;

@@ -1,7 +1,9 @@
+// validators/signup.ts
 import * as yup from 'yup';
 import { TFunction } from 'i18next';
 import CodiceFiscale from 'codice-fiscale-js';
 import { passwordYupSchema } from './password';
+import { parsePhoneNumber, isValidPhoneNumber } from 'libphonenumber-js';
 
 // Signup Yup Schema
 export const signupYupSchema = (t: TFunction) =>
@@ -20,6 +22,21 @@ export const signupYupSchema = (t: TFunction) =>
       .string()
       .required(t('errors.email.required'))
       .email(t('errors.email.invalid')),
+    phoneNumber: yup
+      .string()
+      .required(t('errors.phoneNumber.required'))
+      .test('phoneNumber', t('errors.phoneNumber.invalid'), (value) => {
+        if (!value) {
+          return false; // Required already handles this, but for safety
+        }
+        try {
+          const phoneNumber = parsePhoneNumber(value, 'IT'); // Default to Italian numbers
+          return phoneNumber && isValidPhoneNumber(phoneNumber.number);
+        } catch (error) {
+          console.error('Phone number parsing error:', error);
+          return false; // Parsing error, invalid phone number
+        }
+      }),
     password: passwordYupSchema(t, 'auth.password'),
     codiceFiscale: yup
       .string()

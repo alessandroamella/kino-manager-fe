@@ -82,7 +82,7 @@ const Homepage = () => {
   return (
     <div className="relative">
       {/* Hero Section */}
-      <section className="text-white py-16 md:py-20 px-4 md:mt-12 relative overflow-hidden">
+      <section className="text-white py-16 md:py-20 px-4 relative overflow-hidden">
         <div className="container mx-auto text-center relative z-10">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
             {t('home.kinoCafeTitle')}
@@ -122,10 +122,15 @@ const Homepage = () => {
         {/* Parallax Background Image */}
         <Parallax
           bgImage={bg}
+          bgImageStyle={{
+            objectFit: 'cover',
+            height: '120%',
+          }}
           strength={200}
           style={{
             position: 'absolute',
             inset: 0,
+            objectFit: 'cover',
           }}
         >
           {/* This div acts as the background styling layer */}
@@ -182,14 +187,12 @@ const Homepage = () => {
           <div className="relative rounded-md shadow-md overflow-hidden">
             <Image
               src={logo}
-              alt="Kinó Café Interior"
-              isZoomed
+              alt="Kinó Café"
               className="dark:hidden object-cover w-full h-full"
             />
             <Image
               src={logoDark}
-              alt="Kinó Café Interior"
-              isZoomed
+              alt="Kinó Café"
               className="hidden dark:block object-cover w-full h-full"
             />
           </div>
@@ -197,7 +200,7 @@ const Homepage = () => {
       </section>
 
       {/* Activities Section */}
-      <section className="bg-background dark:bg-gray-800 py-12 md:pt-20">
+      <section className="bg-background-100 py-12 md:pt-20">
         <div className="container mx-auto px-4 md:px-8">
           <h2 className="text-3xl font-semibold text-center text-gray-800 dark:text-white mb-8">
             <GiFilmProjector className="inline-block mr-2 text-primary-500" />

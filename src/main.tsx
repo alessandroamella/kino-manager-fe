@@ -12,6 +12,7 @@ import Login from './pages/auth/Login.tsx';
 import Profile from './pages/profile/index.tsx';
 import ProtectedRoute from './components/ProtectedRoute.tsx';
 import Docs from './components/docs/index.tsx';
+import AdminPanel from './pages/admin/index.tsx';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -20,7 +21,7 @@ createRoot(document.getElementById('root')!).render(
         <Routes>
           <Route element={<Layout />}>
             <Route element={<Homepage />} index />
-            <Route path="profile" element={<ProtectedRoute />}>
+            <Route path="profile" element={<ProtectedRoute mustBeLoggedIn />}>
               <Route index element={<Profile />} />
             </Route>
             <Route path="auth" element={<Auth />}>
@@ -31,6 +32,9 @@ createRoot(document.getElementById('root')!).render(
             <Route path="docs">
               <Route index element={<Navigate to="/" />} />
               <Route path=":id" element={<Docs />} />
+            </Route>
+            <Route path="admin" element={<ProtectedRoute mustBeAdmin />}>
+              <Route index element={<AdminPanel />} />
             </Route>
           </Route>
         </Routes>

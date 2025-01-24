@@ -1,10 +1,22 @@
 import { Outlet, useNavigate } from 'react-router';
 import useUserStore from '../store/user';
 import { useShallow } from 'zustand/shallow';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { Skeleton } from '@heroui/react';
 
-const ProtectedRoute = () => {
+const ProtectedRoute = ({
+  mustBeAdmin,
+  mustBeLoggedIn,
+  mustBeLoggedOut,
+  children,
+  redirectTo,
+}: {
+  mustBeAdmin?: boolean;
+  mustBeLoggedIn?: boolean;
+  mustBeLoggedOut?: boolean;
+  children?: React.ReactNode;
+  redirectTo?: string;
+}) => {
   const { user, loading } = useUserStore(
     useShallow((store) => ({
       user: store.user,
@@ -14,22 +26,48 @@ const ProtectedRoute = () => {
 
   const navigate = useNavigate();
 
+  const timeoutRef = useRef<number | null>(null);
+
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      if (!user && !loading) {
-        navigate('/');
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
+    timeoutRef.current = setTimeout(() => {
+      if (
+        !loading &&
+        (mustBeAdmin
+          ? user && !user.isAdmin
+          : mustBeLoggedIn
+          ? !user
+          : mustBeLoggedOut
+          ? user
+          : false)
+      ) {
+        navigate(redirectTo || '/');
       }
     }, 300);
 
-    return () => clearTimeout(timeout);
-  }, [loading, navigate, user]);
+    return () => clearTimeout(timeoutRef.current || undefined);
+  }, [
+    loading,
+    mustBeAdmin,
+    mustBeLoggedIn,
+    mustBeLoggedOut,
+    navigate,
+    redirectTo,
+    user,
+  ]);
 
-  return !user && !loading ? (
+  return !user && !mustBeLoggedOut ? (
     <Skeleton className="mx-4 rounded-sm">
       <div className="w-full h-96" />{' '}
     </Skeleton>
   ) : (
-    <Outlet />
+    <>
+      {children}
+      <Outlet />
+    </>
   );
 };
 

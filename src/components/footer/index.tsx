@@ -4,7 +4,6 @@ import { FaInstagram, FaTiktok, FaFacebook } from 'react-icons/fa';
 import { MdDirections } from 'react-icons/md';
 import LogoComune from '../../assets/images/logo-comune.png';
 import LogoKinoCampus from '../../assets/images/logo-kino-campus.png';
-import LogoKinoCafe from '../../assets/images/logo_small.png';
 import { Button, Image } from '@heroui/react';
 import { Link } from 'react-router';
 import { address, googleMapsDirectionsUrl } from '../../constants/address';
@@ -14,7 +13,7 @@ const Footer = () => {
   const currentYear = getYear(new Date());
 
   return (
-    <footer className="bg-gray-100 dark:bg-gray-900 py-8 md:py-12">
+    <footer className="dark:bg-gradient-to-tl w-full from-yellow-950/40 to-orange-950/40 py-8 md:py-12">
       <div className="container mx-auto px-4">
         <div className="grid justify-items-center grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 space-y-3 px-4 text-center md:text-left">
           {/* Contact & Address */}
@@ -98,14 +97,7 @@ const Footer = () => {
 
           {/* Logos */}
           <div>
-            <div className="grid mt-2 items-center justify-items-center grid-cols-3">
-              <div className="w-24 flex justify-center">
-                <Image
-                  src={LogoKinoCafe}
-                  alt="Kino Cafe Logo"
-                  className="h-12 w-20 object-contain grayscale hover:grayscale-0 transition-all duration-300"
-                />
-              </div>
+            <div className="grid mt-2 items-center justify-items-center grid-cols-2">
               <a
                 href="https://www.comune.sancesariosulpanaro.mo.it/"
                 target="_blank"
@@ -121,11 +113,12 @@ const Footer = () => {
                 href="https://www.kinocampus.it/"
                 target="_blank"
                 rel="noopener noreferrer"
+                className="w-24 flex justify-center"
               >
                 <Image
                   src={LogoKinoCampus}
                   alt="Kino Campus Logo"
-                  className="h-12 w-24 object-contain grayscale hover:grayscale-0 transition-all duration-300"
+                  className="h-12 w-full bg-gray-500 p-1 object-contain grayscale hover:grayscale-0 transition-all duration-300"
                 />
               </a>
             </div>

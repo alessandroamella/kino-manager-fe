@@ -64,7 +64,7 @@ const App = () => {
   }, [setHeroUITheme, theme]);
 
   return (
-    <main className={`${theme} text-foreground bg-background my-6`}>
+    <main className={`${theme} text-foreground bg-background`}>
       <HeroUIProvider locale={i18n.language}>
         <Outlet />
       </HeroUIProvider>
