@@ -47,7 +47,7 @@ app.use(
         'https://maps.gstatic.com',
         'https://*.googleapis.com',
         'https://www.googletagmanager.com',
-        'https://gravatar.com', // Added Gravatar
+        'https://gravatar.com',
       ],
       connectSrc: [
         "'self'",
