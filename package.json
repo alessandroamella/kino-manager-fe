@@ -8,8 +8,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "build": "tsc -b && vite build",
-    "start-nobuild": "NODE_ENV=production node -r dotenv/config server/index.js",
-    "start": "npm run build && npm run start-nobuild",
+    "start": "NODE_ENV=production node -r dotenv/config server/index.js",
     "prepare": "husky"
   },
   "dependencies": {
