@@ -2,7 +2,6 @@ import express from 'express';
 import helmet from 'helmet';
 import { join } from 'path';
 import ViteExpress from 'vite-express';
-// import { createProxyMiddleware } from 'http-proxy-middleware';
 import 'dotenv/config';
 
 const app = express();
@@ -24,19 +23,39 @@ console.log('NODE_ENV:', process.env.NODE_ENV);
 console.log('PORT:', port);
 console.log('BACKEND_URL:', backendUrl);
 
-// Secure the app with Helmet
-app.use(helmet());
-
-// theoretically not needed
-// Proxy /v1 requests to the backend
-// app.use(
-//   '/v1',
-//   createProxyMiddleware({
-//     target: backendUrl,
-//     changeOrigin: true,
-//     secure: false,
-//   }),
-// );
+// Secure the app with Helmet and configure Content Security Policy
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"], // Good practice to keep default-src restricted
+      scriptSrc: [
+        "'self'",
+        'https://maps.googleapis.com',
+        'https://maps.gstatic.com',
+      ], // Allow scripts from your origin and Google Maps
+      styleSrc: [
+        "'self'",
+        "'unsafe-inline'",
+        'https://fonts.googleapis.com',
+        'https://maps.googleapis.com',
+        'https://maps.gstatic.com',
+      ], // Example: Allow inline styles, Google Fonts, and Maps styles
+      imgSrc: [
+        "'self'",
+        'data:',
+        'https://maps.gstatic.com',
+        'https://*.googleapis.com',
+      ], // Example: Allow images from your origin, data URLs, and Google Maps images
+      connectSrc: [
+        "'self'",
+        'https://maps.googleapis.com',
+        'https://*.googleapis.com',
+      ], // Example: Allow API calls to Google Maps
+      fontSrc: ["'self'", 'https://fonts.gstatic.com'], // Example: Allow fonts from Google Fonts
+      // ... add other directives as needed for your application
+    },
+  }),
+);
 
 // Serve public directory
 const publicDir = join(process.cwd(), 'public');

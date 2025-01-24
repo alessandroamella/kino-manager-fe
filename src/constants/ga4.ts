@@ -1,1 +1,1 @@
-export const ga4Key = 'G-V9357FRGY6';
+export const ga4Key = import.meta.env.VITE_GA4_KEY;
