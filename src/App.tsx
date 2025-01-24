@@ -7,6 +7,7 @@ import useThemeStore from './store/theme';
 import { useTheme } from '@heroui/use-theme';
 import { ga4Key } from './constants/ga4';
 import ReactGA from 'react-ga4';
+import { I18nProvider } from '@react-aria/i18n';
 
 ReactGA.initialize(ga4Key);
 
@@ -65,8 +66,11 @@ const App = () => {
 
   return (
     <main className={`${theme} text-foreground bg-background`}>
-      <HeroUIProvider locale={i18n.language}>
-        <Outlet />
+      {/* en-gb to have dd/mm/yyyy date format instead of US mm/dd/yyyy */}
+      <HeroUIProvider locale={i18n.language === 'en' ? 'en-gb' : i18n.language}>
+        <I18nProvider locale={i18n.language}>
+          <Outlet />
+        </I18nProvider>
       </HeroUIProvider>
     </main>
   );

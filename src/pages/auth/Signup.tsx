@@ -338,7 +338,7 @@ const Signup = () => {
             label="Nome"
             placeholder="Inserisci il tuo nome"
             {...register('firstName')}
-            isInvalid={Boolean(errors.firstName)}
+            isInvalid={!!errors.firstName}
             errorMessage={errors.firstName?.message}
             autoComplete="given-name"
             isRequired
@@ -347,7 +347,7 @@ const Signup = () => {
             label="Cognome"
             placeholder="Inserisci il tuo cognome"
             {...register('lastName')}
-            isInvalid={Boolean(errors.lastName)}
+            isInvalid={!!errors.lastName}
             errorMessage={errors.lastName?.message}
             autoComplete="family-name"
             isRequired
@@ -358,7 +358,7 @@ const Signup = () => {
             type="email"
             {...register('email')}
             description={t('signup.emailDisclaimer')}
-            isInvalid={Boolean(errors.email)}
+            isInvalid={!!errors.email}
             autoComplete="email"
             errorMessage={errors.email?.message}
             isRequired
@@ -369,7 +369,7 @@ const Signup = () => {
             type="tel"
             {...register('phoneNumber')}
             description={t('signup.phoneNumberDisclaimer')}
-            isInvalid={Boolean(errors.phoneNumber)}
+            isInvalid={!!errors.phoneNumber}
             errorMessage={errors.phoneNumber?.message}
             autoComplete="tel"
             isRequired
@@ -379,7 +379,7 @@ const Signup = () => {
             placeholder="Inserisci la tua password"
             type="password"
             {...register('password')}
-            isInvalid={Boolean(errors.password)}
+            isInvalid={!!errors.password}
             errorMessage={errors.password?.message}
             minLength={8}
             autoComplete="new-password"
@@ -413,7 +413,7 @@ const Signup = () => {
                 placeholder="Inserisci il tuo codice fiscale"
                 isRequired={useCodiceFiscale}
                 {...register('codiceFiscale')}
-                isInvalid={Boolean(errors.codiceFiscale)}
+                isInvalid={!!errors.codiceFiscale}
                 errorMessage={errors.codiceFiscale?.message}
                 maxLength={16}
                 description={
@@ -437,7 +437,7 @@ const Signup = () => {
                   value={birthDate ? dateToCalendarDate(birthDate) : null}
                   isRequired
                   labelPlacement="outside"
-                  isInvalid={Boolean(errors.birthDate)}
+                  isInvalid={!!errors.birthDate}
                   errorMessage={errors.birthDate?.message}
                 />
                 <Autocomplete
@@ -451,7 +451,7 @@ const Signup = () => {
                   isRequired
                   labelPlacement="outside"
                   // {...register('birthCountry')}  // REMOVE register here
-                  isInvalid={Boolean(errors.birthCountry)}
+                  isInvalid={!!errors.birthCountry}
                   errorMessage={errors.birthCountry?.message}
                 >
                   {(item) => (
@@ -471,7 +471,7 @@ const Signup = () => {
                     isRequired
                     labelPlacement="outside"
                     {...register('birthComune')}
-                    isInvalid={Boolean(errors.birthComune)}
+                    isInvalid={!!errors.birthComune}
                     errorMessage={errors.birthComune?.message}
                   >
                     {(item) => (
@@ -488,7 +488,7 @@ const Signup = () => {
           <GoogleMapsAutocomplete
             label="Indirizzo"
             placeholder="Inserisci il tuo indirizzo"
-            isInvalid={Boolean(errors.address)}
+            isInvalid={!!errors.address}
             errorMessage={errors.address?.message}
             isRequired
             onPlaceSelect={(place) => {

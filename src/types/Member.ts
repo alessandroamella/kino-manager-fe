@@ -1,3 +1,5 @@
+import { MembershipCard } from './MembershipCard';
+
 export enum VerificationMethod {
   CIE = 'CIE',
   MANUAL = 'MANUAL',
@@ -21,5 +23,5 @@ export type Member = {
   documentNumber: string | null;
   documentType: string | null;
   documentExpiry: Date | null;
-  membershipNumber: string | null;
+  membershipCardNumber: MembershipCard['number'] | null;
 };

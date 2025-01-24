@@ -5,7 +5,7 @@ import * as yup from 'yup';
 export const passwordYupSchema = (t: TFunction, field = 'auth.password') =>
   yup
     .string()
-    .required(t('errors.password.requiredField', { field: t(field) }))
+    .required(t('errors.field.required', { field: t(field) }))
     .test('password', t('signup.passwordDisclaimer'), (value) => {
       if (!value) return false;
       const schema = new PasswordValidator();

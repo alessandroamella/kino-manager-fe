@@ -46,3 +46,7 @@ html {
   padding-right: 0 !important;
   overflow: auto !important;
 }
+
+div.table div {
+  padding: 0 !important;
+}

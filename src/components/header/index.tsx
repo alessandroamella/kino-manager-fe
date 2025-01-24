@@ -13,6 +13,7 @@ import {
   NavbarMenuToggle,
   Image,
   Skeleton,
+  Button,
 } from '@heroui/react';
 import { AiOutlineHome, AiOutlineLogout, AiOutlineUser } from 'react-icons/ai';
 import { useTranslation } from 'react-i18next';
@@ -25,6 +26,7 @@ import UserData from './UserData';
 import LoginBtn from '../../pages/auth/LoginBtn';
 import SignupBtn from '../../pages/auth/SignupBtn';
 import ToggleTheme from './ToggleTheme';
+import { FiUserPlus } from 'react-icons/fi';
 
 const Header = () => {
   const { t } = useTranslation();
@@ -86,11 +88,14 @@ const Header = () => {
           {/* Add other desktop NavbarItems here if needed, e.g., "Movies" or other features */}
           {user ? (
             <Dropdown placement="bottom-end">
-              <DropdownTrigger>
-                <NavbarItem className="cursor-pointer mt-2">
+              <NavbarItem className="cursor-pointer mt-2">
+                <DropdownTrigger>
                   <UserData />
-                </NavbarItem>
-              </DropdownTrigger>
+                </DropdownTrigger>
+              </NavbarItem>
+              <NavbarItem className="cursor-pointer mt-2">
+                <UserData />
+              </NavbarItem>
               <DropdownMenu aria-label={t('header.userActions')}>
                 <DropdownItem key="profile">
                   <Link to="/profile" className="w-full inline-block">
@@ -120,6 +125,19 @@ const Header = () => {
           )}
           <ChangeLanguage />
           <ToggleTheme />
+          {user?.isAdmin && (
+            <NavbarItem className="cursor-pointer">
+              <Button
+                isDisabled={location.pathname.replace(/\//g, '') === 'admin'}
+                as={Link}
+                color="danger"
+                to="/admin"
+              >
+                <FiUserPlus className="mr-2" />
+                {t('admin.adminPanel')}
+              </Button>
+            </NavbarItem>
+          )}
         </NavbarContent>
 
         <NavbarMenu className="gap-4">

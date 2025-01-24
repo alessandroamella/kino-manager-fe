@@ -3,9 +3,7 @@ import {
   CardBody,
   CardHeader,
   Code,
-  Spacer,
   Tooltip,
-  Button,
   Skeleton,
   Divider,
   Avatar,
@@ -26,12 +24,10 @@ import {
   FiHome,
   FiFileText,
   FiClock,
-  FiUserPlus,
 } from 'react-icons/fi';
 import { dateFnsLang } from '../../utils/dateFnsLang';
 import { BiTime } from 'react-icons/bi';
 import useIsMobile from '../../utils/isMobile';
-import { Link } from 'react-router';
 
 const Profile = () => {
   const { t, i18n } = useTranslation();
@@ -86,13 +82,13 @@ const Profile = () => {
                     )}
                   >
                     <div>
-                      {user.membershipNumber ? (
+                      {user.membershipCardNumber ? (
                         <Chip
                           color="primary"
                           variant="flat"
                           startContent={<FiCheckCircle />}
                         >
-                          {user.membershipNumber}
+                          {user.membershipCardNumber}
                         </Chip>
                       ) : (
                         <BiTime style={{ color: 'grey' }} />
@@ -101,9 +97,10 @@ const Profile = () => {
                   </Tooltip>
                 </h3>
                 <p className="text-gray-500 dark:text-gray-400">{user.email}</p>
-                {user.membershipNumber && (
+                {user.membershipCardNumber && (
                   <p className="text-gray-500 dark:text-gray-400">
-                    {t('profile.membershipNumber')}: {user.membershipNumber}
+                    {t('profile.membershipCardNumber')}:{' '}
+                    {user.membershipCardNumber}
                   </p>
                 )}
               </div>
@@ -270,18 +267,6 @@ const Profile = () => {
                 </div>
               </div>
             </div>
-            {user.isAdmin && (
-              <>
-                <Spacer y={6} />
-                <Divider className="mb-4" />
-                <div className="flex justify-center">
-                  <Button as={Link} color="danger" to="/admin">
-                    <FiUserPlus className="mr-2" />
-                    {t('admin.adminPanel')}
-                  </Button>
-                </div>
-              </>
-            )}
           </CardBody>
         ) : (
           <CardBody className="px-4 py-4">

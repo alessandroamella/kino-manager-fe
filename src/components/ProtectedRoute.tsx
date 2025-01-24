@@ -37,7 +37,7 @@ const ProtectedRoute = ({
       if (
         !loading &&
         (mustBeAdmin
-          ? user && !user.isAdmin
+          ? !user || (user && !user.isAdmin)
           : mustBeLoggedIn
           ? !user
           : mustBeLoggedOut
@@ -60,7 +60,7 @@ const ProtectedRoute = ({
   ]);
 
   return !user && !mustBeLoggedOut ? (
-    <Skeleton className="mx-4 rounded-sm">
+    <Skeleton>
       <div className="w-full h-96" />{' '}
     </Skeleton>
   ) : (

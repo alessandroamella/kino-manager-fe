@@ -5,7 +5,8 @@
     "no": "No",
     "loading": "Loading",
     "cancel": "Cancel",
-    "save": "Save"
+    "save": "Save",
+    "warning": "Warning"
   },
   "header": {
     "userActions": "User actions",
@@ -40,47 +41,17 @@
     "docs": {
       "notFound": "The document you are looking was not found. It may have been moved or deleted."
     },
-    "firstName": {
-      "required": "First name is required",
-      "tooShort": "First name is too short",
-      "tooLong": "First name is too long"
-    },
-    "lastName": {
-      "required": "Last name is required",
-      "tooShort": "Last name is too short",
-      "tooLong": "Last name is too long"
-    },
-    "email": {
-      "required": "Email is required",
-      "invalid": "Invalid email address"
-    },
-    "codiceFiscale": {
-      "invalid": "Invalid Codice Fiscale"
-    },
-    "birthCountry": {
-      "required": "Birth country is required",
-      "invalid": "Invalid birth country code"
-    },
-    "birthComune": {
-      "tooShort": "Birth comune name is too short",
-      "tooLong": "Birth comune name is too long"
-    },
-    "birthDate": {
-      "required": "Birth date is required",
-      "invalid": "Invalid birth date format"
+    "field": {
+      "required": "{{field}} is required",
+      "invalid": "Invalid {{field}}",
+      "tooShort": "{{field}} is too short",
+      "tooLong": "{{field}} is too long"
     },
     "password": {
-      "requiredField": "Password is a required field",
       "tooShort": "Password must be at least 8 characters long",
       "noUppercase": "Password must contain at least one uppercase letter",
       "noLowercase": "Password must contain at least one lowercase letter",
-      "noDigit": "Password must contain at least one digit",
-      "required": "Password is required",
-      "tooLong": "Password is too long",
-      "invalid": "Password does not meet the requirements"
-    },
-    "address": {
-      "required": "Address is required"
+      "noDigit": "Password must contain at least one digit"
     }
   },
   "home": {
@@ -124,10 +95,16 @@
     "save": "Save",
     "close": "Close",
     "email": "Email",
+    "firstName": "First Name",
+    "lastName": "Last Name",
     "codiceFiscale": "Fiscal Code",
     "birthDate": "Birth Date",
     "birthComune": "Birth Comune",
     "birthCountry": "Birth Country",
+    "documentNumber": "Document Number",
+    "documentType": "Document Type",
+    "documentExpiry": "Document Expiry",
+    "membershipCardNumber": "Membership Number",
     "verified": "Verified",
     "verifiedVia": "Verified via",
     "notVerified": "Not Verified",
@@ -143,7 +120,6 @@
     "toBeVerified": "Your account is not verified yet",
     "verifyAccount": "Verify Account",
     "verifyAccountDescription": "To access Kinó Café, you need to verify your account. Just show up at the venue with a valid ID document.",
-    "membershipNumber": "Membership Number",
     "phoneNumber": "Phone Number",
     "address": "Address",
     "documentInfo": "Document Info",
@@ -165,24 +141,30 @@
     "partners": "Partners",
     "rights": "All rights reserved"
   },
+  "document": {
+    "CIE": "Identity Card",
+    "PASSPORT": "Passport",
+    "DRIVING_LICENSE": "Driving License",
+    "OTHER": "Other"
+  },
   "admin": {
     "adminPanel": "Admin Panel",
     "exportToExcel": "Export to Excel",
     "isAdmin": "Is Admin",
-    "verified": "Verified",
     "actions": "Actions",
     "userEditSuccess": "User updated successfully",
     "userVerifySuccess": "User verified successfully",
-    "editUser": "Edit User",
+    "editUser": "Edit User {{user}}",
     "verifyUserDocument": "Verify User Document",
     "documentData": "Document Data",
     "enterDocumentData": "Enter document data",
     "verificationDate": "Verification Date",
     "verificationMethod": "Verification Method",
     "verifyUser": "Verify User",
-    "documentNumber": "Document Number",
-    "documentType": "Document Type",
-    "membershipNumber": "Membership Number"
+    "noCardAssigned": "No card assigned",
+    "card": "Card #{{n}}",
+    "verifyUserWarning": "Card #{{number}} will be assigned to user {{user}}, who will get verified. This is irreversible. Please be sure you have the correct data before clicking 'Save'.",
+    "cardAlreadyAssigned": "This user already has a membership card assigned. You cannot change it."
   },
   "countries": {
     "AF": "Afghanistan",
@@ -432,6 +414,7 @@
     "VI": "Virgin Islands (U.S.)",
     "WF": "Wallis and Futuna",
     "EH": "Western Sahara",
+    "XK": "Kosovo",
     "YE": "Yemen",
     "ZM": "Zambia",
     "ZW": "Zimbabwe"
