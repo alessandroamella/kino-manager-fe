@@ -8,13 +8,11 @@ const ProtectedRoute = ({
   mustBeAdmin,
   mustBeLoggedIn,
   mustBeLoggedOut,
-  children,
   redirectTo,
 }: {
   mustBeAdmin?: boolean;
   mustBeLoggedIn?: boolean;
   mustBeLoggedOut?: boolean;
-  children?: React.ReactNode;
   redirectTo?: string;
 }) => {
   const { user, loading } = useUserStore(
@@ -65,7 +63,6 @@ const ProtectedRoute = ({
     </Skeleton>
   ) : (
     <>
-      {children}
       <Outlet />
     </>
   );

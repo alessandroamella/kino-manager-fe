@@ -88,22 +88,23 @@ const Header = () => {
           {/* Add other desktop NavbarItems here if needed, e.g., "Movies" or other features */}
           {user ? (
             <Dropdown placement="bottom-end">
-              <NavbarItem className="cursor-pointer mt-2">
-                <DropdownTrigger>
+              <DropdownTrigger>
+                <NavbarItem className="cursor-pointer mt-2">
                   <UserData />
-                </DropdownTrigger>
-              </NavbarItem>
-              <NavbarItem className="cursor-pointer mt-2">
-                <UserData />
-              </NavbarItem>
+                </NavbarItem>
+              </DropdownTrigger>
               <DropdownMenu aria-label={t('header.userActions')}>
-                <DropdownItem key="profile">
+                <DropdownItem key="profile" textValue={t('header.profile')}>
                   <Link to="/profile" className="w-full inline-block">
                     <AiOutlineUser className="mr-2 inline-block" />
                     {t('header.profile')}
                   </Link>
                 </DropdownItem>
-                <DropdownItem key="logout" onPress={logout}>
+                <DropdownItem
+                  key="logout"
+                  onPress={logout}
+                  textValue={t('auth.logout')}
+                >
                   <AiOutlineLogout className="mr-2 inline-block" />
                   {t('auth.logout')}
                 </DropdownItem>

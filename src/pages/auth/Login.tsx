@@ -37,7 +37,7 @@ const Login = () => {
   const { t } = useTranslation();
 
   return (
-    <div className="flex flex-col gap-4">
+    <main className="py-16 mb-2 flex flex-col gap-4">
       {loginError && (
         <Alert
           color="danger"
@@ -96,7 +96,7 @@ const Login = () => {
           </Button>
         </Form>
       </Card>
-    </div>
+    </main>
   );
 };
 

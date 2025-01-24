@@ -7,7 +7,6 @@ import { HeroUIProvider } from '@heroui/react';
 import Layout from './components/Layout.tsx';
 import Homepage from './pages/Homepage.tsx';
 import Signup from './pages/auth/Signup.tsx';
-import Auth from './pages/auth/index.tsx';
 import Login from './pages/auth/Login.tsx';
 import Profile from './pages/profile/index.tsx';
 import ProtectedRoute from './components/ProtectedRoute.tsx';
@@ -24,7 +23,7 @@ createRoot(document.getElementById('root')!).render(
             <Route path="profile" element={<ProtectedRoute mustBeLoggedIn />}>
               <Route index element={<Profile />} />
             </Route>
-            <Route path="auth" element={<Auth />}>
+            <Route path="auth" element={<ProtectedRoute mustBeLoggedOut />}>
               <Route index element={<Navigate to="/auth/login" />} />
               <Route path="login" element={<Login />} />
               <Route path="signup" element={<Signup />} />

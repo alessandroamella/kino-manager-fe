@@ -24,7 +24,7 @@ const Footer = () => {
             <p className="text-gray-500 dark:text-gray-400 mb-2">{address}</p>
             <Button
               color="primary"
-              onClick={() =>
+              onPress={() =>
                 window.open(
                   googleMapsDirectionsUrl,
                   '_blank',

@@ -299,7 +299,7 @@ const Signup = () => {
   }
 
   return (
-    <div className="flex flex-col gap-4 relative">
+    <main className="py-12 mb-2 flex flex-col gap-4 relative">
       <AnimatePresence>
         {signupError && (
           <motion.div
@@ -528,7 +528,7 @@ const Signup = () => {
           </div>
         </Form>
       </Card>
-    </div>
+    </main>
   );
 };
 
