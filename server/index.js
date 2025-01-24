@@ -32,7 +32,7 @@ app.use(
         "'self'",
         'https://maps.googleapis.com',
         'https://maps.gstatic.com',
-        'https://www.googletagmanager.com', // Added Google Tag Manager
+        'https://www.googletagmanager.com',
       ],
       styleSrc: [
         "'self'",
@@ -47,13 +47,14 @@ app.use(
         'https://maps.gstatic.com',
         'https://*.googleapis.com',
         'https://www.googletagmanager.com',
-      ], // Consider adding to imgSrc if GTM loads images
+        'https://gravatar.com', // Added Gravatar
+      ],
       connectSrc: [
         "'self'",
         'https://maps.googleapis.com',
         'https://*.googleapis.com',
         'https://www.googletagmanager.com',
-      ], // Consider adding to connectSrc if GTM makes API calls
+      ],
       fontSrc: ["'self'", 'https://fonts.gstatic.com'],
       // ... other directives as needed
     },
