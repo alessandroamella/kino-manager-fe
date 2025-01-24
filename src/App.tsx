@@ -11,6 +11,9 @@ import ReactGA from 'react-ga4';
 ReactGA.initialize(ga4Key);
 
 const App = () => {
+  const { i18n } = useTranslation();
+  const { setTheme: setHeroUITheme } = useTheme();
+
   const accessToken = useUserStore((store) => store.accessToken);
   const fetchUser = useUserStore((store) => store.fetchUser);
 
@@ -29,16 +32,31 @@ const App = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accessToken]);
 
+  useEffect(() => {
+    // Set the `lang` attribute on initial render
+    document.documentElement.lang = i18n.language;
+
+    console.log('i18n.language:', i18n.language);
+
+    // Listen for language changes and update `lang` dynamically
+    const handleLanguageChange = (lang: string) => {
+      document.documentElement.lang = lang;
+    };
+
+    i18n.on('languageChanged', handleLanguageChange);
+
+    // Cleanup listener on component unmount
+    return () => {
+      i18n.off('languageChanged', handleLanguageChange);
+    };
+  }, [i18n]);
+
   const pageViewSent = useRef(false);
   useEffect(() => {
     if (pageViewSent.current) return;
     pageViewSent.current = true;
     ReactGA.send({ hitType: 'pageview', page: window.location.pathname });
   }, []);
-
-  const { i18n } = useTranslation();
-
-  const { setTheme: setHeroUITheme } = useTheme();
 
   const theme = useThemeStore((store) => store.theme);
   useEffect(() => {

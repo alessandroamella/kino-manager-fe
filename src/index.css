@@ -41,3 +41,8 @@
   text-transform: uppercase;
   color: #777; /* Adjust label color */
 }
+
+html {
+  padding-right: 0 !important;
+  overflow: auto !important;
+}
