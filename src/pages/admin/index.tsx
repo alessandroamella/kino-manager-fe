@@ -670,7 +670,7 @@ const AdminPanel = () => {
                       >
                         {availableCards.map((card) => (
                           <DropdownItem key={card.number}>
-                            {t('admin.card', { n: card.number })}
+                            {t('profile.card', { n: card.number })}
                           </DropdownItem>
                         ))}
                       </DropdownMenu>

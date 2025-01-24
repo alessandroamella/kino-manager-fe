@@ -69,13 +69,13 @@ const Profile = () => {
                   <Tooltip
                     showArrow
                     content={t(
-                      user.verificationMethod
+                      user.verificationDate
                         ? 'profile.memberSinceDate'
                         : 'profile.toBeVerified',
                       {
                         date:
                           user.verificationDate &&
-                          format(user.verificationDate, 'dd MMMM yyyy HH:mm', {
+                          format(user.verificationDate, 'dd MMMM yyyy', {
                             locale: dateFnsLang(i18n),
                           }),
                       },
@@ -83,12 +83,8 @@ const Profile = () => {
                   >
                     <div>
                       {user.membershipCardNumber ? (
-                        <Chip
-                          color="primary"
-                          variant="flat"
-                          startContent={<FiCheckCircle />}
-                        >
-                          {user.membershipCardNumber}
+                        <Chip color="primary" variant="flat" className="ml-1">
+                          {t('profile.card', { n: user.membershipCardNumber })}
                         </Chip>
                       ) : (
                         <BiTime style={{ color: 'grey' }} />
@@ -97,12 +93,6 @@ const Profile = () => {
                   </Tooltip>
                 </h3>
                 <p className="text-gray-500 dark:text-gray-400">{user.email}</p>
-                {user.membershipCardNumber && (
-                  <p className="text-gray-500 dark:text-gray-400">
-                    {t('profile.membershipCardNumber')}:{' '}
-                    {user.membershipCardNumber}
-                  </p>
-                )}
               </div>
             </div>
             <Divider className="mb-4" />
@@ -115,7 +105,7 @@ const Profile = () => {
                     {t('profile.email')}:
                   </span>
                 </div>
-                <p className="text-gray-900 dark:text-gray-100">{user.email}</p>
+                <p className="text-foreground-500">{user.email}</p>
               </div>
               <div>
                 <div className="flex items-center space-x-2 mb-2">
@@ -124,9 +114,7 @@ const Profile = () => {
                     {t('profile.phoneNumber')}:
                   </span>
                 </div>
-                <p className="text-gray-900 dark:text-gray-100">
-                  {user.phoneNumber}
-                </p>
+                <p className="text-foreground-500">{user.phoneNumber}</p>
               </div>
               <div>
                 <div className="flex items-center space-x-2 mb-2">
@@ -135,9 +123,7 @@ const Profile = () => {
                     {t('profile.address')}:
                   </span>
                 </div>
-                <p className="text-gray-900 dark:text-gray-100">
-                  {user.address}
-                </p>
+                <p className="text-foreground-500">{user.address}</p>
               </div>
               <div>
                 <div className="flex items-center space-x-2 mb-2">
@@ -148,9 +134,7 @@ const Profile = () => {
                     {t('profile.birthComune')}:
                   </span>
                 </div>
-                <p className="text-gray-900 dark:text-gray-100">
-                  {user.birthComune || '-'}
-                </p>
+                <p className="text-foreground-500">{user.birthComune || '-'}</p>
               </div>
               <div>
                 <div className="flex items-center space-x-2 mb-2">
@@ -161,7 +145,7 @@ const Profile = () => {
                     {t('profile.birthDate')}:
                   </span>
                 </div>
-                <p className="text-gray-900 dark:text-gray-100">
+                <p className="text-foreground-500">
                   {format(user.birthDate, 'dd MMMM yyyy', {
                     locale: dateFnsLang(i18n),
                   }) || '-'}
@@ -176,7 +160,7 @@ const Profile = () => {
                     {t('profile.birthCountry')}:
                   </span>
                 </div>
-                <p className="text-gray-900 dark:text-gray-100">
+                <p className="text-foreground-500">
                   {t(`countries.${user.birthCountry}`) || '-'}
                 </p>
               </div>
@@ -198,7 +182,7 @@ const Profile = () => {
                     {t('profile.memberSince')}:
                   </span>
                 </div>
-                <p className="text-gray-900 dark:text-gray-100">
+                <p className="text-foreground-500">
                   {format(new Date(user.createdAt), 'dd MMMM yyyy', {
                     locale: dateFnsLang(i18n),
                   })}
@@ -211,18 +195,20 @@ const Profile = () => {
                     {t('profile.documentInfo')}:
                   </span>
                 </div>
-                <p className="text-gray-900 text-small dark:text-gray-100">
+                <p className="text-small text-foreground-500">
                   {!user.documentType && '-'}
-                  {user.documentType}{' '}
-                  {user.documentNumber ? `- ${user.documentNumber}` : ''}
+                  {user.documentType && t(`document.${user.documentType}`)}
+                  {user.documentNumber && <br />}
+                  {user.documentNumber ? user.documentNumber : ''}
+                  {user.documentExpiry && <br />}
                   {user.documentExpiry
-                    ? ` (${t('profile.expiry')}: ${format(
+                    ? `${t('profile.expiry')}: ${format(
                         user.documentExpiry,
                         'dd MMMM yyyy',
                         {
                           locale: dateFnsLang(i18n),
                         },
-                      )})`
+                      )}`
                     : ''}
                 </p>
               </div>
