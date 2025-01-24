@@ -11,6 +11,16 @@
 
 1. Clona la repository
 2. Esegui `pnpm install`
+3. Crea un file `.env` nella root del progetto come da esempio in `.env.example`
+
+## Variabili d'ambiente
+
+```
+PORT=Porta su cui esporre il server
+BACKEND_URL=URL del backend (nota: senza prefisso /v1)
+VITE_MAPS_API_KEY=API key di Google Maps
+VITE_GA4_KEY=Measurement ID di Google Analytics
+```
 
 ## Utilizzo - Development
 
