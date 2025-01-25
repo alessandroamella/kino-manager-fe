@@ -3,7 +3,7 @@ import * as yup from 'yup';
 import { TFunction } from 'i18next';
 import CodiceFiscale from 'codice-fiscale-js';
 import { passwordYupSchema } from './password';
-import { parsePhoneNumber, isValidPhoneNumber } from 'libphonenumber-js';
+import parsePhoneNumber, { isValidPhoneNumber } from 'libphonenumber-js';
 
 // Signup Yup Schema
 export const signupYupSchema = (t: TFunction) =>

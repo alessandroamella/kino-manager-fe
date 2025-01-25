@@ -12,7 +12,7 @@ export function normalize<T extends Record<string, any>>(obj: T): Partial<T> {
       }
 
       // Only include the key-value pair in the new object if the (trimmed) value is not an empty string
-      if (value !== '') {
+      if (!['', undefined].includes(value)) {
         newObj[key] = value;
       }
     }

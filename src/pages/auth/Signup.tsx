@@ -31,6 +31,7 @@ import { signupYupSchema } from '../../validators/signup';
 import { format } from 'date-fns';
 import ReactGA from 'react-ga4';
 import GoogleMapsAutocomplete from '../../components/GoogleMapsAutocomplete';
+import parsePhoneNumber from 'libphonenumber-js';
 
 type FormData = {
   firstName: string;
@@ -260,6 +261,11 @@ const Signup = () => {
       const obj: Partial<FormData> = { ...formData };
       if (!useCodiceFiscale) {
         delete obj.codiceFiscale;
+      }
+      if (obj.phoneNumber) {
+        obj.phoneNumber = parsePhoneNumber(
+          obj.phoneNumber,
+        )?.formatInternational();
       }
       console.log(
         'Sending signup request:',
