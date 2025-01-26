@@ -304,9 +304,7 @@ const AdminPurchases = () => {
 
       <Card className="mb-8">
         <CardHeader>
-          <h2 className="text-lg font-bold">
-            {t('purchases.purchasesTableTitle')}
-          </h2>
+          <h2 className="text-lg font-bold">{t('purchases.purchases')}</h2>
         </CardHeader>
         <CardBody>
           {loadingPurchases ? (

@@ -215,7 +215,7 @@
     "price": "Price"
   },
   "purchases": {
-    "purchasesTableTitle": "Purchases",
+    "purchases": "Purchases",
     "id": "ID",
     "discount": "Discount",
     "purchaseDate": "Purchase Date",
