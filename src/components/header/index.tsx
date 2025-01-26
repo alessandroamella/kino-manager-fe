@@ -198,6 +198,37 @@ const Header = () => {
           <NavbarMenuItem>
             <ToggleTheme className="w-full" />
           </NavbarMenuItem>
+
+          {user?.isAdmin && (
+            <>
+              <NavbarMenuItem className="cursor-pointer w-full">
+                <Button
+                  isDisabled={location.pathname.replace(/\//g, '') === 'admin'}
+                  as={Link}
+                  color="danger"
+                  to="/admin"
+                  className="w-full"
+                >
+                  <AiFillSetting className="mr-2" />
+                  {t('admin.adminPanelShort')}
+                </Button>
+              </NavbarMenuItem>
+              <NavbarMenuItem className="cursor-pointer w-full">
+                <Button
+                  isDisabled={
+                    location.pathname.replace(/\//g, '') === 'adminpurchases'
+                  }
+                  as={Link}
+                  color="secondary"
+                  to="/admin/purchases"
+                  className="w-full"
+                >
+                  <FaCashRegister className="mr-2" />
+                  {t('purchases.purchases')}
+                </Button>
+              </NavbarMenuItem>
+            </>
+          )}
         </NavbarMenu>
       </NavbarContent>
     </Navbar>
