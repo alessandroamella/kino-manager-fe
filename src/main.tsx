@@ -13,6 +13,7 @@ import ProtectedRoute from './components/ProtectedRoute.tsx';
 import Docs from './components/docs/index.tsx';
 import AdminPanel from './pages/admin/index.tsx';
 import AdminPurchases from './pages/admin/AdminPurchases.tsx';
+import KinoMenu from './pages/menu/index.tsx';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -38,6 +39,7 @@ createRoot(document.getElementById('root')!).render(
               <Route path="purchases" element={<AdminPurchases />} />
             </Route>
           </Route>
+          <Route path="menu" element={<KinoMenu />} />
         </Routes>
       </BrowserRouter>
     </HeroUIProvider>
