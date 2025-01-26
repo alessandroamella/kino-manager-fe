@@ -3,7 +3,7 @@ import { TFunction } from 'i18next';
 import { signupYupSchema } from './signup';
 
 export const adminEditUserYupSchema = (t: TFunction) =>
-  signupYupSchema(t).shape({
+  signupYupSchema(t, false).shape({
     password: yup.string().nullable().notRequired(),
     documentNumber: yup
       .string()
@@ -12,9 +12,8 @@ export const adminEditUserYupSchema = (t: TFunction) =>
       ),
     documentType: yup
       .string()
-      .required(
-        t('errors.field.required', { field: t('profile.documentType') }),
-      )
+      .notRequired()
+      .nullable()
       .oneOf(
         ['CIE', 'PASSPORT', 'DRIVING_LICENSE', 'OTHER'],
         t('errors.field.invalid', { field: t('profile.documentType') }),

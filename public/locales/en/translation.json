@@ -42,7 +42,7 @@
     "codiceFiscale": "Fiscal Code",
     "codiceFiscalePlaceholder": "Enter your fiscal code",
     "cfValid": "Valid! {{date}} - {{birthplace}}",
-    "cfInvalid": "Invalid fiscal code :/",
+    "cfInvalid": "Invalid fiscal code",
     "cfDescription": "Enter your fiscal code to automatically fill in your personal data",
     "birthDate": "Date of Birth",
     "birthCountry": "Country of Birth",
@@ -66,6 +66,7 @@
     "translatedDisclaimer": "The English translation is only for reference. In case of discrepancies, the Italian version prevails."
   },
   "errors": {
+    "error": "Error",
     "generic": "An error occurred",
     "auth": {
       "userNotFound": "User not found",
@@ -162,7 +163,8 @@
     "expiry": "Expiry Date",
     "verificationStatus": "Verification Status",
     "exportExcel": "Export to Excel",
-    "createdAt": "Created At"
+    "createdAt": "Created At",
+    "hi": "Hi {{name}}!"
   },
   "languages": {
     "it": "Italian",
@@ -179,6 +181,7 @@
     "rights": "All rights reserved"
   },
   "document": {
+    "null": "No document",
     "CIE": "Identity Card",
     "PASSPORT": "Passport",
     "DRIVING_LICENSE": "Driving License",
@@ -186,6 +189,7 @@
   },
   "admin": {
     "adminPanel": "Admin Panel",
+    "adminPanelShort": "Admin",
     "exportToExcel": "Export to Excel",
     "isAdmin": "Is Admin",
     "actions": "Actions",
@@ -203,6 +207,33 @@
     "assignedTo": "Assigned to",
     "verifyUserWarning": "Card #{{number}} will be assigned to user {{user}}, who will get verified. This is irreversible. Please be sure you have the correct data before clicking 'Save'.",
     "cardAlreadyAssigned": "This user already has a membership card assigned. You cannot change it."
+  },
+  "items": {
+    "itemsTableTitle": "Items",
+    "id": "ID",
+    "name": "Name",
+    "price": "Price"
+  },
+  "purchases": {
+    "purchasesTableTitle": "Purchases",
+    "id": "ID",
+    "discount": "Discount",
+    "purchaseDate": "Purchase Date",
+    "logPurchase": "Log Purchase",
+    "availableItems": "Available Items",
+    "selectItem": "Select Item",
+    "itemPlaceholder": "Enter item name",
+    "currentPurchase": "Current Purchase",
+    "itemName": "Item Name",
+    "quantity": "Quantity",
+    "actions": "Actions",
+    "removeItem": "Remove Item",
+    "noItemsInPurchase": "No items added to purchase yet.",
+    "discountPlaceholder": "Enter discount",
+    "logPurchaseButton": "Log Purchase",
+    "purchaseLoggedSuccessfully": "Purchase logged successfully!",
+    "addItemToPurchase": "Please add at least one item to the purchase.",
+    "total": "Total"
   },
   "countries": {
     "AF": "Afghanistan",

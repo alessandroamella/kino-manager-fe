@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import {
   Navbar,
   NavbarBrand,
@@ -15,7 +14,12 @@ import {
   Skeleton,
   Button,
 } from '@heroui/react';
-import { AiOutlineHome, AiOutlineLogout, AiOutlineUser } from 'react-icons/ai';
+import {
+  AiFillSetting,
+  AiOutlineHome,
+  AiOutlineLogout,
+  AiOutlineUser,
+} from 'react-icons/ai';
 import { useTranslation } from 'react-i18next';
 import logo from '../../assets/images/logo_small.png';
 import logoDark from '../../assets/images/logo-dark.png';
@@ -26,7 +30,7 @@ import UserData from './UserData';
 import LoginBtn from '../../pages/auth/LoginBtn';
 import SignupBtn from '../../pages/auth/SignupBtn';
 import ToggleTheme from './ToggleTheme';
-import { FiUserPlus } from 'react-icons/fi';
+import { FaCashRegister } from 'react-icons/fa';
 
 const Header = () => {
   const { t } = useTranslation();
@@ -37,26 +41,15 @@ const Header = () => {
 
   const location = useLocation();
 
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
   function handleClickItem() {
-    setIsMenuOpen(false);
     document.querySelector<HTMLButtonElement>('#menu-toggle')?.click();
-    setTimeout(() => {
-      setIsMenuOpen(false);
-      document.querySelector<HTMLButtonElement>('#menu-toggle')?.click();
-    }, 50);
   }
 
   return (
-    <Navbar
-      isBordered
-      className="bg-gray-50 dark:bg-gray-900"
-      onMenuOpenChange={setIsMenuOpen}
-    >
+    <Navbar isBordered className="bg-gray-50 dark:bg-gray-900">
       <NavbarContent>
         <NavbarMenuToggle
-          aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
+          aria-label="Toggle menu"
           className="sm:hidden"
           id="menu-toggle"
         />
@@ -127,27 +120,38 @@ const Header = () => {
           <ChangeLanguage />
           <ToggleTheme />
           {user?.isAdmin && (
-            <NavbarItem className="cursor-pointer">
-              <Button
-                isDisabled={location.pathname.replace(/\//g, '') === 'admin'}
-                as={Link}
-                color="danger"
-                to="/admin"
-              >
-                <FiUserPlus className="mr-2" />
-                {t('admin.adminPanel')}
-              </Button>
-            </NavbarItem>
+            <div className="flex items-center gap-1">
+              <NavbarItem className="cursor-pointer">
+                <Button
+                  isDisabled={location.pathname.replace(/\//g, '') === 'admin'}
+                  as={Link}
+                  color="danger"
+                  to="/admin"
+                >
+                  <AiFillSetting className="mr-2" />
+                  {t('admin.adminPanelShort')}
+                </Button>
+              </NavbarItem>
+              <NavbarItem className="cursor-pointer">
+                <Button
+                  isDisabled={
+                    location.pathname.replace(/\//g, '') === 'adminpurchases'
+                  }
+                  as={Link}
+                  color="secondary"
+                  to="/admin/purchases"
+                >
+                  <FaCashRegister className="mr-2" />
+                  {t('purchases.purchases')}
+                </Button>
+              </NavbarItem>
+            </div>
           )}
         </NavbarContent>
 
         <NavbarMenu className="gap-4">
-          <NavbarMenuItem
-            onClick={handleClickItem}
-            className="mt-4"
-            isActive={location.pathname === '/'}
-          >
-            <Link to="/">
+          <NavbarMenuItem className="mt-4" isActive={location.pathname === '/'}>
+            <Link to="/" onClick={handleClickItem}>
               <AiOutlineHome className="mr-2 inline-block" />
               {t('header.home')}
             </Link>
@@ -172,22 +176,26 @@ const Header = () => {
             </>
           ) : (
             <>
-              <NavbarMenuItem onClick={handleClickItem}>
+              <NavbarMenuItem>
                 <Skeleton isLoaded={!loading}>
-                  <SignupBtn className="w-full" />
+                  <SignupBtn onPress={handleClickItem} className="w-full" />
                 </Skeleton>
               </NavbarMenuItem>
-              <NavbarMenuItem onClick={handleClickItem}>
+              <NavbarMenuItem>
                 <Skeleton isLoaded={!loading}>
-                  <LoginBtn variant="faded" className="w-full text-black" />
+                  <LoginBtn
+                    onPress={handleClickItem}
+                    variant="faded"
+                    className="w-full text-foreground"
+                  />
                 </Skeleton>
               </NavbarMenuItem>
             </>
           )}
-          <NavbarMenuItem onClick={handleClickItem} className="mt-4">
+          <NavbarMenuItem className="mt-4">
             <ChangeLanguage className="w-full" />
           </NavbarMenuItem>
-          <NavbarMenuItem onClick={handleClickItem}>
+          <NavbarMenuItem>
             <ToggleTheme className="w-full" />
           </NavbarMenuItem>
         </NavbarMenu>

@@ -12,6 +12,7 @@ import Profile from './pages/profile/index.tsx';
 import ProtectedRoute from './components/ProtectedRoute.tsx';
 import Docs from './components/docs/index.tsx';
 import AdminPanel from './pages/admin/index.tsx';
+import AdminPurchases from './pages/admin/AdminPurchases.tsx';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -34,6 +35,7 @@ createRoot(document.getElementById('root')!).render(
             </Route>
             <Route path="admin" element={<ProtectedRoute mustBeAdmin />}>
               <Route index element={<AdminPanel />} />
+              <Route path="purchases" element={<AdminPurchases />} />
             </Route>
           </Route>
         </Routes>

@@ -32,6 +32,7 @@ import { format } from 'date-fns';
 import ReactGA from 'react-ga4';
 import GoogleMapsAutocomplete from '../../components/GoogleMapsAutocomplete';
 import parsePhoneNumber from 'libphonenumber-js';
+import normalize from '../../utils/normalize';
 
 type FormData = {
   firstName: string;
@@ -53,9 +54,14 @@ interface Country {
 
 const Signup = () => {
   const { t } = useTranslation();
-  const validationSchema = useMemo(() => signupYupSchema(t), [t]);
-
   const [useCodiceFiscale, setUseCodiceFiscale] = useState(true);
+
+  const [loading, setLoading] = useState(false);
+
+  const validationSchema = useMemo(
+    () => signupYupSchema(t, useCodiceFiscale),
+    [t, useCodiceFiscale],
+  );
 
   const {
     register,
@@ -90,6 +96,15 @@ const Signup = () => {
   const birthComune = watch('birthComune');
   const birthCountry = watch('birthCountry'); // Keep watching birthCountry
   const address = watch('address');
+  const phoneNumber = watch('phoneNumber');
+
+  const phoneCountry = useMemo(() => {
+    if (!phoneNumber) {
+      return null;
+    }
+    const formatted = parsePhoneNumber(phoneNumber, 'IT');
+    return formatted?.country || null;
+  }, [phoneNumber]);
 
   const codiceFiscaleData = useMemo(() => {
     if (
@@ -256,17 +271,19 @@ const Signup = () => {
 
   const onSubmit = async (formData: FormData) => {
     setSignupError(null);
+    setLoading(true);
     console.log('Form Data:', formData);
     try {
-      const obj: Partial<FormData> = { ...formData };
+      let obj: Partial<FormData> = { ...formData };
       if (!useCodiceFiscale) {
         delete obj.codiceFiscale;
       }
-      if (obj.phoneNumber) {
-        obj.phoneNumber = parsePhoneNumber(
-          obj.phoneNumber,
-        )?.formatInternational();
-      }
+      obj.phoneNumber = parsePhoneNumber(
+        formData.phoneNumber,
+        'IT',
+      )?.formatInternational();
+      console.log('Formatted phone number:', obj.phoneNumber);
+      obj = normalize(obj); // remove undefined and empty strings
       console.log(
         'Sending signup request:',
         obj,
@@ -290,6 +307,8 @@ const Signup = () => {
           ? t('errors.auth.userAlreadyExists')
           : getErrorMsg(error),
       );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -341,6 +360,7 @@ const Signup = () => {
           </h2>
 
           <Input
+            isDisabled={loading}
             label={t('signup.firstName')}
             placeholder={t('signup.firstNamePlaceholder')}
             {...register('firstName')}
@@ -350,6 +370,7 @@ const Signup = () => {
             isRequired
           />
           <Input
+            isDisabled={loading}
             label={t('signup.lastName')}
             placeholder={t('signup.lastNamePlaceholder')}
             {...register('lastName')}
@@ -359,6 +380,7 @@ const Signup = () => {
             isRequired
           />
           <Input
+            isDisabled={loading}
             label={t('signup.email')}
             placeholder={t('signup.emailPlaceholder')}
             type="email"
@@ -370,21 +392,29 @@ const Signup = () => {
             isRequired
           />
           <Input
+            isDisabled={loading}
             label={t('signup.phoneNumber')}
             placeholder={t('signup.phoneNumberPlaceholder')}
             type="tel"
             {...register('phoneNumber')}
-            description={t('signup.phoneNumberDisclaimer')}
+            description={`${
+              phoneCountry && phoneCountry !== 'IT'
+                ? t('profile.hi', { name: t(`countries.${phoneCountry}`) }) +
+                  ' 😎 '
+                : ''
+            }${t('signup.phoneNumberDisclaimer')}`}
             isInvalid={!!errors.phoneNumber}
             errorMessage={errors.phoneNumber?.message}
             autoComplete="tel"
             isRequired
           />
           <Input
+            isDisabled={loading}
             label={t('signup.password')}
             placeholder={t('signup.passwordPlaceholder')}
             type="password"
             {...register('password')}
+            onValueChange={() => phoneNumber && trigger('phoneNumber')}
             isInvalid={!!errors.password}
             errorMessage={errors.password?.message}
             minLength={8}
@@ -415,6 +445,7 @@ const Signup = () => {
               className="w-full"
             >
               <Input
+                isDisabled={loading}
                 label={t('signup.codiceFiscale')}
                 placeholder={t('signup.codiceFiscalePlaceholder')}
                 isRequired={useCodiceFiscale}
@@ -426,7 +457,11 @@ const Signup = () => {
                   codiceFiscaleData
                     ? t('signup.cfValid', {
                         date: format(codiceFiscaleData.birthDate, 'dd/MM/yyyy'),
-                        birthplace: codiceFiscaleData.birthplace,
+                        birthplace:
+                          codiceFiscaleData.birthplace.toLowerCase() ===
+                          'modena'
+                            ? 'Mudnés 🟡🔵'
+                            : codiceFiscaleData.birthplace,
                       })
                     : codiceFiscaleValue.length === 16
                     ? t('signup.cfInvalid')
@@ -512,7 +547,7 @@ const Signup = () => {
             color="primary"
             type="submit"
             className="w-full"
-            isDisabled={!isValid}
+            isDisabled={loading || !isValid}
           >
             {t('signup.registerButton')}
           </Button>

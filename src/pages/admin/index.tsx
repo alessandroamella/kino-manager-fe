@@ -46,17 +46,10 @@ import { dateToCalendarDate } from '../../utils/calendar';
 import { normalize } from '../../utils/normalize';
 import { tryStoi } from '../../utils/tryStoi';
 import { format } from 'date-fns';
+import { DocumentType } from '../../types/DocumentType';
 
 interface MembershipCardExtended extends Omit<MembershipCard, 'member'> {
   member: Member | null;
-}
-
-// this isn't actually enforced by the backend, but it's a good idea
-enum DocumentType {
-  CIE = 'CIE',
-  PASSPORT = 'PASSPORT',
-  DRIVING_LICENSE = 'DRIVING_LICENSE',
-  OTHER = 'OTHER',
 }
 
 const AdminPanel = () => {
@@ -88,7 +81,7 @@ const AdminPanel = () => {
       phoneNumber: '',
       address: '',
       documentNumber: '',
-      documentType: DocumentType.CIE,
+      documentType: null,
       documentExpiry: null,
       membershipCardNumber: null,
       birthCountry: '',
@@ -169,10 +162,7 @@ const AdminPanel = () => {
     setValue('phoneNumber', user.phoneNumber);
     setValue('address', user.address);
     setValue('documentNumber', user.documentNumber || '');
-    setValue(
-      'documentType',
-      (user.documentType as DocumentType) || DocumentType.CIE,
-    ); // Default if null
+    setValue('documentType', (user.documentType as DocumentType) || 'null'); // Default if null
     setValue(
       'documentExpiry',
       user.documentExpiry ? new Date(user.documentExpiry) : null,
@@ -192,6 +182,7 @@ const AdminPanel = () => {
   } | null>(null);
 
   const saveEditedUser = async (data: Partial<Member>) => {
+    window.alert('document: ' + data.documentType);
     data = {
       id: selectedUser?.id,
       ...normalize(data),
@@ -392,7 +383,9 @@ const AdminPanel = () => {
                 </TableCell>
                 <TableCell>{user.verificationMethod || '-'}</TableCell>
                 <TableCell>{format(user.createdAt, 'dd/MM/yyyy')}</TableCell>
-                <TableCell>{t(`document.${user.documentType}`)}</TableCell>
+                <TableCell>
+                  {user.documentType ? t(`document.${user.documentType}`) : '-'}
+                </TableCell>
                 <TableCell>{user.documentNumber || '-'}</TableCell>
                 <TableCell>
                   {user.documentExpiry
@@ -597,16 +590,17 @@ const AdminPanel = () => {
                           }
                         }}
                       >
-                        {Object.values(DocumentType).map((type) => (
-                          <DropdownItem key={type}>
-                            {t(`document.${type}`)}
-                          </DropdownItem>
-                        ))}
+                        {['null', ...Object.values(DocumentType)].map(
+                          (type) => (
+                            <DropdownItem key={type}>
+                              {t(`document.${type}`)}
+                            </DropdownItem>
+                          ),
+                        )}
                       </DropdownMenu>
                     </Dropdown>
                   </div>
                   <Input
-                    isRequired
                     type="text"
                     label={t('profile.documentNumber')}
                     isInvalid={!!errors.documentNumber}
@@ -614,7 +608,6 @@ const AdminPanel = () => {
                     {...register('documentNumber')}
                   />
                   <DateInput
-                    isRequired
                     label={t('profile.documentExpiry')}
                     defaultValue={
                       documentExpiry || selectedUser.documentExpiry

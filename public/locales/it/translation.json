@@ -42,7 +42,7 @@
     "codiceFiscale": "Codice Fiscale",
     "codiceFiscalePlaceholder": "Inserisci il tuo codice fiscale",
     "cfValid": "Valido! {{date}} - {{birthplace}}",
-    "cfInvalid": "Codice fiscale non valido :/",
+    "cfInvalid": "Codice fiscale non valido",
     "cfDescription": "Inserisci il tuo codice fiscale per compilare automaticamente i tuoi dati personali",
     "birthDate": "Data di Nascita",
     "birthCountry": "Paese di Nascita",
@@ -66,6 +66,7 @@
     "translatedDisclaimer": "La traduzione in inglese è solo per riferimento. In caso di discrepanze, fa fede la versione italiana."
   },
   "errors": {
+    "error": "Errore",
     "generic": "Si è verificato un errore",
     "auth": {
       "userNotFound": "Utente non trovato",
@@ -76,10 +77,10 @@
       "notFound": "Il documento che stai cercando non è stato trovato. Potrebbe essere stato spostato o eliminato."
     },
     "field": {
-      "required": "{{field}} è obbligatorio",
-      "invalid": "{{field}} non valido",
-      "tooShort": "{{field}} è troppo corto",
-      "tooLong": "{{field}} è troppo lungo"
+      "required": "Il campo {{field}} è obbligatorio",
+      "invalid": "Il campo {{field}} non è valido",
+      "tooShort": "Il campo {{field}} è troppo corto",
+      "tooLong": "Il campo {{field}} è troppo lungo"
     },
     "password": {
       "tooShort": "La password deve essere lunga almeno 8 caratteri",
@@ -155,14 +156,15 @@
     "verifiedOn": "Account verificato il {{date}}",
     "toBeVerified": "Il tuo account non è ancora verificato",
     "verifyAccount": "Verifica account",
-    "verifyAccountDescription": "Per accedere al Kinó Café, devi verificare il tuo account. Puoi semplicemente presentarti al locale durante i nostri orari di apertura e ci occuperemo del resto.",
+    "verifyAccountDescription": "Per accedere al Kinó Café, devi verificare il tuo account. Puoi semplicemente presentarti al locale durante i nostri orari di apertura, e noi ci occuperemo del resto.",
     "phoneNumber": "Numero di telefono",
     "address": "Indirizzo",
     "documentInfo": "Info documento",
     "expiry": "Data di scadenza",
     "verificationStatus": "Stato di verifica",
     "exportExcel": "Esporta in Excel",
-    "createdAt": "Creato il"
+    "createdAt": "Creato il",
+    "hi": "Ciao {{name}}!"
   },
   "languages": {
     "it": "Italiano",
@@ -179,15 +181,17 @@
     "rights": "Tutti i diritti riservati"
   },
   "document": {
+    "null": "Nessun documento",
     "CIE": "Carta d'Identità",
     "PASSPORT": "Passaporto",
     "DRIVING_LICENSE": "Patente di Guida",
     "OTHER": "Altro"
   },
   "admin": {
-    "adminPanel": "Pannello Admin",
+    "adminPanel": "Pannello amministratore",
+    "adminPanelShort": "Admin",
     "exportToExcel": "Esporta in Excel",
-    "isAdmin": "È Admin",
+    "isAdmin": "Amministratore",
     "actions": "Azioni",
     "userEditSuccess": "Utente modificato con successo",
     "userVerifySuccess": "Utente verificato con successo",
@@ -203,6 +207,33 @@
     "assignedTo": "Assegnata a",
     "verifyUserWarning": "La tessera n.{{number}} sarà assegnata all'utente {{user}}, che verrà verificato. Questa azione è irreversibile. Assicurati di avere i dati corretti prima di cliccare su 'Salva'.",
     "cardAlreadyAssigned": "A questo utente è già stata assegnata una tessera. Non puoi modificarla."
+  },
+  "items": {
+    "itemsTableTitle": "Articoli",
+    "id": "ID",
+    "name": "Nome",
+    "price": "Prezzo"
+  },
+  "purchases": {
+    "purchasesTableTitle": "Acquisti",
+    "id": "ID",
+    "discount": "Sconto",
+    "purchaseDate": "Data di Acquisto",
+    "logPurchase": "Registra Acquisto",
+    "availableItems": "Articoli Disponibili",
+    "selectItem": "Seleziona Articolo",
+    "itemPlaceholder": "Inserisci nome articolo",
+    "currentPurchase": "Acquisto Corrente",
+    "itemName": "Nome Articolo",
+    "quantity": "Quantità",
+    "actions": "Azioni",
+    "removeItem": "Rimuovi Articolo",
+    "noItemsInPurchase": "Nessun articolo aggiunto all'acquisto.",
+    "discountPlaceholder": "Inserisci sconto",
+    "logPurchaseButton": "Registra Acquisto",
+    "purchaseLoggedSuccessfully": "Acquisto registrato con successo!",
+    "addItemToPurchase": "Aggiungi almeno un articolo all'acquisto.",
+    "total": "Totale"
   },
   "countries": {
     "AD": "Andorra",

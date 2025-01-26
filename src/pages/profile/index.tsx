@@ -28,6 +28,10 @@ import {
 import { dateFnsLang } from '../../utils/dateFnsLang';
 import { BiTime } from 'react-icons/bi';
 import useIsMobile from '../../utils/isMobile';
+import parsePhoneNumber from 'libphonenumber-js';
+import { useMemo } from 'react';
+import { hasFlag } from 'country-flag-icons';
+import getUnicodeFlagIcon from 'country-flag-icons/unicode';
 
 const Profile = () => {
   const { t, i18n } = useTranslation();
@@ -35,6 +39,19 @@ const Profile = () => {
   const user = useUserStore((store) => store.user);
 
   const isMobile = useIsMobile();
+
+  const [phoneCountry, phoneFormatted] = useMemo(() => {
+    const parsed = parsePhoneNumber(user?.phoneNumber || '-');
+    if (!parsed?.isValid()) {
+      return [null, null];
+    }
+
+    const formatted =
+      parsed.country === 'IT'
+        ? parsed.formatNational()
+        : parsed.formatInternational();
+    return [parsed.country, formatted];
+  }, [user]);
 
   return (
     <div className="mx-auto py-3 bg-background-50 -mt-6 md:mt-0 md:p-6 md:px-12 lg:px-16 xl:px-24">
@@ -46,7 +63,7 @@ const Profile = () => {
         </CardHeader>
         {user ? (
           <CardBody className="px-4 pt-4 pb-6">
-            {!user.verificationMethod && ( // Changed condition to check verificationMethod existence
+            {!user.membershipCardNumber && (
               <div className="w-full flex items-center">
                 <Alert color="warning" title={t('profile.verifyAccount')}>
                   <p className="text-small">
@@ -114,7 +131,14 @@ const Profile = () => {
                     {t('profile.phoneNumber')}:
                   </span>
                 </div>
-                <p className="text-foreground-500">{user.phoneNumber}</p>
+                <p className="text-foreground-500">
+                  {phoneCountry && hasFlag(phoneCountry) && (
+                    <span className="mr-2">
+                      {getUnicodeFlagIcon(phoneCountry)}
+                    </span>
+                  )}
+                  {phoneFormatted}
+                </p>
               </div>
               <div>
                 <div className="flex items-center space-x-2 mb-2">

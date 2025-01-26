@@ -1,12 +1,10 @@
-// validators/signup.ts
 import * as yup from 'yup';
 import { TFunction } from 'i18next';
 import CodiceFiscale from 'codice-fiscale-js';
 import { passwordYupSchema } from './password';
-import parsePhoneNumber, { isValidPhoneNumber } from 'libphonenumber-js';
+import parsePhoneNumber from 'libphonenumber-js';
 
-// Signup Yup Schema
-export const signupYupSchema = (t: TFunction) =>
+export const signupYupSchema = (t: TFunction, useCodiceFiscale: boolean) =>
   yup.object().shape({
     firstName: yup
       .string()
@@ -30,40 +28,34 @@ export const signupYupSchema = (t: TFunction) =>
         t('errors.field.invalid', { field: t('profile.phoneNumber') }),
         (value) => {
           if (!value) {
-            return false; // Required already handles this, but for safety
+            return false;
           }
           try {
-            const phoneNumber = parsePhoneNumber(value, 'IT'); // Default to Italian numbers
-            return phoneNumber && isValidPhoneNumber(phoneNumber.number);
+            return !!value && parsePhoneNumber(value, 'IT')?.isValid();
           } catch (error) {
             console.error('Phone number parsing error:', error);
-            return false; // Parsing error, invalid phone number
+            return false;
           }
         },
       ),
     password: passwordYupSchema(t, 'auth.password'),
     codiceFiscale: yup
       .string()
-      .nullable() // Allow null values
-      .notRequired() // Make it optional in the schema
-      .test(
-        'codiceFiscale',
-        t('errors.field.invalid', { field: t('profile.codiceFiscale') }),
-        (value, context) => {
-          const useCodiceFiscale = context.options.context?.useCodiceFiscale;
-          if (!useCodiceFiscale || !value) {
-            return true; // Skip validation if not using CF or no value
-          }
-          if (
-            typeof value !== 'string' ||
-            value.length !== 16 ||
-            !CodiceFiscale.check(value.toUpperCase())
-          ) {
-            return false;
-          }
+      .trim()
+      .uppercase()
+      .test('codiceFiscale', t('signup.cfInvalid'), (value) => {
+        if (!useCodiceFiscale) {
           return true;
-        },
-      ),
+        }
+        if (
+          typeof value !== 'string' ||
+          value.length !== 16 ||
+          !CodiceFiscale.check(value)
+        ) {
+          return false;
+        }
+        return true;
+      }),
     birthCountry: yup
       .string()
       .required(
@@ -72,7 +64,7 @@ export const signupYupSchema = (t: TFunction) =>
       .length(
         2,
         t('errors.field.invalid', { field: t('profile.birthCountry') }),
-      ), // Assuming ISO Alpha-2 is always 2 chars
+      ),
     birthComune: yup
       .string()
       .nullable()
