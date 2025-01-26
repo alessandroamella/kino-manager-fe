@@ -5,11 +5,7 @@ import { signupYupSchema } from './signup';
 export const adminEditUserYupSchema = (t: TFunction) =>
   signupYupSchema(t, false).shape({
     password: yup.string().nullable().notRequired(),
-    documentNumber: yup
-      .string()
-      .required(
-        t('errors.field.required', { field: t('profile.documentNumber') }),
-      ),
+    documentNumber: yup.string().notRequired().nullable(),
     documentType: yup
       .string()
       .notRequired()
@@ -18,14 +14,6 @@ export const adminEditUserYupSchema = (t: TFunction) =>
         ['CIE', 'PASSPORT', 'DRIVING_LICENSE', 'OTHER'],
         t('errors.field.invalid', { field: t('profile.documentType') }),
       ),
-    documentExpiry: yup
-      .date()
-      .required(
-        t('errors.field.required', { field: t('profile.documentExpiry') }),
-      ),
-    membershipCardNumber: yup.string().required(
-      t('errors.field.required', {
-        field: t('profile.membershipCardNumber'),
-      }),
-    ),
+    documentExpiry: yup.date().notRequired().nullable(),
+    membershipCardNumber: yup.string().notRequired().nullable(),
   });
