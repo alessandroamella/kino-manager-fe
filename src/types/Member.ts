@@ -1,3 +1,4 @@
+import { BaseDocument } from './BaseDocument';
 import { MembershipCard } from './MembershipCard';
 
 export enum VerificationMethod {
@@ -5,8 +6,7 @@ export enum VerificationMethod {
   MANUAL = 'MANUAL',
 }
 
-export type Member = {
-  id: number;
+export interface Member extends BaseDocument {
   firstName: string;
   lastName: string;
   email: string;
@@ -17,11 +17,10 @@ export type Member = {
   birthComune: string | null;
   verificationDate: Date | null;
   verificationMethod: VerificationMethod | null;
-  createdAt: Date;
   phoneNumber: string;
   address: string;
   documentNumber: string | null;
   documentType: string | null;
   documentExpiry: Date | null;
   membershipCardNumber: MembershipCard['number'] | null;
-};
+}

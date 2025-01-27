@@ -1,8 +1,8 @@
+import { BaseDocument } from './BaseDocument';
 import { PurchaseItem } from './PurchaseItem';
 
-export interface Purchase {
-  id: number;
+export interface Purchase extends BaseDocument {
   purchaseDate: Date;
-  discount?: number;
+  discount: number | null;
   purchasedItems: PurchaseItem[];
 }
