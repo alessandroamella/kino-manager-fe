@@ -24,6 +24,7 @@ import { useTranslation } from 'react-i18next';
 import { FiCheck, FiX } from 'react-icons/fi';
 import usePurchasesStore from '../../store/purchases';
 import useUserStore from '../../store/user';
+import { format } from 'date-fns';
 
 interface FormData {
   discount: number;
@@ -329,7 +330,7 @@ const AdminPurchases = () => {
                       <TableCell>{purchase.id}</TableCell>
                       <TableCell>{purchase.discount}</TableCell>
                       <TableCell>
-                        {new Date(purchase.purchaseDate).toLocaleDateString()}
+                        {format(purchase.purchaseDate, 'dd/MM/yyyy HH:mm:ss')}
                       </TableCell>
                       <TableCell>
                         {purchase.purchasedItems.map((item) => {
