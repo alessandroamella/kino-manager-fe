@@ -28,6 +28,7 @@
     "firstName": "Nome",
     "firstNamePlaceholder": "Inserisci il tuo nome",
     "lastName": "Cognome",
+    "gender": "Sesso",
     "lastNamePlaceholder": "Inserisci il tuo cognome",
     "email": "Email",
     "emailPlaceholder": "Inserisci la tua email",
@@ -49,6 +50,7 @@
     "birthCountryPlaceholder": "Inizia a digitare il paese",
     "birthComune": "Comune di Nascita",
     "birthComunePlaceholder": "Inizia a digitare il comune",
+    "birthProvince": "Provincia di Nascita",
     "address": "Indirizzo",
     "addressPlaceholder": "Inserisci il tuo indirizzo",
     "addressSelected": "Indirizzo selezionato: {{address}}",
@@ -122,6 +124,11 @@
     "hours": "Ore",
     "minutes": "Minuti",
     "seconds": "Secondi"
+  },
+  "gender": {
+    "M": "♂️ Maschio",
+    "F": "♀️ Femmina",
+    "X": "Altro"
   },
   "profile": {
     "myProfile": "Il mio profilo",

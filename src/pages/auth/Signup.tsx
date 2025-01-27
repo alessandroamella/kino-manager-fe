@@ -1,5 +1,4 @@
-// Signup.tsx
-import React, { useState, useEffect, useCallback, useMemo, Key } from 'react';
+import { useState, useEffect, useCallback, useMemo, Key } from 'react';
 import {
   Form,
   Input,
@@ -12,40 +11,34 @@ import {
   Tab,
   Tabs,
   Card,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
 } from '@heroui/react';
 import type { CalendarDate } from '@heroui/react';
 import CodiceFiscale from 'codice-fiscale-js';
 import { useForm } from 'react-hook-form';
 import axios, { AxiosError } from 'axios';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Comune } from 'codice-fiscale-js/types/comune';
 import countries from 'i18n-iso-countries';
 import { useTranslation } from 'react-i18next';
 import { getErrorMsg } from '../../types/error';
 import { dateToCalendarDate } from '../../utils/calendar';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Link, useNavigate } from 'react-router';
+import { Link, useNavigate, useSearchParams } from 'react-router';
 import useUserStore from '../../store/user';
 import { UTCDateMini } from '@date-fns/utc';
 import { signupYupSchema } from '../../validators/signup';
-import { format } from 'date-fns';
+import { format, subYears } from 'date-fns';
 import ReactGA from 'react-ga4';
 import GoogleMapsAutocomplete from '../../components/GoogleMapsAutocomplete';
 import parsePhoneNumber from 'libphonenumber-js';
 import normalize from '../../utils/normalize';
+import { Comune } from '@/types/Comune';
+import { InferType } from 'yup';
 
-type FormData = {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phoneNumber: string;
-  password: string;
-  codiceFiscale: string | null;
-  birthDate: Date | null;
-  birthComune?: string | null;
-  birthCountry: string;
-  address: string;
-};
+type FormData = InferType<ReturnType<typeof signupYupSchema>>;
 
 interface Country {
   alpha2: string;
@@ -74,13 +67,14 @@ const Signup = () => {
     mode: 'onBlur',
     resolver: yupResolver(validationSchema, {
       context: { useCodiceFiscale },
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    }) as any,
+    }),
     defaultValues: {
       codiceFiscale: null,
       birthComune: null,
+      birthProvince: null,
+      gender: 'F',
       address: '',
-      birthCountry: 'IT', // Default to Italy, or your preferred default
+      birthCountry: 'IT',
     },
   });
 
@@ -97,6 +91,7 @@ const Signup = () => {
   const birthCountry = watch('birthCountry'); // Keep watching birthCountry
   const address = watch('address');
   const phoneNumber = watch('phoneNumber');
+  const gender = watch('gender');
 
   const phoneCountry = useMemo(() => {
     if (!phoneNumber) {
@@ -127,6 +122,13 @@ const Signup = () => {
   }, [codiceFiscaleValue]);
 
   useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  }, []);
+
+  useEffect(() => {
     const countryAlpha2Codes = Object.keys(countries.getAlpha2Codes());
     const countriesArray: Country[] = [];
     for (const alpha2 of countryAlpha2Codes) {
@@ -153,7 +155,7 @@ const Signup = () => {
     if (!useCodiceFiscale) {
       return;
     } else if (!codiceFiscaleData) {
-      setValue('birthDate', null);
+      setValue('birthDate', subYears(new Date(), 18));
       setValue('birthCountry', '');
       setValue('birthComune', null);
       trigger(['birthDate', 'birthCountry', 'birthComune']);
@@ -176,12 +178,16 @@ const Signup = () => {
         setValue('birthDate', birthDateFromCF);
         setValue('birthCountry', 'IT');
         setValue('birthComune', data.birthplace);
+        setValue('birthProvince', data.birthplaceProvincia);
+        setValue('gender', data.gender);
         trigger(['birthDate', 'birthCountry', 'birthComune']);
       } catch (error) {
         console.error('Error computing inverse CF:', error);
-        setValue('birthDate', null);
+        setValue('birthDate', subYears(new Date(), 18));
         setValue('birthCountry', '');
         setValue('birthComune', null);
+        setValue('birthProvince', null);
+        setValue('gender', null);
         trigger(['birthDate', 'birthCountry', 'birthComune']);
       }
     }
@@ -196,19 +202,26 @@ const Signup = () => {
   const handleDateChange = useCallback(
     (date: CalendarDate | null) => {
       console.log('Date selected:', date);
-      setValue('birthDate', date ? date.toDate('UTC') : null);
+      if (!date) {
+        return;
+      }
+      setValue('birthDate', date.toDate('UTC'));
       trigger('birthDate');
     },
     [setValue, trigger],
   );
 
   const handleComuneChange = useCallback(
-    (key: React.Key | null) => {
+    (key: Key | null) => {
       console.log('Comune selected:', key);
       if (!key && !birthComune) {
         return;
       }
-      setValue('birthComune', key?.toString() || null);
+      const k = key?.toString().split('|');
+      if (k?.length === 2 && k.every(Boolean)) {
+        setValue('birthComune', k[0]);
+        setValue('birthProvince', k[1]);
+      }
       trigger('birthComune');
     },
     [birthComune, setValue, trigger],
@@ -219,10 +232,10 @@ const Signup = () => {
   }, []);
 
   const handleCountryChange = useCallback(
-    (key: React.Key | null) => {
+    (key: Key | null) => {
       console.log('Country selected:', key);
       if (key) {
-        setValue('birthCountry', key as string); // Correctly set birthCountry with alpha2 code
+        setValue('birthCountry', key as string);
         trigger('birthCountry');
         if (key !== 'IT') {
           setValue('birthComune', null);
@@ -269,6 +282,8 @@ const Signup = () => {
   const login = useUserStore((store) => store.login);
   const navigate = useNavigate();
 
+  const [search] = useSearchParams();
+
   const onSubmit = async (formData: FormData) => {
     setSignupError(null);
     setLoading(true);
@@ -276,13 +291,48 @@ const Signup = () => {
     try {
       let obj: Partial<FormData> = { ...formData };
       if (!useCodiceFiscale) {
-        delete obj.codiceFiscale;
+        // let's try crafting a manual codice fiscale
+        let cfGuessValid = true;
+        if (obj.birthCountry === 'IT' && obj.birthComune) {
+          const [day, month, year] = [
+            obj.birthDate?.getDate(),
+            obj.birthDate?.getMonth(),
+            obj.birthDate?.getFullYear(),
+          ];
+          if (!obj.birthDate || !obj.birthProvince) {
+            cfGuessValid = false;
+          }
+          if (cfGuessValid) {
+            try {
+              obj.codiceFiscale = new CodiceFiscale({
+                birthplace: obj.birthComune!,
+                birthplaceProvincia: obj.birthProvince!,
+                day: day!,
+                month: month! + 1,
+                year: year!,
+                gender: obj.gender === 'F' ? 'F' : 'M',
+                name: obj.firstName!,
+                surname: obj.lastName!,
+              }).toString();
+            } catch (err) {
+              console.warn('Error creating CF:', err);
+              cfGuessValid = false;
+            }
+          }
+        }
+
+        if (!cfGuessValid) {
+          delete obj.codiceFiscale;
+        }
       }
       obj.phoneNumber = parsePhoneNumber(
         formData.phoneNumber,
         'IT',
       )?.formatInternational();
       console.log('Formatted phone number:', obj.phoneNumber);
+
+      delete obj.birthProvince;
+
       obj = normalize(obj); // remove undefined and empty strings
       console.log(
         'Sending signup request:',
@@ -299,9 +349,9 @@ const Signup = () => {
       });
 
       await login(formData.email, formData.password);
-      navigate('/profile');
+      navigate(search.get('to') || '/profile');
     } catch (error) {
-      console.error('Error signing up:', error);
+      console.error('Error signing up:', getErrorMsg(error));
       setSignupError(
         (error as AxiosError)?.response?.status === 409
           ? t('errors.auth.userAlreadyExists')
@@ -328,7 +378,7 @@ const Signup = () => {
       <AnimatePresence>
         {signupError && (
           <motion.div
-            className="sticky top-4 md:top-20 mx-4 md:w-fit md:ml-auto z-10"
+            className="sticky top-20 mx-4 md:w-fit rounded-xl dark:bg-red-500/50 md:ml-auto z-10"
             initial={{ opacity: 0, y: -50 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -50 }}
@@ -337,7 +387,6 @@ const Signup = () => {
             <Alert
               color="danger"
               title={t('signup.errorTitle')}
-              className="z-20"
               description={signupError}
               variant="faded"
               onClose={() => setSignupError(null)}
@@ -503,24 +552,60 @@ const Signup = () => {
                 </Autocomplete>
 
                 {isItalySelected && (
-                  <Autocomplete
-                    label={t('signup.birthComune')}
-                    placeholder={t('signup.birthComunePlaceholder')}
-                    items={comuneSuggestions}
-                    onSelectionChange={handleComuneChange}
-                    onInputChange={handleComuneInputChange}
-                    isRequired
-                    labelPlacement="outside"
-                    {...register('birthComune')}
-                    isInvalid={!!errors.birthComune}
-                    errorMessage={errors.birthComune?.message}
-                  >
-                    {(item) => (
-                      <AutocompleteItem key={item.nome}>
-                        {item.nome}
-                      </AutocompleteItem>
-                    )}
-                  </Autocomplete>
+                  <div className="flex gap-2 -mb-2">
+                    <Autocomplete
+                      label={t('signup.birthComune')}
+                      className="col-span-2"
+                      placeholder={t('signup.birthComunePlaceholder')}
+                      items={comuneSuggestions}
+                      onSelectionChange={handleComuneChange}
+                      onInputChange={handleComuneInputChange}
+                      isRequired
+                      labelPlacement="outside"
+                      {...register('birthComune')}
+                      isInvalid={!!errors.birthComune}
+                      errorMessage={errors.birthComune?.message}
+                    >
+                      {(item) => (
+                        <AutocompleteItem
+                          key={item.nome + '|' + item.provincia.sigla}
+                        >
+                          {item.nome}
+                        </AutocompleteItem>
+                      )}
+                    </Autocomplete>
+
+                    <div className="flex flex-col gap-1 min-w-32">
+                      <label
+                        htmlFor="gender"
+                        className="text-small text-foreground-600"
+                      >
+                        {t('signup.gender')}
+                      </label>
+                      <Dropdown>
+                        <DropdownTrigger>
+                          <Button variant="bordered">
+                            {t(`gender.${gender}`)}
+                          </Button>
+                        </DropdownTrigger>
+                        <DropdownMenu
+                          id="gender"
+                          onAction={(k) => setValue('gender', k.toString())}
+                          aria-label={t('signup.gender')}
+                          items={['M', 'F', 'X'].map((e) => ({
+                            key: e,
+                            label: t(`gender.${e}`),
+                          }))}
+                        >
+                          {(item) => (
+                            <DropdownItem key={item.key}>
+                              {item.label}
+                            </DropdownItem>
+                          )}
+                        </DropdownMenu>
+                      </Dropdown>
+                    </div>
+                  </div>
                 )}
               </div>
             </Tab>

@@ -1,4 +1,4 @@
-import { Outlet, useNavigate } from 'react-router';
+import { Outlet, useNavigate, useSearchParams } from 'react-router';
 import useUserStore from '../store/user';
 import { useShallow } from 'zustand/shallow';
 import { useEffect, useRef } from 'react';
@@ -8,12 +8,10 @@ const ProtectedRoute = ({
   mustBeAdmin,
   mustBeLoggedIn,
   mustBeLoggedOut,
-  redirectTo,
 }: {
   mustBeAdmin?: boolean;
   mustBeLoggedIn?: boolean;
   mustBeLoggedOut?: boolean;
-  redirectTo?: string;
 }) => {
   const { user, loading } = useUserStore(
     useShallow((store) => ({
@@ -21,6 +19,8 @@ const ProtectedRoute = ({
       loading: store.loading,
     })),
   );
+
+  const [search] = useSearchParams();
 
   const navigate = useNavigate();
 
@@ -42,7 +42,9 @@ const ProtectedRoute = ({
           ? user
           : false)
       ) {
-        navigate(redirectTo || '/');
+        navigate(
+          search.get('to') || (mustBeLoggedIn ? '/auth/login' : '/profile'),
+        );
       }
     }, 300);
 
@@ -53,7 +55,7 @@ const ProtectedRoute = ({
     mustBeLoggedIn,
     mustBeLoggedOut,
     navigate,
-    redirectTo,
+    search,
     user,
   ]);
 

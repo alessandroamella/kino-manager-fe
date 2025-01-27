@@ -41,6 +41,8 @@ export const signupYupSchema = (t: TFunction, useCodiceFiscale: boolean) =>
     password: passwordYupSchema(t, 'auth.password'),
     codiceFiscale: yup
       .string()
+      .notRequired()
+      .nullable()
       .trim()
       .uppercase()
       .test('codiceFiscale', t('signup.cfInvalid'), (value) => {
@@ -67,10 +69,24 @@ export const signupYupSchema = (t: TFunction, useCodiceFiscale: boolean) =>
       ),
     birthComune: yup
       .string()
-      .nullable()
       .notRequired()
+      .nullable()
       .min(1, t('errors.field.tooShort', { field: t('profile.birthComune') }))
       .max(255, t('errors.field.tooLong', { field: t('profile.birthComune') })),
+    birthProvince: yup
+      .string()
+      .notRequired()
+      .nullable()
+      .min(2, t('errors.field.tooShort', { field: t('profile.birthProvince') }))
+      .max(2, t('errors.field.tooLong', { field: t('profile.birthProvince') })),
+    gender: yup
+      .string()
+      .notRequired()
+      .nullable()
+      .oneOf(
+        ['M', 'F', 'X'],
+        t('errors.field.invalid', { field: t('profile.gender') }),
+      ),
     birthDate: yup
       .date()
       .required(t('errors.field.required', { field: t('profile.birthDate') })),

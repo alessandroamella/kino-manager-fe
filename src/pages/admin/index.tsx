@@ -48,111 +48,116 @@ const AdminPanel = () => {
   }, []);
 
   const hasFetchedUsers = useRef(false);
+  const hasFetchedCards = useRef(false); // Add ref for cards fetch
 
   useEffect(() => {
-    const fetchUsers = async () => {
+    const fetchUsersAndCards = async () => {
+      // Combine fetching users and cards
       if (hasFetchedUsers.current) {
         return;
       } else if (!token) {
-        console.error('No access token found, not fetching users');
+        console.error('No access token found, not fetching users and cards');
         return;
       }
       hasFetchedUsers.current = true;
       setLoading(true);
       setError(null);
       try {
-        const response = await axios.get<Member[]>('/v1/admin/users', {
+        const usersResponse = await axios.get<Member[]>('/v1/admin/users', {
           headers: { Authorization: `Bearer ${token}` },
         });
-        setUsers(response.data);
+        setUsers(usersResponse.data);
+
+        const cardsResponse = await axios.get<MembershipCard[]>(
+          '/v1/admin/cards',
+          {
+            // Fetch cards after users
+            headers: { Authorization: `Bearer ${token}` },
+          },
+        );
+        setCards(
+          cardsResponse.data.map((e) => ({
+            ...e,
+            member:
+              (e.member?.id &&
+                usersResponse.data.find((u) => u.id === e.member.id)) ||
+              null, // Use usersResponse.data here
+          })),
+        );
+        hasFetchedCards.current = true; // Mark cards as fetched
         setLoading(false);
       } catch (err) {
         setError(getErrorMsg(err));
         setLoading(false);
         hasFetchedUsers.current = false;
+        hasFetchedCards.current = false; // Reset cards fetch flag as well on error
       }
     };
 
-    fetchUsers();
+    fetchUsersAndCards(); // Call combined fetch function
   }, [setError, token]);
-
-  const hasFetchedCards = useRef(false);
-
-  useEffect(() => {
-    const fetchCards = async () => {
-      if (hasFetchedCards.current) {
-        return;
-      } else if (!token) {
-        console.error('No access token found, not fetching cards');
-        return;
-      } else if (!users) {
-        console.error('Users not fetched yet, not fetching cards');
-        return;
-      }
-      hasFetchedCards.current = true;
-      try {
-        const response = await axios.get<MembershipCard[]>('/v1/admin/cards', {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setCards(
-          response.data.map((e) => ({
-            ...e,
-            member:
-              (e.member?.id && users.find((u) => u.id === e.member.id)) || null,
-          })),
-        );
-      } catch (err) {
-        console.error('Error fetching cards:', getErrorMsg(err));
-        setError(getErrorMsg(err));
-        hasFetchedCards.current = false;
-      }
-    };
-
-    fetchCards();
-  }, [setError, token, users]);
 
   const availableCards = useMemo(() => {
     return cards?.filter((card) => !card.member);
   }, [cards]);
 
-  const handleAssignCard = async (userId: number, cardNumber: number) => {
-    if (!token) {
+  const handleAssignCard = async (user: Member, cardNumber: number | null) => {
+    if (typeof cardNumber !== 'number') {
+      console.log('No card number selected, cannot assign card');
+      return;
+    } else if (!token) {
       console.error('No access token found, cannot assign card');
       return;
     }
+    const confirm = window.confirm(
+      t('admin.verifyUserWarning', {
+        number: cardNumber,
+        user: user.firstName + ' ' + user.lastName,
+      }),
+    );
+    if (!confirm) {
+      return;
+    }
+
     setLoading(true);
     setError(null);
     try {
       const { data } = await axios.patch<void>(
         '/v1/admin/add-card',
-        { userId, membershipCardNumber: cardNumber },
+        { user: user.id, membershipCardNumber: cardNumber },
         { headers: { Authorization: `Bearer ${token}` } },
       );
       console.log('Card assigned:', data);
 
       // update user and cards state
       setUsers(
-        users.map((user) => {
-          if (user.id === userId) {
-            return {
-              ...user,
-              membershipCardNumber: cardNumber,
-              memberSince: new Date(),
-            };
-          }
-          return user;
-        }),
+        (
+          prevUsers, // Use functional update for users
+        ) =>
+          prevUsers.map((u) => {
+            if (u.id === user.id) {
+              return {
+                ...u,
+                membershipCardNumber: cardNumber,
+                memberSince: new Date(),
+              };
+            }
+            return u; // return u, not user
+          }),
       );
       setCards(
-        cards?.map((card) => {
-          if (card.number === cardNumber) {
-            return {
-              ...card,
-              member: users.find((u) => u.id === userId) || null,
-            }; // optimistic, member might not be fully updated yet
-          }
-          return card;
-        }) || null,
+        (
+          prevCards, // Use functional update for cards
+        ) =>
+          prevCards?.map((card) => {
+            if (card.number === cardNumber) {
+              return {
+                ...card,
+                member: users.find((u) => u.id === user.id) || null, // use latest users state
+              };
+            }
+            return card;
+          }) || null,
       );
     } catch (err) {
       setError(getErrorMsg(err));
@@ -272,21 +277,14 @@ const AdminPanel = () => {
                       <DropdownMenu
                         aria-label="Membership Card Number"
                         selectionMode="single"
-                        onSelectionChange={(selected) => {
-                          if (selected.currentKey) {
-                            const confirm = window.confirm(
-                              t('admin.verifyUserWarning', {
-                                number: selected.currentKey,
-                                user: user.firstName + ' ' + user.lastName,
-                              }),
-                            );
-                            if (!confirm) return;
-                            handleAssignCard(
-                              user.id,
-                              parseInt(selected.currentKey),
-                            );
-                          }
-                        }}
+                        onSelectionChange={(selected) =>
+                          handleAssignCard(
+                            user,
+                            selected.currentKey !== undefined
+                              ? parseInt(selected.currentKey)
+                              : null,
+                          )
+                        }
                       >
                         {availableCards.map((card) => (
                           <DropdownItem key={card.number}>
@@ -295,7 +293,7 @@ const AdminPanel = () => {
                         ))}
                       </DropdownMenu>
                     </Dropdown>
-                  ) : availableCards === null ? (
+                  ) : cards === null ? ( // Check cards directly instead of availableCards for loading state
                     <Spinner size="sm" />
                   ) : (
                     '-'

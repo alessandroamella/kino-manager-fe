@@ -9,7 +9,7 @@ import {
   Chip,
   Tooltip,
 } from '@heroui/react';
-import { format } from 'date-fns';
+import { format, isToday } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import useUserStore from '../../store/user';
 import {
@@ -24,7 +24,7 @@ import { dateFnsLang } from '../../utils/dateFnsLang';
 import { BiTime } from 'react-icons/bi';
 import useIsMobile from '../../utils/isMobile';
 import parsePhoneNumber from 'libphonenumber-js';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { hasFlag } from 'country-flag-icons';
 import getUnicodeFlagIcon from 'country-flag-icons/unicode';
 import { FaIdCard } from 'react-icons/fa';
@@ -33,6 +33,14 @@ const Profile = () => {
   const { t, i18n } = useTranslation();
 
   const user = useUserStore((store) => store.user);
+
+  useEffect(() => {
+    if (!user) return;
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  }, [user]);
 
   const isMobile = useIsMobile();
 
@@ -148,6 +156,7 @@ const Profile = () => {
                   {format(user.birthDate, 'dd MMMM yyyy', {
                     locale: dateFnsLang(i18n),
                   }) || '-'}
+                  {isToday(user.birthDate) && ' 🎂🥳'}
                 </p>
               </div>
               <div>

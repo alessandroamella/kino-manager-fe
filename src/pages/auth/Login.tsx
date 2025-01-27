@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Form, Input, Button, Alert, Card } from '@heroui/react';
 import { useForm } from 'react-hook-form';
 import useUserStore from '../../store/user';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router';
+import { useNavigate, useSearchParams } from 'react-router';
 
 type FormData = {
   email: string;
@@ -25,16 +25,25 @@ const Login = () => {
 
   const navigate = useNavigate();
 
+  const [search] = useSearchParams();
+
   const onSubmit = async (formData: FormData) => {
     setLoginError(null); // Clear previous error on new submit
     console.log('Login Form Data:', formData);
     const successful = await login(formData.email, formData.password);
     if (successful) {
-      navigate('/profile');
+      navigate(search.get('to') || '/profile');
     }
   };
 
   const { t } = useTranslation();
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  }, []);
 
   return (
     <main className="py-16 mb-2 flex flex-col gap-4">
