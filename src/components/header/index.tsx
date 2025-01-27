@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   Navbar,
   NavbarBrand,
@@ -34,6 +35,7 @@ import { FaCashRegister } from 'react-icons/fa';
 
 const Header = () => {
   const { t } = useTranslation();
+  const [isMenuOpen, setIsMenuOpen] = useState(false); // State to control menu open/close
 
   const user = useUserStore((store) => store.user);
   const loading = useUserStore((store) => store.loading);
@@ -42,17 +44,18 @@ const Header = () => {
   const location = useLocation();
 
   function handleClickItem() {
-    document.querySelector<HTMLButtonElement>('#menu-toggle')?.click();
+    setIsMenuOpen(false); // Close the menu when an item is clicked
   }
 
   return (
-    <Navbar isBordered className="bg-gray-50 dark:bg-gray-900">
+    <Navbar
+      isMenuOpen={isMenuOpen}
+      onMenuOpenChange={setIsMenuOpen}
+      isBordered
+      className="bg-gray-50 dark:bg-gray-900"
+    >
       <NavbarContent>
-        <NavbarMenuToggle
-          aria-label="Toggle menu"
-          className="sm:hidden"
-          id="menu-toggle"
-        />
+        <NavbarMenuToggle aria-label="Toggle menu" className="sm:hidden" />
 
         <NavbarBrand as={Link} to="/">
           <Image
@@ -149,7 +152,9 @@ const Header = () => {
           )}
         </NavbarContent>
 
-        <NavbarMenu className="gap-4">
+        <NavbarMenu>
+          {' '}
+          {/* Use isMenuOpen to control NavbarMenu */}
           <NavbarMenuItem className="mt-4" isActive={location.pathname === '/'}>
             <Link to="/" onClick={handleClickItem}>
               <AiOutlineHome className="mr-2 inline-block" />
@@ -168,7 +173,13 @@ const Header = () => {
                 </Link>
               </NavbarMenuItem>
               <NavbarMenuItem onClick={handleClickItem}>
-                <button onClick={logout} className="w-full text-left">
+                <button
+                  onClick={() => {
+                    logout();
+                    handleClickItem();
+                  }}
+                  className="w-full text-left"
+                >
                   <AiOutlineLogout className="mr-2 inline-block" />
                   {t('auth.logout')}
                 </button>
@@ -198,7 +209,6 @@ const Header = () => {
           <NavbarMenuItem>
             <ToggleTheme className="w-full" />
           </NavbarMenuItem>
-
           {user?.isAdmin && (
             <>
               <NavbarMenuItem className="cursor-pointer w-full">
@@ -208,6 +218,7 @@ const Header = () => {
                   color="danger"
                   to="/admin"
                   className="w-full"
+                  onClick={handleClickItem} // Optional: close menu after admin button click
                 >
                   <AiFillSetting className="mr-2" />
                   {t('admin.adminPanelShort')}
@@ -222,6 +233,7 @@ const Header = () => {
                   color="secondary"
                   to="/admin/purchases"
                   className="w-full"
+                  onClick={handleClickItem} // Optional: close menu after purchases button click
                 >
                   <FaCashRegister className="mr-2" />
                   {t('purchases.purchases')}

@@ -34,19 +34,13 @@ const App = () => {
   }, [accessToken]);
 
   useEffect(() => {
-    // Set the `lang` attribute on initial render
     document.documentElement.lang = i18n.language;
-
     console.log('i18n.language:', i18n.language);
 
-    // Listen for language changes and update `lang` dynamically
     const handleLanguageChange = (lang: string) => {
       document.documentElement.lang = lang;
     };
-
     i18n.on('languageChanged', handleLanguageChange);
-
-    // Cleanup listener on component unmount
     return () => {
       i18n.off('languageChanged', handleLanguageChange);
     };
@@ -61,17 +55,19 @@ const App = () => {
 
   const theme = useThemeStore((store) => store.theme);
   useEffect(() => {
+    console.log('Theme from store:', theme); // <---- ADD THIS LINE
     setHeroUITheme(theme);
   }, [setHeroUITheme, theme]);
 
   return (
     <main className={`${theme} text-foreground bg-background`}>
-      {/* en-gb to have dd/mm/yyyy date format instead of US mm/dd/yyyy */}
-      <HeroUIProvider locale={i18n.language === 'en' ? 'en-gb' : i18n.language}>
-        <I18nProvider locale={i18n.language}>
+      <I18nProvider locale={i18n.language}>
+        <HeroUIProvider
+          locale={i18n.language === 'en' ? 'en-gb' : i18n.language}
+        >
           <Outlet />
-        </I18nProvider>
-      </HeroUIProvider>
+        </HeroUIProvider>
+      </I18nProvider>
     </main>
   );
 };
