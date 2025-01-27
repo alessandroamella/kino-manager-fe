@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware'; // Import the persist middleware
 import axios, { isAxiosError } from 'axios';
-import { Member } from '../types/Member';
+import { Member, MemberWithToken } from '../types/Member';
 import { getErrorMsg } from '../types/error';
 import { sha256 } from '../utils/sha256';
 
@@ -28,24 +28,27 @@ const useUserStore = create<UserState>()(
       emailHash: null,
       loading: false,
       error: null,
-      fetchUser: async (accessToken: string) => {
+      fetchUser: async (_accessToken: string) => {
         set({ loading: true, error: null });
         console.log('Fetching user...');
         try {
-          const { data } = await axios.get<Member>('/v1/member/me', {
+          const { data } = await axios.get<MemberWithToken>('/v1/member/me', {
             headers: {
-              Authorization: `Bearer ${accessToken}`,
+              Authorization: `Bearer ${_accessToken}`,
             },
           });
           console.log('User data:', data);
           const emailHash = await sha256(data.email);
 
+          const { accessToken, ...memberData } = data;
+
           set({
             user: {
-              ...data,
+              ...memberData,
               emailHash,
-              isVerified: !!data.verificationDate,
+              isVerified: !!data.membershipCardNumber,
             },
+            accessToken,
             loading: false,
           });
         } catch (error) {

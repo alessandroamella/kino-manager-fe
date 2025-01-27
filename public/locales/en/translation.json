@@ -137,9 +137,7 @@
     "birthDate": "Birth Date",
     "birthComune": "Birth Comune",
     "birthCountry": "Birth Country",
-    "documentNumber": "Document Number",
-    "documentType": "Document Type",
-    "documentExpiry": "Document Expiry",
+    "noCardAssigned": "No card assigned",
     "membershipCardNumber": "Membership Number",
     "membershipCardNumberShort": "Card Num.",
     "verified": "Verified",
@@ -147,12 +145,7 @@
     "notVerified": "Not Verified",
     "selectVerificationMethod": "Select Verification Method",
     "sendVerificationCode": "Send Verification Code",
-    "verificationMethod": {
-      "sms": "SMS",
-      "email": "Email"
-    },
     "memberSince": "Member since",
-    "memberSinceDate": "Member since {{date}}",
     "verifiedOn": "Account verified on {{date}}",
     "toBeVerified": "Your account is not verified yet",
     "verifyAccount": "Verify Account",
@@ -199,14 +192,12 @@
     "verifyUserDocument": "Verify User Document",
     "documentData": "Document Data",
     "enterDocumentData": "Enter document data",
-    "verificationDate": "Verification Date",
-    "verificationMethod": "Verification Method",
     "verifyUser": "Verify User",
-    "noCardAssigned": "No card assigned",
     "cards": "Cards",
     "assignedTo": "Assigned to",
-    "verifyUserWarning": "Card #{{number}} will be assigned to user {{user}}, who will get verified. This is irreversible. Please be sure you have the correct data before clicking 'Save'.",
-    "cardAlreadyAssigned": "This user already has a membership card assigned. You cannot change it."
+    "verifyUserWarning": "Card #{{number}} will be assigned to user {{user}}, who will become al Almo member. This is irreversible. Please be sure you have the correct data before clicking 'Ok'.",
+    "cardAlreadyAssigned": "This user already has a membership card assigned. You cannot change it.",
+    "assignCard": "Assign Card"
   },
   "items": {
     "itemsTableTitle": "Items",

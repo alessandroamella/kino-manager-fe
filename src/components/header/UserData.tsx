@@ -7,24 +7,20 @@ const UserData = () => {
   const loading = useUserStore((store) => store.loading);
   const { t } = useTranslation();
 
-  return user?.emailHash && !loading ? (
-    <User
-      name={user.firstName}
-      description={t(
-        `profile.${user.verificationDate ? 'verified' : 'notVerified'}`,
-      )}
-      avatarProps={{
-        name: `${user.firstName} ${user.lastName}`,
-        src: `https://gravatar.com/avatar/${user.emailHash}`,
-      }}
-    />
-  ) : (
-    <Skeleton>
+  return (
+    <Skeleton isLoaded={!!user && !loading}>
       <User
-        name={user?.firstName || 'Lorem ipsum'}
-        description={t(
-          `profile.${user?.verificationDate ? 'verified' : 'notVerified'}`,
-        )}
+        name={user?.firstName || '-'}
+        description={
+          user?.membershipCardNumber &&
+          t('profile.card', {
+            n: user?.membershipCardNumber || '-',
+          })
+        }
+        avatarProps={{
+          name: `${user?.firstName || '-'} ${user?.lastName || '-'}`,
+          src: `https://gravatar.com/avatar/${user?.emailHash || '-'}`,
+        }}
       />
     </Skeleton>
   );

@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import axios from 'axios';
 import {
   Table,
@@ -8,45 +8,24 @@ import {
   TableRow,
   TableCell,
   Button,
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Input,
   Dropdown,
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
   Tooltip,
-  Form,
-  Alert,
-  Divider,
-  DateInput,
   Spinner,
-  Autocomplete,
-  AutocompleteItem,
   Skeleton,
-  Accordion,
-  AccordionItem,
+  Divider,
+  Alert,
 } from '@heroui/react';
 import { getErrorMsg } from '../../types/error';
 import { Member } from '../../types/Member';
 import { useTranslation } from 'react-i18next';
 import { FiCheck, FiDownload, FiEdit } from 'react-icons/fi';
 import useUserStore from '../../store/user';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { adminEditUserYupSchema } from '../../validators/adminEditUser';
 import { FaTimes } from 'react-icons/fa';
-import { CalendarDate } from '@internationalized/date';
 import { MembershipCard } from '../../types/MembershipCard';
-import countries from 'i18n-iso-countries';
-import { dateToCalendarDate } from '../../utils/calendar';
-import { normalize } from '../../utils/normalize';
-import { tryStoi } from '../../utils/tryStoi';
 import { format } from 'date-fns';
-import { DocumentType } from '../../types/DocumentType';
 
 interface MembershipCardExtended extends Omit<MembershipCard, 'member'> {
   member: Member | null;
@@ -55,59 +34,30 @@ interface MembershipCardExtended extends Omit<MembershipCard, 'member'> {
 const AdminPanel = () => {
   const [users, setUsers] = useState<Member[]>([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [selectedUser, setSelectedUser] = useState<Member | null>(null);
+  const [error, _setError] = useState<string | null>(null);
   const { t } = useTranslation();
-
-  const editModalOpen = useMemo(() => !!selectedUser, [selectedUser]);
-  const closeEditModal = () => setSelectedUser(null);
-
   const token = useUserStore((store) => store.accessToken);
+  const [cards, setCards] = useState<MembershipCardExtended[] | null>(null);
 
-  // React Hook Form for Edit User Modal
-  const {
-    handleSubmit,
-    register,
-    getValues,
-    setValue,
-    watch,
-    formState: { errors, isValid },
-  } = useForm<Member>({
-    mode: 'onBlur',
-    defaultValues: {
-      firstName: '',
-      lastName: '',
-      email: '',
-      phoneNumber: '',
-      address: '',
-      documentNumber: '',
-      documentType: null,
-      documentExpiry: null,
-      membershipCardNumber: null,
-      birthCountry: '',
-      codiceFiscale: '',
-      birthComune: null,
-      birthDate: new Date(),
-      verificationDate: null,
-      verificationMethod: null,
-    },
+  const setError = useCallback((err: string | null) => {
+    _setError(err);
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  }, []);
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    resolver: yupResolver(adminEditUserYupSchema(t)) as any, // Use yup resolver with schema
-  });
-
-  const membershipCardNumber = watch('membershipCardNumber');
-  const documentType = watch('documentType');
-  const birthCountry = watch('birthCountry');
-  const birthDate = watch('birthDate');
-  const documentExpiry = watch('documentExpiry');
+  const hasFetchedUsers = useRef(false);
 
   useEffect(() => {
     const fetchUsers = async () => {
-      if (!token) {
+      if (hasFetchedUsers.current) {
+        return;
+      } else if (!token) {
         console.error('No access token found, not fetching users');
         return;
       }
+      hasFetchedUsers.current = true;
       setLoading(true);
       setError(null);
       try {
@@ -119,21 +69,27 @@ const AdminPanel = () => {
       } catch (err) {
         setError(getErrorMsg(err));
         setLoading(false);
+        hasFetchedUsers.current = false;
       }
     };
 
     fetchUsers();
-  }, [token]);
+  }, [setError, token]);
+
+  const hasFetchedCards = useRef(false);
 
   useEffect(() => {
     const fetchCards = async () => {
-      if (!token) {
+      if (hasFetchedCards.current) {
+        return;
+      } else if (!token) {
         console.error('No access token found, not fetching cards');
         return;
       } else if (!users) {
         console.error('Users not fetched yet, not fetching cards');
         return;
       }
+      hasFetchedCards.current = true;
       try {
         const response = await axios.get<MembershipCard[]>('/v1/admin/cards', {
           headers: { Authorization: `Bearer ${token}` },
@@ -147,113 +103,64 @@ const AdminPanel = () => {
         );
       } catch (err) {
         console.error('Error fetching cards:', getErrorMsg(err));
+        setError(getErrorMsg(err));
+        hasFetchedCards.current = false;
       }
     };
 
     fetchCards();
-  }, [token, users]);
+  }, [setError, token, users]);
 
-  const handleEditUser = (user: Member) => {
-    console.log('Editing user:', user);
-
-    setValue('firstName', user.firstName);
-    setValue('lastName', user.lastName);
-    setValue('email', user.email);
-    setValue('phoneNumber', user.phoneNumber);
-    setValue('address', user.address);
-    setValue('documentNumber', user.documentNumber || '');
-    setValue('documentType', (user.documentType as DocumentType) || 'null'); // Default if null
-    setValue(
-      'documentExpiry',
-      user.documentExpiry ? new Date(user.documentExpiry) : null,
-    ); // Convert to Date if exists
-    setValue('membershipCardNumber', user.membershipCardNumber);
-    setValue('birthCountry', user.birthCountry);
-    setValue('codiceFiscale', user.codiceFiscale || '');
-    setValue('birthComune', user.birthComune || '');
-    setValue('birthDate', new Date(user.birthDate)); // Convert to Date if exists
-
-    setSelectedUser(user);
-  };
-
-  const [alert, setAlert] = useState<{
-    error: boolean;
-    content: string;
-  } | null>(null);
-
-  const saveEditedUser = async (data: Partial<Member>) => {
-    window.alert('document: ' + data.documentType);
-    data = {
-      id: selectedUser?.id,
-      ...normalize(data),
-      membershipCardNumber: tryStoi(data.membershipCardNumber),
-    };
-
-    if (!selectedUser) return;
-    setLoading(true);
-    setError(null);
-    try {
-      if (!token) {
-        setError('No access token found. Please log in.');
-        setAlert({
-          error: true,
-          content: 'Please log in to edit users',
-        });
-        setLoading(false);
-        return;
-      }
-
-      console.log('Editing user with data:', data);
-
-      const response = await axios.patch(`/v1/admin/edit-user`, data, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      if (data.membershipCardNumber && !selectedUser.membershipCardNumber) {
-        // If we assigned a card, set its member to the user
-        const card = cards?.find(
-          (card) => card.number === data.membershipCardNumber,
-        );
-        if (card) {
-          card.member = selectedUser;
-          setCards([...cards!]);
-        }
-      }
-
-      // Optimistically update the user in the table
-      setUsers(
-        users.map((user) =>
-          user.id === response.data.id ? response.data : user,
-        ),
-      );
-
-      closeEditModal();
-      setAlert({
-        error: false,
-        content: 'User updated successfully',
-      });
-      setSelectedUser(null);
-    } catch (err) {
-      // setError(getErrorMsg(err));
-      setAlert({
-        error: true,
-        content: 'Error updating user: ' + getErrorMsg(err),
-      });
-    } finally {
-      setLoading(false);
-      document.querySelector('.modal-body')?.scrollTo({
-        top: 0,
-        behavior: 'smooth',
-      });
-    }
-  };
-
-  const [cards, setCards] = useState<MembershipCardExtended[] | null>(null);
   const availableCards = useMemo(() => {
     return cards?.filter((card) => !card.member);
   }, [cards]);
 
-  const countryList = Object.keys(countries.getAlpha2Codes());
+  const handleAssignCard = async (userId: number, cardNumber: number) => {
+    if (!token) {
+      console.error('No access token found, cannot assign card');
+      return;
+    }
+    setLoading(true);
+    setError(null);
+    try {
+      const { data } = await axios.patch<void>(
+        '/v1/admin/add-card',
+        { userId, membershipCardNumber: cardNumber },
+        { headers: { Authorization: `Bearer ${token}` } },
+      );
+      console.log('Card assigned:', data);
+
+      // update user and cards state
+      setUsers(
+        users.map((user) => {
+          if (user.id === userId) {
+            return {
+              ...user,
+              membershipCardNumber: cardNumber,
+              memberSince: new Date(),
+            };
+          }
+          return user;
+        }),
+      );
+      setCards(
+        cards?.map((card) => {
+          if (card.number === cardNumber) {
+            return {
+              ...card,
+              member: users.find((u) => u.id === userId) || null,
+            }; // optimistic, member might not be fully updated yet
+          }
+          return card;
+        }) || null,
+      );
+    } catch (err) {
+      setError(getErrorMsg(err));
+      console.error('Error assigning card:', getErrorMsg(err));
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const [isExporting, setIsExporting] = useState(false);
 
@@ -297,17 +204,17 @@ const AdminPanel = () => {
     }
   };
 
-  const [printedValues, setPrintedValues] = useState<object | null>(null);
-  function printValues() {
-    setPrintedValues(getValues());
-  }
-
   return loading ? (
-    <div>{t('common.loading')}...</div>
-  ) : error ? (
-    <div>Error: {error}</div>
+    <Skeleton>
+      <div className="w-full h-96" />
+    </Skeleton>
   ) : (
     <main className="p-4 md:p-8 mb-4">
+      {error && (
+        <Alert className="-mt-2 mb-4" color="danger" title={t('errors.error')}>
+          {error}
+        </Alert>
+      )}
       <div className="flex items-center mb-4 flex-row justify-between">
         <h1 className="text-2xl font-bold">{t('admin.adminPanel')}</h1>
         <Button
@@ -324,37 +231,75 @@ const AdminPanel = () => {
         <Table aria-label="Users table" className="table pr-2">
           <TableHeader>
             <TableColumn>{t('admin.actions')}</TableColumn>
+            <TableColumn>{t('profile.membershipCardNumberShort')}</TableColumn>
             <TableColumn>{t('profile.firstName')}</TableColumn>
             <TableColumn>{t('profile.lastName')}</TableColumn>
             <TableColumn>{t('profile.birthDate')}</TableColumn>
             <TableColumn>{t('profile.birthCountry')}</TableColumn>
             <TableColumn>{t('profile.email')}</TableColumn>
-            <TableColumn>{t('profile.membershipCardNumberShort')}</TableColumn>
             <TableColumn>{t('profile.phoneNumber')}</TableColumn>
             <TableColumn>{t('admin.isAdmin')}</TableColumn>
-            <TableColumn>{t('profile.verified')}</TableColumn>
-            <TableColumn>{t('admin.verificationMethod')}</TableColumn>
-            <TableColumn>{t('profile.createdAt')}</TableColumn>
-            <TableColumn>{t('profile.documentType')}</TableColumn>
-            <TableColumn>{t('profile.documentNumber')}</TableColumn>
-            <TableColumn>{t('profile.documentExpiry')}</TableColumn>
+            <TableColumn>{t('profile.memberSince')}</TableColumn>
           </TableHeader>
           <TableBody items={users}>
             {(user) => (
               <TableRow key={user.id}>
                 <TableCell>
                   <div className="flex gap-2">
-                    <Tooltip content="Edit">
+                    <Tooltip content="Edit (removed)">
                       <Button
                         isIconOnly
                         variant="light"
                         aria-label="Edit"
-                        onPress={() => handleEditUser(user)}
+                        isDisabled
                       >
                         <FiEdit size={18} />
                       </Button>
                     </Tooltip>
                   </div>
+                </TableCell>
+
+                <TableCell>
+                  {user.membershipCardNumber ? (
+                    user.membershipCardNumber
+                  ) : availableCards && availableCards.length > 0 ? (
+                    <Dropdown>
+                      <DropdownTrigger>
+                        <Button variant="bordered" size="sm">
+                          {t('admin.assignCard')}
+                        </Button>
+                      </DropdownTrigger>
+                      <DropdownMenu
+                        aria-label="Membership Card Number"
+                        selectionMode="single"
+                        onSelectionChange={(selected) => {
+                          if (selected.currentKey) {
+                            const confirm = window.confirm(
+                              t('admin.verifyUserWarning', {
+                                number: selected.currentKey,
+                                user: user.firstName + ' ' + user.lastName,
+                              }),
+                            );
+                            if (!confirm) return;
+                            handleAssignCard(
+                              user.id,
+                              parseInt(selected.currentKey),
+                            );
+                          }
+                        }}
+                      >
+                        {availableCards.map((card) => (
+                          <DropdownItem key={card.number}>
+                            {t('profile.card', { n: card.number })}
+                          </DropdownItem>
+                        ))}
+                      </DropdownMenu>
+                    </Dropdown>
+                  ) : availableCards === null ? (
+                    <Spinner size="sm" />
+                  ) : (
+                    '-'
+                  )}
                 </TableCell>
                 <TableCell>{user.firstName}</TableCell>
                 <TableCell>{user.lastName}</TableCell>
@@ -365,7 +310,6 @@ const AdminPanel = () => {
                 <TableCell>{t(`countries.${user.birthCountry}`)}</TableCell>
                 {/* Display birthCountry */}
                 <TableCell>{user.email}</TableCell>
-                <TableCell>{user.membershipCardNumber || '-'}</TableCell>
                 <TableCell>{user.phoneNumber}</TableCell>
                 <TableCell>
                   {user.isAdmin ? (
@@ -375,22 +319,11 @@ const AdminPanel = () => {
                   )}
                 </TableCell>
                 <TableCell>
-                  {user.verificationDate ? (
-                    <FiCheck className="text-green-300" />
+                  {user.memberSince ? (
+                    format(user.memberSince, 'dd/MM/yyyy')
                   ) : (
                     <FaTimes className="text-red-300" />
                   )}
-                </TableCell>
-                <TableCell>{user.verificationMethod || '-'}</TableCell>
-                <TableCell>{format(user.createdAt, 'dd/MM/yyyy')}</TableCell>
-                <TableCell>
-                  {user.documentType ? t(`document.${user.documentType}`) : '-'}
-                </TableCell>
-                <TableCell>{user.documentNumber || '-'}</TableCell>
-                <TableCell>
-                  {user.documentExpiry
-                    ? format(user.documentExpiry, 'dd/MM/yyyy')
-                    : '-'}
                 </TableCell>
               </TableRow>
             )}
@@ -431,303 +364,6 @@ const AdminPanel = () => {
           <div className="w-full h-96" />
         </Skeleton>
       )}
-
-      {/* Edit User Modal */}
-      <Modal
-        size="3xl"
-        isOpen={editModalOpen}
-        onOpenChange={(e) => !e && closeEditModal()}
-      >
-        <ModalContent as={Form} onSubmit={handleSubmit(saveEditedUser)}>
-          <ModalHeader>
-            {t('admin.editUser', {
-              user: selectedUser ? `#${selectedUser.id}` : '-',
-            })}
-          </ModalHeader>
-          <ModalBody className="modal-body md:max-h-[70vh] w-full overflow-y-auto">
-            {alert && (
-              <Alert
-                color={alert.error ? 'danger' : 'success'}
-                onClose={() => setAlert(null)}
-              >
-                {alert.content}
-              </Alert>
-            )}
-
-            {selectedUser ? (
-              <>
-                <div className="grid grid-cols-2 gap-6">
-                  <Input
-                    isRequired
-                    type="text"
-                    label={t('profile.firstName')}
-                    isInvalid={!!errors.firstName}
-                    errorMessage={errors.firstName?.message}
-                    {...register('firstName')}
-                  />
-                  <Input
-                    isRequired
-                    type="text"
-                    label={t('profile.lastName')}
-                    isInvalid={!!errors.lastName}
-                    errorMessage={errors.lastName?.message}
-                    {...register('lastName')}
-                  />
-                  <Input
-                    isRequired
-                    type="email"
-                    label={t('profile.email')}
-                    isInvalid={!!errors.email}
-                    errorMessage={errors.email?.message}
-                    {...register('email')}
-                  />
-                  <Input
-                    isRequired
-                    type="text"
-                    label={t('profile.address')}
-                    isInvalid={!!errors.address}
-                    errorMessage={errors.address?.message}
-                    {...register('address')}
-                  />
-                  <Input
-                    isRequired
-                    type="tel"
-                    label={t('profile.phoneNumber')}
-                    isInvalid={!!errors.phoneNumber}
-                    errorMessage={errors.phoneNumber?.message}
-                    {...register('phoneNumber')}
-                  />
-
-                  <Autocomplete
-                    label="Paese di Nascita"
-                    placeholder="Inizia a digitare il paese"
-                    value={birthCountry}
-                    defaultSelectedKey={selectedUser.birthCountry}
-                    onSelectionChange={(e) =>
-                      e && setValue('birthCountry', e.toString())
-                    }
-                    isRequired
-                    labelPlacement="outside"
-                    isInvalid={!!errors.birthCountry}
-                    errorMessage={errors.birthCountry?.message}
-                  >
-                    {countryList.map((e) => (
-                      <AutocompleteItem key={e}>
-                        {t('countries.' + e)}
-                      </AutocompleteItem>
-                    ))}
-                  </Autocomplete>
-                  <Input
-                    type="text"
-                    label={t('profile.codiceFiscale')}
-                    isInvalid={!!errors.codiceFiscale}
-                    errorMessage={errors.codiceFiscale?.message}
-                    {...register('codiceFiscale')}
-                  />
-                  <Input
-                    type="text"
-                    label={t('profile.birthComune')}
-                    isInvalid={!!errors.birthComune}
-                    errorMessage={errors.birthComune?.message}
-                    {...register('birthComune')}
-                  />
-                  <DateInput
-                    isRequired
-                    label={t('profile.birthDate')}
-                    defaultValue={dateToCalendarDate(
-                      birthDate || selectedUser.birthDate,
-                    )}
-                    isInvalid={!!errors.birthDate}
-                    errorMessage={errors.birthDate?.message}
-                    {...{
-                      ...register('birthDate'),
-                      onChange: (date) => {
-                        setValue(
-                          'birthDate',
-                          (date as unknown as CalendarDate).toDate('UTC'),
-                        );
-                      },
-                    }}
-                  />
-                </div>
-
-                <Divider className="my-4" />
-
-                <h2 className="text-lg font-semibold">
-                  {t('admin.verifyUser')}
-                </h2>
-
-                {!selectedUser.membershipCardNumber && membershipCardNumber && (
-                  <Alert color="warning" title={t('common.warning')}>
-                    {t('admin.verifyUserWarning', {
-                      number: membershipCardNumber,
-                      user:
-                        selectedUser.firstName + ' ' + selectedUser.lastName,
-                    })}
-                  </Alert>
-                )}
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                      {t('profile.documentType')}
-                    </p>
-                    <Dropdown>
-                      <DropdownTrigger>
-                        <Button variant="bordered" size="sm">
-                          {t(`document.${documentType}`)}
-                        </Button>
-                      </DropdownTrigger>
-                      <DropdownMenu
-                        aria-label="Document Type"
-                        selectionMode="single"
-                        onSelectionChange={(selected) => {
-                          if (selected) {
-                            setValue(
-                              'documentType',
-                              selected.currentKey as DocumentType,
-                            );
-                          }
-                        }}
-                      >
-                        {['null', ...Object.values(DocumentType)].map(
-                          (type) => (
-                            <DropdownItem key={type}>
-                              {t(`document.${type}`)}
-                            </DropdownItem>
-                          ),
-                        )}
-                      </DropdownMenu>
-                    </Dropdown>
-                  </div>
-                  <Input
-                    type="text"
-                    label={t('profile.documentNumber')}
-                    isInvalid={!!errors.documentNumber}
-                    errorMessage={errors.documentNumber?.message}
-                    {...register('documentNumber')}
-                  />
-                  <DateInput
-                    label={t('profile.documentExpiry')}
-                    defaultValue={
-                      documentExpiry || selectedUser.documentExpiry
-                        ? dateToCalendarDate(
-                            (documentExpiry || selectedUser.documentExpiry)!,
-                          )
-                        : undefined
-                    }
-                    isInvalid={!!errors.documentExpiry}
-                    errorMessage={errors.documentExpiry?.message}
-                    {...{
-                      ...register('documentExpiry'),
-                      onChange: (date) => {
-                        console.log('Date changed:', date);
-                        setValue(
-                          'documentExpiry',
-                          (date as unknown as CalendarDate).toDate('UTC'),
-                        );
-                      },
-                    }}
-                  />
-                  {selectedUser.membershipCardNumber ? (
-                    <Tooltip content={t('admin.cardAlreadyAssigned')}>
-                      <div className="w-full">
-                        <Input
-                          isRequired
-                          isDisabled
-                          type="text"
-                          label={t('profile.membershipCardNumber')}
-                          value={selectedUser.membershipCardNumber.toString()}
-                        />
-                      </div>
-                    </Tooltip>
-                  ) : availableCards ? (
-                    <Dropdown>
-                      <DropdownTrigger className="h-full">
-                        <Button variant="bordered" size="sm">
-                          {membershipCardNumber || t('admin.noCardAssigned')}
-                        </Button>
-                      </DropdownTrigger>
-                      <DropdownMenu
-                        aria-label="Membership Card Number"
-                        selectionMode="single"
-                        onSelectionChange={(selected) => {
-                          if (selected.currentKey) {
-                            console.log('Selected card:', selected.currentKey);
-                            setValue(
-                              'membershipCardNumber',
-                              parseInt(selected.currentKey),
-                            );
-                          }
-                        }}
-                      >
-                        {availableCards.map((card) => (
-                          <DropdownItem key={card.number}>
-                            {t('profile.card', { n: card.number })}
-                          </DropdownItem>
-                        ))}
-                      </DropdownMenu>
-                    </Dropdown>
-                  ) : (
-                    <Spinner />
-                  )}
-                </div>
-
-                <Accordion className="mt-4">
-                  <AccordionItem title="DEBUG">
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <Button
-                          type="button"
-                          variant="bordered"
-                          onPress={printValues}
-                        >
-                          Print Values
-                        </Button>
-                        <p className="mt-6">
-                          Is valid:{' '}
-                          <strong>{isValid ? 'true' : 'false'}</strong>
-                        </p>
-                        <p className="mt-2">
-                          Errors:
-                          <pre>
-                            <code>{JSON.stringify(errors, null, 2)}</code>
-                          </pre>
-                        </p>
-                      </div>
-
-                      <pre>
-                        <code>{JSON.stringify(printedValues, null, 2)}</code>
-                      </pre>
-                    </div>
-                  </AccordionItem>
-                </Accordion>
-              </>
-            ) : (
-              <Skeleton>
-                <div className="w-full h-96" />
-              </Skeleton>
-            )}
-          </ModalBody>
-          <ModalFooter className="flex gap-4 justify-center w-full">
-            <Button
-              color="secondary"
-              variant="flat"
-              type="button"
-              onPress={() => closeEditModal()}
-            >
-              {t('common.cancel')}
-            </Button>
-            <Button
-              isDisabled={!isValid || loading}
-              color="primary"
-              type="submit"
-            >
-              {loading ? <Spinner /> : t('common.save')}
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
     </main>
   );
 };
