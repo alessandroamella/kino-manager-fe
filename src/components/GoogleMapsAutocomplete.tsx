@@ -38,7 +38,7 @@ const GoogleMapsAutocomplete = ({
     null,
   );
   const loaderRef = useRef<Loader | null>(null);
-  const debounceTimeoutRef = useRef<number | null>(null); // For debouncing predictions
+  const debounceTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null); // For debouncing predictions
 
   const { i18n } = useTranslation();
 

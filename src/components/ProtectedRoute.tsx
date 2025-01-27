@@ -24,7 +24,7 @@ const ProtectedRoute = ({
 
   const navigate = useNavigate();
 
-  const timeoutRef = useRef<number | null>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (timeoutRef.current) {

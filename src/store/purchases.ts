@@ -6,7 +6,10 @@ import { Purchase } from '../types/Purchase';
 import { PurchasedItemNoPurchaseId } from '../types/PurchaseItem';
 import { Category, CategoryWithItems } from '@/types/Category';
 
-type CreatePurchase = Omit<Purchase, 'id' | 'purchasedItems'> & {
+type CreatePurchase = Omit<
+  Purchase,
+  'id' | 'purchasedItems' | 'createdAt' | 'updatedAt'
+> & {
   purchasedItems: PurchasedItemNoPurchaseId[];
 };
 

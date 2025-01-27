@@ -1,5 +1,5 @@
 export interface BaseDocument {
-  id: string;
+  id: number;
   createdAt: Date;
   updatedAt: Date;
 }
