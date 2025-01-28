@@ -6,9 +6,9 @@ import {
   AutocompleteSection,
 } from '@heroui/react';
 import { Loader } from '@googlemaps/js-api-loader';
-import { mapsApiKey } from '../constants/maps';
 import { useTranslation } from 'react-i18next';
-import { sanCesarioCoords } from '../constants/coords';
+import { mapsApiKey } from '../../constants/maps';
+import { sanCesarioCoords } from '../../constants/coords';
 
 const DEBOUNCE_DELAY = 300; // Time to wait after typing before searching
 

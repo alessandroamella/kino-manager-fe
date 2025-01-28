@@ -39,8 +39,6 @@ export const parseAddress = (
     return parsedAddress; // Return default null values if input is invalid
   }
 
-  console.log(addressData.address_components);
-
   for (const component of addressData.address_components) {
     const types = component.types;
 

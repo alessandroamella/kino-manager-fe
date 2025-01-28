@@ -85,7 +85,7 @@ const Header = () => {
           {user ? (
             <Dropdown placement="bottom-end">
               <DropdownTrigger>
-                <NavbarItem className="cursor-pointer mt-2">
+                <NavbarItem className="cursor-pointer mt-2 mr-2 min-w-20">
                   <UserData />
                 </NavbarItem>
               </DropdownTrigger>

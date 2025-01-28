@@ -109,4 +109,7 @@ export const signupYupSchema = (t: TFunction, useCodiceFiscale: boolean) =>
     city: yup.string().notRequired().nullable().min(1).max(255),
     province: yup.string().notRequired().nullable().min(2).max(2),
     country: yup.string().notRequired().nullable().min(2).max(2),
+    signatureB64: yup
+      .string()
+      .required(t('errors.field.required', { field: t('signup.signature') })),
   });

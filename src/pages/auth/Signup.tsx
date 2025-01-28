@@ -15,6 +15,8 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
+  Tooltip,
+  Image,
 } from '@heroui/react';
 import type { CalendarDate } from '@heroui/react';
 import CodiceFiscale from 'codice-fiscale-js';
@@ -32,12 +34,16 @@ import { UTCDateMini } from '@date-fns/utc';
 import { signupYupSchema } from '../../validators/signup';
 import { format, subYears } from 'date-fns';
 import ReactGA from 'react-ga4';
-import GoogleMapsAutocomplete from '../../components/GoogleMapsAutocomplete';
 import parsePhoneNumber from 'libphonenumber-js';
 import normalize from '../../utils/normalize';
 import { Comune } from '@/types/Comune';
 import { InferType } from 'yup';
 import { parseAddress } from '@/utils/parseAddress';
+import SignatureModal from '@/components/input/SignatureModal';
+import GoogleMapsAutocomplete from '@/components/input/GoogleMapsAutocomplete';
+import { FaEdit } from 'react-icons/fa';
+import signaturePlaceholder from '../../assets/images/firma.webp';
+import { cn } from '@/lib/utils';
 
 type FormData = InferType<ReturnType<typeof signupYupSchema>>;
 
@@ -56,6 +62,8 @@ const Signup = () => {
     () => signupYupSchema(t, useCodiceFiscale),
     [t, useCodiceFiscale],
   );
+
+  const [isSignatureModalOpen, setIsSignatureModalOpen] = useState(false);
 
   const {
     register,
@@ -89,10 +97,11 @@ const Signup = () => {
   const codiceFiscaleValue = watch('codiceFiscale')?.toUpperCase() || '';
   const birthDate = watch('birthDate');
   const birthComune = watch('birthComune');
-  const birthCountry = watch('birthCountry'); // Keep watching birthCountry
+  const birthCountry = watch('birthCountry');
   const address = watch('address');
   const phoneNumber = watch('phoneNumber');
   const gender = watch('gender');
+  const signatureB64 = watch('signatureB64');
 
   const phoneCountry = useMemo(() => {
     if (!phoneNumber) {
@@ -222,6 +231,8 @@ const Signup = () => {
       if (k?.length === 2 && k.every(Boolean)) {
         setValue('birthComune', k[0]);
         setValue('birthProvince', k[1]);
+      } else {
+        console.warn('Invalid comune key:', key);
       }
       trigger('birthComune');
     },
@@ -239,8 +250,11 @@ const Signup = () => {
         setValue('birthCountry', key as string);
         trigger('birthCountry');
         if (key !== 'IT') {
+          console.log('Clearing comune and province');
           setValue('birthComune', null);
+          setValue('birthProvince', null);
           trigger('birthComune');
+          trigger('birthProvince');
         }
       }
     },
@@ -368,9 +382,7 @@ const Signup = () => {
   function handleSelectionChange(key: Key) {
     setUseCodiceFiscale(key === 'codice-fiscale');
     if (key === 'manual') {
-      setValue('birthComune', null);
       setComuneSuggestions([]);
-      trigger('birthComune');
     }
   }
 
@@ -392,8 +404,21 @@ const Signup = () => {
     setValue('country', parsed.country);
   }
 
+  function handleSignatureSave(signature: string | null) {
+    if (signature) {
+      setValue('signatureB64', signature);
+    }
+    trigger('signatureB64');
+    setIsSignatureModalOpen(false);
+  }
+
   return (
     <main className="py-12 mb-2 flex flex-col gap-4 relative">
+      <SignatureModal
+        onSaveSignature={handleSignatureSave}
+        isOpen={isSignatureModalOpen}
+        setIsOpen={setIsSignatureModalOpen}
+      />
       <AnimatePresence>
         {signupError && (
           <motion.div
@@ -644,6 +669,38 @@ const Signup = () => {
             }
             onBlur={() => trigger('address')}
           />
+
+          <div className="flex flex-col gap-2 w-full min-w-32">
+            <div className="flex justify-between items-center gap-2">
+              <label
+                htmlFor="gender"
+                className="text-small text-foreground-600"
+              >
+                {t('signup.signature')}
+              </label>
+              <Tooltip content={t('signup.editSignature')}>
+                <Button
+                  isIconOnly
+                  onPress={() => setIsSignatureModalOpen(true)}
+                >
+                  <FaEdit />
+                </Button>
+              </Tooltip>
+            </div>
+            <Image
+              onClick={() => setIsSignatureModalOpen(true)}
+              src={signatureB64 || signaturePlaceholder}
+              alt={t('signup.signature')}
+              className={cn('w-full cursor-pointer border-2', {
+                'border-danger-500': errors.signatureB64,
+              })}
+            />
+            {errors.signatureB64 && (
+              <p className="text-danger text-center text-small">
+                {errors.signatureB64.message}
+              </p>
+            )}
+          </div>
 
           <Button
             color="primary"

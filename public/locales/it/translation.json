@@ -6,7 +6,9 @@
     "loading": "Caricamento",
     "cancel": "Annulla",
     "save": "Salva",
-    "warning": "Attenzione"
+    "warning": "Attenzione",
+    "close": "Chiudi",
+    "confirm": "Conferma"
   },
   "header": {
     "userActions": "Azioni utente",
@@ -37,7 +39,7 @@
     "password": "Password",
     "passwordPlaceholder": "Inserisci la tua password",
     "personalDataHeading": "Dati personali",
-    "personalDataDescription": "Se hai il codice fiscale, inseriscilo per compilare automaticamente i tuoi dati personali.\nSe non hai il codice fiscale, clicca su \"Manuale\" per inserire i dati manualmente.",
+    "personalDataDescription": "Se hai il codice fiscale, inseriscilo per compilare automaticamente i tuoi dati personali.\nSe non hai il codice fiscale o non te lo ricordi, clicca su \"Manuale\" per inserire i dati manualmente.",
     "cfTab": "Codice Fiscale",
     "manualTab": "Manuale",
     "codiceFiscale": "Codice Fiscale",
@@ -65,7 +67,9 @@
     "alreadyAccount": "Hai già un account?",
     "errorTitle": "Errore durante la registrazione",
     "errorCloseAria": "Chiudi avviso di errore",
-    "tabsAriaLabel": "Registrati con o senza codice fiscale"
+    "tabsAriaLabel": "Registrati con o senza codice fiscale",
+    "signature": "Firma",
+    "editSignature": "Modifica firma"
   },
   "docs": {
     "disclaimer": "Disclaimer sulla traduzione",
@@ -212,6 +216,14 @@
     "cardAlreadyAssigned": "A questo utente è già stata assegnata una tessera. Non puoi modificarla.",
     "assignCard": "Assegna tessera",
     "downloadMembershipForm": "Scarica modulo di iscrizione"
+  },
+  "signature": {
+    "openModalButton": "Firma",
+    "modalHeader": "Firma qui",
+    "instructions": "Firma qui usando il mouse o il dito",
+    "rotateDeviceTitle": "Ruota il dispositivo",
+    "rotateDeviceMessage": "Questa funzione è disponibile solo in modalità orizzontale. Ruota il dispositivo per continuare.",
+    "erase": "Cancella"
   },
   "items": {
     "itemsTableTitle": "Articoli",

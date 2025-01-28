@@ -169,6 +169,11 @@ const Profile = () => {
                   </span>
                 </div>
                 <p className="text-foreground-500">
+                  {hasFlag(user.birthCountry) && (
+                    <span className="mr-2">
+                      {getUnicodeFlagIcon(user.birthCountry)}
+                    </span>
+                  )}
                   {t(`countries.${user.birthCountry}`) || '-'}
                 </p>
               </div>

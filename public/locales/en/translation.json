@@ -6,7 +6,9 @@
     "loading": "Loading",
     "cancel": "Cancel",
     "save": "Save",
-    "warning": "Warning"
+    "warning": "Warning",
+    "close": "Close",
+    "confirm": "Confirm"
   },
   "header": {
     "userActions": "User actions",
@@ -37,7 +39,7 @@
     "password": "Password",
     "passwordPlaceholder": "Enter your password",
     "personalDataHeading": "Personal Data",
-    "personalDataDescription": "If you have a fiscal code, enter it to automatically fill in your personal data.\nIf you don't have a fiscal code, click on \"Manual\" to enter the data manually.",
+    "personalDataDescription": "If you have an Italian fiscal code, enter it to automatically fill in your personal data.\nIf you don't have a fiscal code or don't rember it, click on \"Manual\" to enter the data manually.",
     "cfTab": "Fiscal Code",
     "manualTab": "Manual",
     "codiceFiscale": "Fiscal Code",
@@ -59,7 +61,9 @@
     "alreadyAccount": "Already have an account?",
     "errorTitle": "Error during registration",
     "errorCloseAria": "Close error alert",
-    "tabsAriaLabel": "Sign up with or without fiscal code"
+    "tabsAriaLabel": "Sign up with or without fiscal code",
+    "signature": "Signature",
+    "editSignature": "Edit Signature"
   },
   "docs": {
     "disclaimer": "Translation disclaimer",
@@ -215,6 +219,14 @@
     "cardAlreadyAssigned": "This user already has a membership card assigned. You cannot change it.",
     "assignCard": "Assign Card",
     "downloadMembershipForm": "Download Membership Card"
+  },
+  "signature": {
+    "openModalButton": "Write signature",
+    "modalHeader": "Sign here",
+    "instructions": "Sign here using your mouse or finger",
+    "rotateDeviceTitle": "Please rotate your device",
+    "rotateDeviceMessage": "This feature is only available in landscape mode. Please rotate your device to continue.",
+    "erase": "Erase"
   },
   "items": {
     "itemsTableTitle": "Items",

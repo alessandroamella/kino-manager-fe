@@ -48,6 +48,7 @@ app.use(
         'https://*.googleapis.com',
         'https://www.googletagmanager.com',
         'https://gravatar.com',
+        'https://kinocafe-static.bitrey.it',
       ],
       connectSrc: [
         "'self'",
@@ -57,7 +58,6 @@ app.use(
         'https://*.google-analytics.com',
       ],
       fontSrc: ["'self'", 'https://fonts.gstatic.com'],
-      // ... other directives as needed
     },
   }),
 );

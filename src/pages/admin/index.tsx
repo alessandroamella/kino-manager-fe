@@ -250,11 +250,11 @@ const AdminPanel = () => {
               {t('profile.gender')}
             </TableColumn>
             <TableColumn>{t('profile.birthDate')}</TableColumn>
-            <TableColumn>{t('admin.bornIn')}</TableColumn>
+            <TableColumn className="min-w-36">{t('admin.bornIn')}</TableColumn>
             <TableColumn>{t('profile.email')}</TableColumn>
             <TableColumn>{t('profile.phoneNumber')}</TableColumn>
             <TableColumn>{t('profile.codiceFiscale')}</TableColumn>
-            <TableColumn className="min-w-96">
+            <TableColumn className="min-w-[26rem]">
               {t('profile.address')}
             </TableColumn>
             <TableColumn className="min-w-52">
