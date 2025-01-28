@@ -25,40 +25,42 @@ console.log('BACKEND_URL:', backendUrl);
 
 // Secure the app with Helmet and configure Content Security Policy
 app.use(
-  helmet.contentSecurityPolicy({
-    directives: {
-      defaultSrc: ["'self'"],
-      scriptSrc: [
-        "'self'",
-        'https://maps.googleapis.com',
-        'https://maps.gstatic.com',
-        'https://www.googletagmanager.com',
-      ],
-      styleSrc: [
-        "'self'",
-        "'unsafe-inline'",
-        'https://fonts.googleapis.com',
-        'https://maps.googleapis.com',
-        'https://maps.gstatic.com',
-      ],
-      imgSrc: [
-        "'self'",
-        'data:',
-        'blob:',
-        'https://maps.gstatic.com',
-        'https://*.googleapis.com',
-        'https://www.googletagmanager.com',
-        'https://gravatar.com',
-        'https://kinocafe-static.bitrey.it',
-      ],
-      connectSrc: [
-        "'self'",
-        'https://maps.googleapis.com',
-        'https://*.googleapis.com',
-        'https://www.googletagmanager.com',
-        'https://*.google-analytics.com',
-      ],
-      fontSrc: ["'self'", 'https://fonts.gstatic.com'],
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: [
+          "'self'",
+          'https://maps.googleapis.com',
+          'https://maps.gstatic.com',
+          'https://www.googletagmanager.com',
+        ],
+        styleSrc: [
+          "'self'",
+          "'unsafe-inline'",
+          'https://fonts.googleapis.com',
+          'https://maps.googleapis.com',
+          'https://maps.gstatic.com',
+        ],
+        imgSrc: [
+          "'self'",
+          'data:',
+          'blob:',
+          'https://maps.gstatic.com',
+          'https://*.googleapis.com',
+          'https://www.googletagmanager.com',
+          'https://gravatar.com',
+          'https://kinocafe-static.bitrey.it',
+        ],
+        connectSrc: [
+          "'self'",
+          'https://maps.googleapis.com',
+          'https://*.googleapis.com',
+          'https://www.googletagmanager.com',
+          'https://*.google-analytics.com',
+        ],
+        fontSrc: ["'self'", 'https://fonts.gstatic.com'],
+      },
     },
   }),
 );
