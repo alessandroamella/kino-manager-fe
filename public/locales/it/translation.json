@@ -176,7 +176,10 @@
     "verificationStatus": "Stato di verifica",
     "exportExcel": "Esporta in Excel",
     "createdAt": "Creato il",
-    "hi": "Ciao {{name}}!"
+    "hi": "Ciao {{name}}!",
+    "addSignature": "Aggiungi firma",
+    "noSignature": "Nessuna firma",
+    "noSignatureMessage": "Non hai ancora aggiunto una firma. Aggiungine una per completare il tuo profilo e poter diventare tesserato"
   },
   "languages": {
     "it": "Italiano",

@@ -27,13 +27,7 @@ export interface MemberExtended extends BaseDocument {
 
 export type Member = Omit<
   MemberExtended,
-  | 'streetName'
-  | 'streetNumber'
-  | 'postalCode'
-  | 'city'
-  | 'province'
-  | 'country'
-  | 'signatureR2Key'
+  'streetName' | 'streetNumber' | 'postalCode' | 'city' | 'province' | 'country'
 >;
 
 export interface MemberWithToken extends Member {

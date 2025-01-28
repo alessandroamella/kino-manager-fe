@@ -179,7 +179,10 @@
     "verificationStatus": "Verification Status",
     "exportExcel": "Export to Excel",
     "createdAt": "Created At",
-    "hi": "Hi {{name}}!"
+    "hi": "Hi {{name}}!",
+    "addSignature": "Add Signature",
+    "noSignature": "No signature",
+    "noSignatureMessage": "You haven't added a signature yet. Please add one to complete your profile in order to be eligible for a membership card"
   },
   "languages": {
     "it": "Italian",

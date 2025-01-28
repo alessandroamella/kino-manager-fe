@@ -5,13 +5,13 @@ import { Member, MemberWithToken } from '../types/Member';
 import { getErrorMsg } from '../types/error';
 import { sha256 } from '../utils/sha256';
 
-type AugmentedMember = Member & {
+type MemberExtended = Member & {
   isVerified: boolean;
   emailHash: string;
 };
 
 interface UserState {
-  user: AugmentedMember | null;
+  user: MemberExtended | null;
   accessToken: string | null;
   loading: boolean;
   error: string | null;
