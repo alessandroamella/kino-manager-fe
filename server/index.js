@@ -44,6 +44,7 @@ app.use(
       imgSrc: [
         "'self'",
         'data:',
+        'blob:',
         'https://maps.gstatic.com',
         'https://*.googleapis.com',
         'https://www.googletagmanager.com',
