@@ -82,7 +82,7 @@ const AdminViewSignatureModal = ({
             <Image
               src={signatureUrl}
               alt="Signature"
-              className=" max-w-full max-h-full"
+              className="w-full max-h-full min-h-36 object-contain"
             />
           ) : (
             <Skeleton>
