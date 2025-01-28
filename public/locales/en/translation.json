@@ -191,6 +191,7 @@
     "adminPanel": "Admin Panel",
     "adminPanelShort": "Admin",
     "exportToExcel": "Export to Excel",
+    "bornIn": "Born in",
     "isAdmin": "Is Admin",
     "actions": "Actions",
     "userEditSuccess": "User updated successfully",

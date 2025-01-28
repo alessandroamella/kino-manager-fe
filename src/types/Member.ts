@@ -10,6 +10,8 @@ export interface Member extends BaseDocument {
   birthDate: Date;
   isAdmin: boolean;
   birthComune: string | null;
+  birthProvince: string | null;
+  gender: 'M' | 'F' | 'X';
   memberSince: Date | null;
   phoneNumber: string;
   address: string;

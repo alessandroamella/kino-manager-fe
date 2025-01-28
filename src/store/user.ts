@@ -30,7 +30,6 @@ const useUserStore = create<UserState>()(
       error: null,
       fetchUser: async (_accessToken: string) => {
         set({ loading: true, error: null });
-        console.log('Fetching user...');
         try {
           const { data } = await axios.get<MemberWithToken>('/v1/member/me', {
             headers: {

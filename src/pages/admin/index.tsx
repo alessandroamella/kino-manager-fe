@@ -26,6 +26,8 @@ import useUserStore from '../../store/user';
 import { FaTimes } from 'react-icons/fa';
 import { MembershipCard } from '../../types/MembershipCard';
 import { format } from 'date-fns';
+import { hasFlag } from 'country-flag-icons';
+import getUnicodeFlagIcon from 'country-flag-icons/unicode';
 
 interface MembershipCardExtended extends Omit<MembershipCard, 'member'> {
   member: Member | null;
@@ -66,6 +68,7 @@ const AdminPanel = () => {
         const usersResponse = await axios.get<Member[]>('/v1/admin/users', {
           headers: { Authorization: `Bearer ${token}` },
         });
+        console.log('Users:', usersResponse.data);
         setUsers(usersResponse.data);
 
         const cardsResponse = await axios.get<MembershipCard[]>(
@@ -75,6 +78,8 @@ const AdminPanel = () => {
             headers: { Authorization: `Bearer ${token}` },
           },
         );
+        console.log('Membership cards:', cardsResponse.data);
+
         setCards(
           cardsResponse.data.map((e) => ({
             ...e,
@@ -240,7 +245,7 @@ const AdminPanel = () => {
             <TableColumn>{t('profile.firstName')}</TableColumn>
             <TableColumn>{t('profile.lastName')}</TableColumn>
             <TableColumn>{t('profile.birthDate')}</TableColumn>
-            <TableColumn>{t('profile.birthCountry')}</TableColumn>
+            <TableColumn>{t('admin.bornIn')}</TableColumn>
             <TableColumn>{t('profile.email')}</TableColumn>
             <TableColumn>{t('profile.phoneNumber')}</TableColumn>
             <TableColumn>{t('admin.isAdmin')}</TableColumn>
@@ -305,10 +310,21 @@ const AdminPanel = () => {
                   {user.birthDate ? format(user.birthDate, 'dd/MM/yyyy') : '-'}
                 </TableCell>
                 {/* Display birthDate */}
-                <TableCell>{t(`countries.${user.birthCountry}`)}</TableCell>
+                <TableCell className="min-w-32">
+                  <span className="flex items-center">
+                    {hasFlag(user.birthCountry) &&
+                      getUnicodeFlagIcon(user.birthCountry) + ' '}
+
+                    {user.birthComune
+                      ? `${user.birthComune}${
+                          user.birthProvince ? ` (${user.birthProvince})` : ''
+                        }`
+                      : t(`countries.${user.birthCountry}`)}
+                  </span>
+                </TableCell>
                 {/* Display birthCountry */}
                 <TableCell>{user.email}</TableCell>
-                <TableCell>{user.phoneNumber}</TableCell>
+                <TableCell className="min-w-36">{user.phoneNumber}</TableCell>
                 <TableCell>
                   {user.isAdmin ? (
                     <FiCheck className="text-green-300" />

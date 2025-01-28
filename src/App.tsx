@@ -22,12 +22,9 @@ const App = () => {
   useEffect(() => {
     if (accessToken && !isFetching.current) {
       isFetching.current = true;
-      console.log('useEffect: Fetching user...');
       fetchUser(accessToken).finally(() => {
         isFetching.current = false;
       });
-    } else {
-      console.log('useEffect: No access token');
     }
     // don't add user to the dependencies array
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -55,7 +52,6 @@ const App = () => {
 
   const theme = useThemeStore((store) => store.theme);
   useEffect(() => {
-    console.log('Theme from store:', theme); // <---- ADD THIS LINE
     setHeroUITheme(theme);
   }, [setHeroUITheme, theme]);
 
