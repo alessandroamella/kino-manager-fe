@@ -9,7 +9,7 @@ import { Link } from 'react-router';
 import { address, googleMapsDirectionsUrl } from '../../constants/address';
 
 const Footer = () => {
-  const { t } = useTranslation();
+  const { i18n, t } = useTranslation();
   const currentYear = getYear(new Date());
 
   return (
@@ -18,10 +18,10 @@ const Footer = () => {
         <div className="grid justify-items-center grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 space-y-3 px-4 text-center md:text-left">
           {/* Contact & Address */}
           <div>
-            <h4 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            <h4 className="text-lg font-semibold text-foreground-700 mb-2">
               {t('footer.contactUs')}
             </h4>
-            <p className="text-gray-500 dark:text-gray-400 mb-2">{address}</p>
+            <p className="text-foreground-500 mb-2">{address}</p>
             <Button
               color="primary"
               onPress={() =>
@@ -39,7 +39,7 @@ const Footer = () => {
 
           {/* Social Links */}
           <div>
-            <h4 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            <h4 className="text-lg font-semibold text-foreground-700 mb-2">
               {t('footer.social')}
             </h4>
             <div className="flex justify-center md:justify-start space-x-4">
@@ -72,10 +72,10 @@ const Footer = () => {
 
           {/* Legal & Links */}
           <div>
-            <h4 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            <h4 className="text-lg font-semibold text-foreground-700 mb-2">
               {t('footer.legal')}
             </h4>
-            <ul className="text-gray-500 dark:text-gray-400 space-y-2">
+            <ul className="text-foreground-500 space-y-2">
               <li>
                 <Link
                   to="/docs/privacy-policy"
@@ -127,9 +127,25 @@ const Footer = () => {
 
         {/* Copyright Section */}
         <div className="mt-12 py-4 border-t border-gray-200 dark:border-gray-700 text-center">
-          <small className="text-gray-500 dark:text-gray-400">
+          <small className="text-foreground-500">
             © {currentYear} {t('common.title')}. {t('footer.rights')}
           </small>
+          <p className="text-foreground-500 text-small">
+            {t('footer.aWebsiteOf')}{' '}
+            <a
+              href={
+                'https://www.bitrey.dev/' +
+                (['en', 'it', 'cs'].includes(i18n.language)
+                  ? i18n.language
+                  : '')
+              }
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-foreground-700"
+            >
+              Alessandro Amella
+            </a>
+          </p>
         </div>
       </div>
     </footer>
