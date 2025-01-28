@@ -253,7 +253,7 @@ const AdminPanel = () => {
             <TableColumn>{t('admin.bornIn')}</TableColumn>
             <TableColumn>{t('profile.email')}</TableColumn>
             <TableColumn>{t('profile.phoneNumber')}</TableColumn>
-            <TableColumn>{t('admin.codiceFiscale')}</TableColumn>
+            <TableColumn>{t('profile.codiceFiscale')}</TableColumn>
             <TableColumn className="min-w-96">
               {t('profile.address')}
             </TableColumn>
