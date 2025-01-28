@@ -57,11 +57,11 @@ const usePurchasesStore = create<PurchasesState>((set, get) => ({
         if (existingCategory) {
           existingCategory.items.push(item);
         } else {
-          console.log('Category:', item.category, 'item:', item);
           categories.push({
             id: item.category.id,
             name: item.category.name,
             items: [item],
+            imageUrl: item.imageUrl,
           });
         }
       }

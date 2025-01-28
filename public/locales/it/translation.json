@@ -237,26 +237,17 @@
     "name": "Nome",
     "price": "Prezzo"
   },
-  "purchases": {
-    "purchases": "Acquisti",
-    "id": "ID",
-    "discount": "Sconto",
-    "purchaseDate": "Data di Acquisto",
+  "cashier": {
+    "addItemToPurchase": "Aggiungi articolo all'acquisto",
+    "purchaseLoggedSuccessfully": "Acquisto registrato con successo",
     "logPurchase": "Registra Acquisto",
-    "availableItems": "Articoli Disponibili",
+    "selectCategory": "Seleziona Categoria",
     "selectItem": "Seleziona Articolo",
-    "itemPlaceholder": "Inserisci nome articolo",
     "currentPurchase": "Acquisto Corrente",
-    "itemName": "Nome Articolo",
-    "quantity": "Quantità",
-    "actions": "Azioni",
-    "removeItem": "Rimuovi Articolo",
-    "noItemsInPurchase": "Nessun articolo aggiunto all'acquisto.",
+    "noItemsInPurchase": "Nessun articolo nell'acquisto",
+    "discount": "Sconto",
     "discountPlaceholder": "Inserisci sconto",
-    "logPurchaseButton": "Registra Acquisto",
-    "purchaseLoggedSuccessfully": "Acquisto registrato con successo!",
-    "addItemToPurchase": "Aggiungi almeno un articolo all'acquisto.",
-    "total": "Totale"
+    "logPurchaseButton": "Registra Acquisto"
   },
   "countries": {
     "AD": "Andorra",

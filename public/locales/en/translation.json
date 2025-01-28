@@ -240,26 +240,17 @@
     "name": "Name",
     "price": "Price"
   },
-  "purchases": {
-    "purchases": "Purchases",
-    "id": "ID",
-    "discount": "Discount",
-    "purchaseDate": "Purchase Date",
+  "cashier": {
+    "addItemToPurchase": "Add item to purchase",
+    "purchaseLoggedSuccessfully": "Purchase logged successfully",
     "logPurchase": "Log Purchase",
-    "availableItems": "Available Items",
+    "selectCategory": "Select Category",
     "selectItem": "Select Item",
-    "itemPlaceholder": "Enter item name",
     "currentPurchase": "Current Purchase",
-    "itemName": "Item Name",
-    "quantity": "Quantity",
-    "actions": "Actions",
-    "removeItem": "Remove Item",
-    "noItemsInPurchase": "No items added to purchase yet.",
+    "noItemsInPurchase": "No items in purchase",
+    "discount": "Discount",
     "discountPlaceholder": "Enter discount",
-    "logPurchaseButton": "Log Purchase",
-    "purchaseLoggedSuccessfully": "Purchase logged successfully!",
-    "addItemToPurchase": "Please add at least one item to the purchase.",
-    "total": "Total"
+    "logPurchaseButton": "Log Purchase"
   },
   "countries": {
     "AF": "Afghanistan",

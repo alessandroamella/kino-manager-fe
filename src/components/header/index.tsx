@@ -145,7 +145,7 @@ const Header = () => {
                   to="/admin/purchases"
                 >
                   <FaCashRegister className="mr-2" />
-                  {t('purchases.purchases')}
+                  {t('cashier.purchases')}
                 </Button>
               </NavbarItem>
             </div>
@@ -233,10 +233,10 @@ const Header = () => {
                   color="secondary"
                   to="/admin/purchases"
                   className="w-full"
-                  onClick={handleClickItem} // Optional: close menu after purchases button click
+                  onPress={handleClickItem} // Optional: close menu after purchases button click
                 >
                   <FaCashRegister className="mr-2" />
-                  {t('purchases.purchases')}
+                  {t('cashier.purchases')}
                 </Button>
               </NavbarMenuItem>
             </>

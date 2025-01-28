@@ -6,7 +6,7 @@ import {
 } from 'react-router';
 import useUserStore from '../store/user';
 import { useShallow } from 'zustand/shallow';
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { Skeleton } from '@heroui/react';
 
 const ProtectedRoute = ({
@@ -18,12 +18,22 @@ const ProtectedRoute = ({
   mustBeLoggedIn?: boolean;
   mustBeLoggedOut?: boolean;
 }) => {
-  const { user, loading } = useUserStore(
+  const { user, fetchUser, accessToken, loading } = useUserStore(
     useShallow((store) => ({
       user: store.user,
+      fetchUser: store.fetchUser,
+      accessToken: store.accessToken,
       loading: store.loading,
     })),
   );
+
+  const isFetching = useRef(false);
+  useEffect(() => {
+    if (!isFetching.current && !user && accessToken && !loading) {
+      isFetching.current = true;
+      fetchUser(accessToken);
+    }
+  }, [accessToken, fetchUser, loading, user]);
 
   const [search] = useSearchParams();
 
@@ -31,22 +41,41 @@ const ProtectedRoute = ({
 
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  const getShouldRedirect = useCallback(
+    () =>
+      !loading &&
+      (mustBeAdmin
+        ? !user || (user && !user.isAdmin)
+        : mustBeLoggedIn
+        ? !user
+        : mustBeLoggedOut
+        ? user
+        : false),
+    [loading, mustBeAdmin, mustBeLoggedIn, mustBeLoggedOut, user],
+  );
+
   useEffect(() => {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
+    if (!getShouldRedirect()) {
+      return;
+    }
 
     timeoutRef.current = setTimeout(() => {
-      if (
-        !loading &&
-        (mustBeAdmin
-          ? !user || (user && !user.isAdmin)
-          : mustBeLoggedIn
-          ? !user
-          : mustBeLoggedOut
-          ? user
-          : false)
-      ) {
+      if (getShouldRedirect()) {
+        console.log(
+          'ProtectedRoute redirect:\nmustBeAdmin:',
+          mustBeAdmin,
+          '\nmustBeLoggedIn:',
+          mustBeLoggedIn,
+          '\nmustBeLoggedOut:',
+          mustBeLoggedOut,
+          '\nuser:',
+          user,
+          '\nloading:',
+          loading,
+        );
         navigate(
           (search.get('to') !== location.pathname && search.get('to')) ||
             (mustBeLoggedIn
@@ -63,6 +92,7 @@ const ProtectedRoute = ({
 
     return () => clearTimeout(timeoutRef.current || undefined);
   }, [
+    getShouldRedirect,
     loading,
     mustBeAdmin,
     mustBeLoggedIn,
