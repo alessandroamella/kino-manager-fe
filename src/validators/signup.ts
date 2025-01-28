@@ -93,4 +93,20 @@ export const signupYupSchema = (t: TFunction, useCodiceFiscale: boolean) =>
     address: yup
       .string()
       .min(1, t('errors.field.required', { field: t('profile.address') })),
+    streetName: yup.string().notRequired().nullable().min(1).max(255),
+    streetNumber: yup
+      .number()
+      .integer()
+      .notRequired()
+      .nullable()
+      .min(1)
+      .max(99999),
+    postalCode: yup
+      .string()
+      .notRequired()
+      .nullable()
+      .length(5, t('errors.field.invalid')),
+    city: yup.string().notRequired().nullable().min(1).max(255),
+    province: yup.string().notRequired().nullable().min(2).max(2),
+    country: yup.string().notRequired().nullable().min(2).max(2),
   });

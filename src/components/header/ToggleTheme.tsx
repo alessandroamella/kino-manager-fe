@@ -1,7 +1,7 @@
 import { Button, ButtonProps } from '@heroui/react';
 import { FiMoon, FiSun } from 'react-icons/fi';
-import classnames from 'classnames';
 import useThemeStore from '../../store/theme';
+import { cn } from '@/lib/utils';
 
 const ToggleTheme = ({ className, ...rest }: ButtonProps) => {
   const theme = useThemeStore((store) => store.theme);
@@ -13,7 +13,7 @@ const ToggleTheme = ({ className, ...rest }: ButtonProps) => {
     <Button
       onPress={toggleTheme}
       variant="ghost"
-      className={classnames(className, {
+      className={cn(className, {
         'min-w-0': true,
         'text-white hover:bg-zinc-700': isDarkMode,
         'text-gray-700 hover:bg-gray-200': !isDarkMode,

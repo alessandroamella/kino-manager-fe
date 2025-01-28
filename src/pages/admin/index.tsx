@@ -12,22 +12,24 @@ import {
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
-  Tooltip,
   Spinner,
   Skeleton,
   Divider,
   Alert,
+  Tooltip,
 } from '@heroui/react';
 import { getErrorMsg } from '../../types/error';
 import { Member } from '../../types/Member';
 import { useTranslation } from 'react-i18next';
-import { FiCheck, FiDownload, FiEdit } from 'react-icons/fi';
+import { FiCheck, FiDownload, FiPrinter } from 'react-icons/fi';
 import useUserStore from '../../store/user';
 import { FaTimes } from 'react-icons/fa';
 import { MembershipCard } from '../../types/MembershipCard';
-import { format } from 'date-fns';
+import { format, formatDate } from 'date-fns';
 import { hasFlag } from 'country-flag-icons';
 import getUnicodeFlagIcon from 'country-flag-icons/unicode';
+import { isMembershipPdfDataDto } from '@/utils/isMembershipPdfDataDto';
+import downloadStreamedFile from '@/utils/download';
 
 interface MembershipCardExtended extends Omit<MembershipCard, 'member'> {
   member: Member | null;
@@ -129,7 +131,7 @@ const AdminPanel = () => {
     try {
       const { data } = await axios.patch<void>(
         '/v1/admin/add-card',
-        { user: user.id, membershipCardNumber: cardNumber },
+        { userId: user.id, membershipCardNumber: cardNumber },
         { headers: { Authorization: `Bearer ${token}` } },
       );
       console.log('Card assigned:', data);
@@ -174,6 +176,23 @@ const AdminPanel = () => {
 
   const [isExporting, setIsExporting] = useState(false);
 
+  const handleDownloadMembershipFormPDF = async ({ id }: Member) => {
+    if (!token) {
+      window.alert('Please login to download the form');
+      return;
+    }
+    try {
+      downloadStreamedFile({
+        url: `v1/admin/membership-form/${id}`,
+        filename: `membership-form-${id}.pdf`,
+        token,
+      });
+    } catch (err) {
+      console.error('Error downloading membership form:', getErrorMsg(err));
+      window.alert('Error downloading membership form: ' + getErrorMsg(err));
+    }
+  };
+
   const handleExportExcel = async () => {
     if (!token) {
       window.alert('Please login to export data');
@@ -181,31 +200,14 @@ const AdminPanel = () => {
     }
     setIsExporting(true);
     try {
-      const { data } = await axios({
+      downloadStreamedFile({
         url: 'v1/admin/export-members',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        method: 'GET',
-        responseType: 'blob', // important
+        filename: `membri-${formatDate(
+          new Date(),
+          'dd-MM-yyyy_HH-mm-ss',
+        )}.xlsx`,
+        token,
       });
-      // create file link in browser's memory
-      const href = URL.createObjectURL(data);
-
-      // create "a" HTML element with href to file & click
-      const link = document.createElement('a');
-      link.href = href;
-      const date = new Date();
-      const formattedDate = `${date.getDate()}-${
-        date.getMonth() + 1
-      }-${date.getFullYear()}`;
-      link.setAttribute('download', `membri-${formattedDate}.xlsx`);
-      document.body.appendChild(link);
-      link.click();
-
-      // clean up "a" element & remove ObjectURL
-      document.body.removeChild(link);
-      URL.revokeObjectURL(href);
     } catch (err) {
       console.error(err);
       window.alert('Error exporting data: ' + getErrorMsg(err));
@@ -244,31 +246,48 @@ const AdminPanel = () => {
             <TableColumn>{t('profile.membershipCardNumberShort')}</TableColumn>
             <TableColumn>{t('profile.firstName')}</TableColumn>
             <TableColumn>{t('profile.lastName')}</TableColumn>
+            <TableColumn className="min-w-32">
+              {t('profile.gender')}
+            </TableColumn>
             <TableColumn>{t('profile.birthDate')}</TableColumn>
             <TableColumn>{t('admin.bornIn')}</TableColumn>
             <TableColumn>{t('profile.email')}</TableColumn>
             <TableColumn>{t('profile.phoneNumber')}</TableColumn>
-            <TableColumn>{t('admin.isAdmin')}</TableColumn>
+            <TableColumn>{t('admin.codiceFiscale')}</TableColumn>
+            <TableColumn className="min-w-96">
+              {t('profile.address')}
+            </TableColumn>
+            <TableColumn className="min-w-52">
+              {t('profile.streetName')}
+            </TableColumn>
+            <TableColumn>{t('profile.streetNumber')}</TableColumn>
+            <TableColumn>{t('profile.postalCode')}</TableColumn>
+            <TableColumn className="min-w-52">{t('profile.city')}</TableColumn>
+            <TableColumn>{t('profile.province')}</TableColumn>
+            <TableColumn>{t('profile.country')}</TableColumn>
+            <TableColumn>{t('profile.birthProvince')}</TableColumn>
+            <TableColumn>{t('profile.birthComune')}</TableColumn>
+            <TableColumn>{t('profile.birthCountry')}</TableColumn>
             <TableColumn>{t('profile.memberSince')}</TableColumn>
+            <TableColumn>{t('admin.isAdmin')}</TableColumn>
           </TableHeader>
           <TableBody items={users}>
             {(user) => (
               <TableRow key={user.id}>
                 <TableCell>
-                  <div className="flex gap-2">
-                    <Tooltip content="Edit (removed)">
+                  {isMembershipPdfDataDto(user) && (
+                    <Tooltip content={t('admin.downloadMembershipForm')}>
                       <Button
-                        isIconOnly
                         variant="light"
                         aria-label="Edit"
-                        isDisabled
+                        onPress={() => handleDownloadMembershipFormPDF(user)}
+                        isIconOnly
                       >
-                        <FiEdit size={18} />
+                        <FiPrinter size={18} />
                       </Button>
                     </Tooltip>
-                  </div>
+                  )}
                 </TableCell>
-
                 <TableCell>
                   {user.membershipCardNumber ? (
                     user.membershipCardNumber
@@ -306,10 +325,12 @@ const AdminPanel = () => {
                 </TableCell>
                 <TableCell>{user.firstName}</TableCell>
                 <TableCell>{user.lastName}</TableCell>
+                <TableCell>{t(`gender.${user.gender}`)}</TableCell>
+
                 <TableCell>
                   {user.birthDate ? format(user.birthDate, 'dd/MM/yyyy') : '-'}
                 </TableCell>
-                {/* Display birthDate */}
+
                 <TableCell className="min-w-32">
                   <span className="flex items-center">
                     {hasFlag(user.birthCountry) &&
@@ -322,19 +343,41 @@ const AdminPanel = () => {
                       : t(`countries.${user.birthCountry}`)}
                   </span>
                 </TableCell>
-                {/* Display birthCountry */}
+
                 <TableCell>{user.email}</TableCell>
-                <TableCell className="min-w-36">{user.phoneNumber}</TableCell>
+                <TableCell className="min-w-36">
+                  {user.phoneNumber.toString()}
+                </TableCell>
+                <TableCell>{user.codiceFiscale || '-'}</TableCell>
+
+                <TableCell>{user.address}</TableCell>
+                <TableCell>{user.streetName || '-'}</TableCell>
+
+                <TableCell>{user.streetNumber || '-'}</TableCell>
+
+                <TableCell>{user.postalCode || '-'}</TableCell>
+
+                <TableCell>{user.city || '-'}</TableCell>
+                <TableCell>{user.province || '-'}</TableCell>
+
+                <TableCell>{user.country || '-'}</TableCell>
+
+                <TableCell>{user.birthProvince || '-'}</TableCell>
+
+                <TableCell>{user.birthComune || '-'}</TableCell>
+
+                <TableCell>{t(`countries.${user.birthCountry}`)}</TableCell>
+
                 <TableCell>
-                  {user.isAdmin ? (
-                    <FiCheck className="text-green-300" />
+                  {user.memberSince ? (
+                    format(user.memberSince, 'dd/MM/yyyy')
                   ) : (
                     <FaTimes className="text-red-300" />
                   )}
                 </TableCell>
                 <TableCell>
-                  {user.memberSince ? (
-                    format(user.memberSince, 'dd/MM/yyyy')
+                  {user.isAdmin ? (
+                    <FiCheck className="text-green-300" />
                   ) : (
                     <FaTimes className="text-red-300" />
                   )}

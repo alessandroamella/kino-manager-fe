@@ -135,6 +135,7 @@
     "edit": "Edit",
     "editProfile": "Edit Profile",
     "save": "Save",
+    "gender": "Gender",
     "close": "Close",
     "email": "Email",
     "card": "Card #{{n}}",
@@ -144,6 +145,13 @@
     "birthDate": "Birth Date",
     "birthComune": "Birth Comune",
     "birthCountry": "Birth Country",
+    "streetName": "Street Name",
+    "streetNumber": "Street Number",
+    "postalCode": "Postal Code",
+    "city": "City",
+    "province": "Province",
+    "country": "Country",
+    "birthProvince": "Birth Province",
     "noCardAssigned": "No card assigned",
     "membershipCardNumber": "Membership Number",
     "membershipCardNumberShort": "Card Num.",
@@ -205,7 +213,8 @@
     "assignedTo": "Assigned to",
     "verifyUserWarning": "Card #{{number}} will be assigned to user {{user}}, who will become al Almo member. This is irreversible. Please be sure you have the correct data before clicking 'Ok'.",
     "cardAlreadyAssigned": "This user already has a membership card assigned. You cannot change it.",
-    "assignCard": "Assign Card"
+    "assignCard": "Assign Card",
+    "downloadMembershipForm": "Download Membership Card"
   },
   "items": {
     "itemsTableTitle": "Items",

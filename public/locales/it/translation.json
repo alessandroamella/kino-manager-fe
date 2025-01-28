@@ -47,6 +47,12 @@
     "cfDescription": "Inserisci il tuo codice fiscale per compilare automaticamente i tuoi dati personali",
     "birthDate": "Data di Nascita",
     "birthCountry": "Paese di Nascita",
+    "streetName": "Nome della via",
+    "streetNumber": "Numero civico",
+    "postalCode": "CAP",
+    "city": "Città",
+    "province": "Provincia",
+    "country": "Paese",
     "birthCountryPlaceholder": "Inizia a digitare il paese",
     "birthComune": "Comune di Nascita",
     "birthComunePlaceholder": "Inizia a digitare il comune",
@@ -135,6 +141,7 @@
     "edit": "Modifica",
     "editProfile": "Modifica profilo",
     "save": "Salva",
+    "gender": "Sesso",
     "close": "Chiudi",
     "email": "Email",
     "card": "Tessera n.{{n}}",
@@ -203,7 +210,8 @@
     "assignedTo": "Assegnata a",
     "verifyUserWarning": "La tessera n.{{number}} sarà assegnata all'utente {{user}}, che verrà tesserato ad Almo. Questa azione è irreversibile. Assicurati di avere i dati corretti prima di cliccare su 'Ok'.",
     "cardAlreadyAssigned": "A questo utente è già stata assegnata una tessera. Non puoi modificarla.",
-    "assignCard": "Assegna tessera"
+    "assignCard": "Assegna tessera",
+    "downloadMembershipForm": "Scarica modulo di iscrizione"
   },
   "items": {
     "itemsTableTitle": "Articoli",

@@ -12,6 +12,12 @@ export interface Member extends BaseDocument {
   birthComune: string | null;
   birthProvince: string | null;
   gender: 'M' | 'F' | 'X';
+  streetName: string | null;
+  streetNumber: number | null;
+  postalCode: string | null;
+  city: string | null;
+  province: string | null;
+  country: string | null; // ISO 3166-1 alpha-2
   memberSince: Date | null;
   phoneNumber: string;
   address: string;

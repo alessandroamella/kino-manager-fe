@@ -37,6 +37,7 @@ import parsePhoneNumber from 'libphonenumber-js';
 import normalize from '../../utils/normalize';
 import { Comune } from '@/types/Comune';
 import { InferType } from 'yup';
+import { parseAddress } from '@/utils/parseAddress';
 
 type FormData = InferType<ReturnType<typeof signupYupSchema>>;
 
@@ -373,6 +374,24 @@ const Signup = () => {
     }
   }
 
+  function handleOnPlaceSelect(place: google.maps.places.PlaceResult | null) {
+    if (!place) {
+      trigger('address');
+      return;
+    }
+
+    setValue('address', place.formatted_address);
+    trigger('address');
+
+    const parsed = parseAddress(place);
+    setValue('streetName', parsed.streetName);
+    setValue('streetNumber', parsed.streetNumber);
+    setValue('postalCode', parsed.postalCode);
+    setValue('city', parsed.city);
+    setValue('province', parsed.province);
+    setValue('country', parsed.country);
+  }
+
   return (
     <main className="py-12 mb-2 flex flex-col gap-4 relative">
       <AnimatePresence>
@@ -617,9 +636,7 @@ const Signup = () => {
             isInvalid={!!errors.address}
             errorMessage={errors.address?.message}
             isRequired
-            onPlaceSelect={(place) => {
-              setValue('address', place?.formatted_address || '');
-            }}
+            onPlaceSelect={handleOnPlaceSelect}
             description={
               address
                 ? t('signup.addressSelected', { address: address })

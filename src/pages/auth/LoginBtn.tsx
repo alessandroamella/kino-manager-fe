@@ -1,5 +1,5 @@
+import { cn } from '@/lib/utils';
 import { Button, ButtonProps } from '@heroui/react';
-import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
 import { FaSignInAlt } from 'react-icons/fa';
 import { Link } from 'react-router';
@@ -20,10 +20,10 @@ const LoginBtn = ({
       className={className}
       {...rest}
     >
-      <FaSignInAlt className={classNames(className)} />
+      <FaSignInAlt className={cn(className)} />
       {!hideText && (
         <span
-          className={classNames(
+          className={cn(
             { 'text-white': !className?.includes('text-') },
             'inline-block ml-2',
           )}

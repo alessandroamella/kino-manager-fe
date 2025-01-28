@@ -1,9 +1,9 @@
 import { Button, ButtonProps } from '@heroui/react';
-import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
 import { FaUserPlus } from 'react-icons/fa';
 import { Link } from 'react-router';
 import ReactGA from 'react-ga4';
+import { cn } from '@/lib/utils';
 
 const SignupBtn = ({ className, onPress, ...rest }: ButtonProps) => {
   const { t } = useTranslation();
@@ -13,7 +13,7 @@ const SignupBtn = ({ className, onPress, ...rest }: ButtonProps) => {
       as={Link}
       to="/auth/signup"
       color="primary"
-      className={classNames(className, 'font-semibold')}
+      className={cn(className, 'font-semibold')}
       onPress={(e) => {
         ReactGA.event({
           category: 'User',
