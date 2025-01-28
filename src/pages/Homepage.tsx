@@ -92,7 +92,7 @@ const Homepage = () => {
           </p>
           <a
             href={googleMapsDirectionsUrl}
-            className="text-lg mb-8 block text-foreground hover:text-primary-600 duration-100 transition-colors max-w-2xl mx-auto"
+            className="text-lg mb-8 block text-white hover:text-primary-300 dark:hover:text-primary-600 duration-100 transition-colors max-w-2xl mx-auto"
             target="_blank"
             rel="noopener noreferrer"
           >

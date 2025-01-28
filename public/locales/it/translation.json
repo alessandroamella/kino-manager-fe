@@ -22,6 +22,9 @@
     "login": "Accedi",
     "signup": "Registrati"
   },
+  "login": {
+    "title": "Accedi al Kinó Café"
+  },
   "signup": {
     "title": "Registrati al Kinó Café",
     "emailDisclaimer": "Ti invieremo un'email di conferma dopo la registrazione.",

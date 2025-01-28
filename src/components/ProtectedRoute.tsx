@@ -1,4 +1,9 @@
-import { Outlet, useNavigate, useSearchParams } from 'react-router';
+import {
+  createSearchParams,
+  Outlet,
+  useNavigate,
+  useSearchParams,
+} from 'react-router';
 import useUserStore from '../store/user';
 import { useShallow } from 'zustand/shallow';
 import { useEffect, useRef } from 'react';
@@ -43,7 +48,15 @@ const ProtectedRoute = ({
           : false)
       ) {
         navigate(
-          search.get('to') || (mustBeLoggedIn ? '/auth/login' : '/profile'),
+          (search.get('to') !== location.pathname && search.get('to')) ||
+            (mustBeLoggedIn
+              ? {
+                  pathname: '/auth/login',
+                  search: createSearchParams({
+                    to: search.get('to') || location.pathname,
+                  }).toString(),
+                }
+              : '/profile'),
         );
       }
     }, 300);

@@ -22,6 +22,9 @@
     "login": "Login",
     "signup": "Sign Up"
   },
+  "login": {
+    "title": "Login to Kinó Café"
+  },
   "signup": {
     "title": "Sign Up to Kinó Café",
     "emailDisclaimer": "We'll send you a confirmation email after you sign up.",

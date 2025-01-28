@@ -86,7 +86,7 @@ const SignatureModal = ({
                 onBegin={() => setIsValid(true)}
                 onEnd={() => handleOnEnd()}
                 canvasProps={{
-                  width: 720,
+                  width: 500,
                   height: 150,
                   className: 'rounded-md',
                 }}

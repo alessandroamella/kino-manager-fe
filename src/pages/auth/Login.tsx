@@ -46,11 +46,11 @@ const Login = () => {
   }, []);
 
   return (
-    <main className="py-16 mb-2 flex flex-col gap-4">
+    <main className="py-12 mb-2 flex flex-col gap-4">
       {loginError && (
         <Alert
           color="danger"
-          title="Errore di Login"
+          title={t('errors.error')}
           description={loginError}
           variant="faded"
         />
@@ -61,18 +61,22 @@ const Login = () => {
           className="max-w-lg md:min-w-[500px] mx-auto mt-2 md:mt-4 p-6 space-y-4"
         >
           <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-4">
-            Accedi al Kinó Café
+            {t('login.title')}
           </h2>
 
           <Input
-            label="Email"
-            placeholder="Inserisci la tua email"
+            label={t('signup.email')}
+            placeholder={t('signup.emailPlaceholder')}
             type="email"
             {...register('email', {
-              required: "L'email è obbligatoria",
+              required: t('errors.field.required', {
+                field: t('profile.lastName'),
+              }),
               pattern: {
                 value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                message: "Inserisci un'email valida",
+                message: t('errors.field.invalid', {
+                  field: t('signup.email'),
+                }),
               },
             })}
             isInvalid={Boolean(
@@ -82,11 +86,13 @@ const Login = () => {
             isRequired
           />
           <Input
-            label="Password"
-            placeholder="Inserisci la tua password"
+            label={t('auth.password')}
+            placeholder={t('signup.passwordPlaceholder')}
             type="password"
             {...register('password', {
-              required: 'La password è obbligatoria',
+              required: t('errors.field.required', {
+                field: t('auth.password'),
+              }),
             })}
             isInvalid={Boolean(
               error === 'errors.auth.wrongPassword' || errors.password,
@@ -101,7 +107,7 @@ const Login = () => {
             className="w-full"
             isDisabled={!isValid}
           >
-            Login
+            {t('auth.login')}
           </Button>
         </Form>
       </Card>

@@ -1,7 +1,7 @@
 import { BaseDocument } from './BaseDocument';
 import { MembershipCard } from './MembershipCard';
 
-export interface Member extends BaseDocument {
+export interface MemberExtended extends BaseDocument {
   firstName: string;
   lastName: string;
   email: string;
@@ -19,10 +19,22 @@ export interface Member extends BaseDocument {
   province: string | null;
   country: string | null; // ISO 3166-1 alpha-2
   memberSince: Date | null;
+  signatureR2Key: string;
   phoneNumber: string;
   address: string;
   membershipCardNumber: MembershipCard['number'] | null;
 }
+
+export type Member = Omit<
+  MemberExtended,
+  | 'streetName'
+  | 'streetNumber'
+  | 'postalCode'
+  | 'city'
+  | 'province'
+  | 'country'
+  | 'signatureR2Key'
+>;
 
 export interface MemberWithToken extends Member {
   accessToken: string;
