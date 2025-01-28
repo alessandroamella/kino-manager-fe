@@ -2,6 +2,7 @@ import express from 'express';
 import helmet from 'helmet';
 import { join } from 'path';
 import ViteExpress from 'vite-express';
+import permissionsPolicy from 'permissions-policy';
 import 'dotenv/config';
 
 const app = express();
@@ -61,6 +62,17 @@ app.use(
         ],
         fontSrc: ["'self'", 'https://fonts.gstatic.com'],
       },
+    },
+  }),
+);
+
+app.use(
+  permissionsPolicy({
+    features: {
+      fullscreen: ['self'],
+      vibrate: ['none'],
+      payment: [],
+      syncXhr: [],
     },
   }),
 );

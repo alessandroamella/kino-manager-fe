@@ -20,6 +20,9 @@ importers:
       http-proxy-middleware:
         specifier: ^3.0.3
         version: 3.0.3
+      permissions-policy:
+        specifier: ^0.6.0
+        version: 0.6.0
       vite-express:
         specifier: ^0.20.0
         version: 0.20.0
@@ -294,6 +297,10 @@ packages:
 
   path-to-regexp@0.1.12:
     resolution: {integrity: sha512-RA1GjUVMnvYFxuqovrEqZoxxW5NUZqbwKtYz/Tt7nXerk0LbLblQmrsgdeOxV5SFHf0UDggjS/bSeOZwt1pmEQ==}
+
+  permissions-policy@0.6.0:
+    resolution: {integrity: sha512-VfN72swhRiuvfejFP/N5hOVCyriBgzy1KiLE8mjN2KkCJCOtFv2N221SVUHYl0OPXIOoqu7tkc7efreiN7encA==}
+    engines: {node: '>=10.0.0'}
 
   picocolors@1.1.1:
     resolution: {integrity: sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==}
@@ -666,6 +673,8 @@ snapshots:
   parseurl@1.3.3: {}
 
   path-to-regexp@0.1.12: {}
+
+  permissions-policy@0.6.0: {}
 
   picocolors@1.1.1: {}
 
