@@ -12,6 +12,7 @@ import {
 import { getErrorMsg } from '../../types/error';
 import useUserStore from '@/store/user';
 import { useTranslation } from 'react-i18next';
+import { cn } from '@/lib/utils';
 
 const AdminViewSignatureModal = ({
   signatureKey,
@@ -21,6 +22,7 @@ const AdminViewSignatureModal = ({
   setSignatureKey: (signatureKey: string | null) => void;
 }) => {
   const [signatureUrl, setSignatureUrl] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const token = useUserStore((store) => store.accessToken);
@@ -31,7 +33,6 @@ const AdminViewSignatureModal = ({
         setError('No token provided to showSignature');
         return;
       } else if (!signatureKey) {
-        setError('No signatureKey provided to showSignature');
         return;
       }
       try {
@@ -52,6 +53,8 @@ const AdminViewSignatureModal = ({
       } catch (err) {
         console.error('Error fetching signature:', getErrorMsg(err));
         setError(getErrorMsg(err));
+      } finally {
+        setLoading(false);
       }
     }
 
@@ -73,8 +76,12 @@ const AdminViewSignatureModal = ({
     <Modal isOpen={!!signatureKey} onClose={closeSignatureModal} size="xl">
       <ModalContent>
         <ModalHeader>{t('signup.signature')}</ModalHeader>
-        <ModalBody className="mx-auto pb-4">
-          {error ? (
+        <ModalBody
+          className={cn('mx-auto mb-4', {
+            'w-full': loading || !signatureUrl,
+          })}
+        >
+          {!loading && error ? (
             <Alert color="danger" title={t('errors.error')}>
               {error}
             </Alert>
@@ -85,8 +92,8 @@ const AdminViewSignatureModal = ({
               className="w-full max-h-full min-h-36 object-contain"
             />
           ) : (
-            <Skeleton>
-              <div className="w-full h-full min-w-24 min-h-24" />
+            <Skeleton className="rounded-xl mt-1 md:mx-2 lg:mx-3">
+              <div className="w-full min-w-12 h-36" />
             </Skeleton>
           )}
         </ModalBody>
