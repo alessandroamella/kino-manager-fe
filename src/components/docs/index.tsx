@@ -63,8 +63,10 @@ const Docs = () => {
           >
             {t('docs.italianDisclaimer')}
             <Button
-              as={'a'}
+              as="a"
               size="sm"
+              target="_blank"
+              rel="noopener noreferrer"
               variant="bordered"
               className="my-1 mx-auto"
               href={`https://translate.google.it/?hl=it&sl=it&tl=${

@@ -210,11 +210,7 @@ const Homepage = () => {
                 <p className="text-lg font-medium">
                   {t('home.blandeActivitiesTitle')}
                   <Chip className="ml-2" color="primary">
-                    {t('home.starting', {
-                      date: format(openingDate, 'EEE d MMM', {
-                        locale: dateFnsLang(i18n),
-                      }),
-                    })}
+                    {t('home.everyWednesday')}
                   </Chip>
                 </p>
               </CardHeader>

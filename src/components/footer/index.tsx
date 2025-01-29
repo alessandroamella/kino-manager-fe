@@ -90,18 +90,18 @@ const Footer = () => {
             <ul className="text-foreground-500 space-y-2">
               <li>
                 <Link
-                  to="/docs/privacy-policy"
-                  className="hover:text-gray-700 dark:hover:text-gray-300"
-                >
-                  {t('footer.privacyPolicy')}
-                </Link>
-              </li>
-              <li>
-                <Link
                   to="/docs/tos"
                   className="hover:text-gray-700 dark:hover:text-gray-300"
                 >
                   {t('footer.termsOfService')}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/docs/privacy"
+                  className="hover:text-gray-700 dark:hover:text-gray-300"
+                >
+                  {t('footer.privacyPolicy')}
                 </Link>
               </li>
             </ul>
