@@ -18,22 +18,12 @@ const ProtectedRoute = ({
   mustBeLoggedIn?: boolean;
   mustBeLoggedOut?: boolean;
 }) => {
-  const { user, fetchUser, accessToken, loading } = useUserStore(
+  const { user, loading } = useUserStore(
     useShallow((store) => ({
       user: store.user,
-      fetchUser: store.fetchUser,
-      accessToken: store.accessToken,
       loading: store.loading,
     })),
   );
-
-  const isFetching = useRef(false);
-  useEffect(() => {
-    if (!isFetching.current && !user && accessToken && !loading) {
-      isFetching.current = true;
-      fetchUser(accessToken);
-    }
-  }, [accessToken, fetchUser, loading, user]);
 
   const [search] = useSearchParams();
 
@@ -64,8 +54,19 @@ const ProtectedRoute = ({
 
     timeoutRef.current = setTimeout(() => {
       if (getShouldRedirect()) {
+        const path =
+          (search.get('to') !== location.pathname && search.get('to')) ||
+          ((mustBeLoggedIn || mustBeAdmin) && !user && !loading
+            ? {
+                pathname: '/auth/login',
+                search: createSearchParams({
+                  to: search.get('to') || location.pathname,
+                }).toString(),
+              }
+            : '/profile');
+
         console.log(
-          'ProtectedRoute redirect:\nmustBeAdmin:',
+          `ProtectedRoute redirect to ${path}:\nmustBeAdmin:`,
           mustBeAdmin,
           '\nmustBeLoggedIn:',
           mustBeLoggedIn,
@@ -76,17 +77,7 @@ const ProtectedRoute = ({
           '\nloading:',
           loading,
         );
-        navigate(
-          (search.get('to') !== location.pathname && search.get('to')) ||
-            (mustBeLoggedIn
-              ? {
-                  pathname: '/auth/login',
-                  search: createSearchParams({
-                    to: search.get('to') || location.pathname,
-                  }).toString(),
-                }
-              : '/profile'),
-        );
+        navigate(path);
       }
     }, 300);
 

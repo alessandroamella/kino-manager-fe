@@ -6,6 +6,7 @@ import { getErrorMsg } from '../../types/error';
 import { Alert, Button, Skeleton } from '@heroui/react';
 import { useTranslation } from 'react-i18next';
 import PageTitle from '../PageTitle';
+import ScrollTop from '../ScrollTop';
 
 const Docs = () => {
   const { id } = useParams();
@@ -37,10 +38,7 @@ const Docs = () => {
       } finally {
         isFetching.current = false;
 
-        window.scrollTo({
-          top: 0,
-          behavior: 'smooth',
-        });
+        ScrollTop.scrollTop();
       }
     }
 

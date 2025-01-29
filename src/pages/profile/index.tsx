@@ -26,7 +26,7 @@ import { dateFnsLang } from '../../utils/dateFnsLang';
 import { BiTime } from 'react-icons/bi';
 import useIsMobile from '../../utils/isMobile';
 import parsePhoneNumber from 'libphonenumber-js';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { hasFlag } from 'country-flag-icons';
 import getUnicodeFlagIcon from 'country-flag-icons/unicode';
 import { FaIdCard } from 'react-icons/fa';
@@ -34,6 +34,8 @@ import axios from 'axios';
 import { getErrorMsg } from '@/types/error';
 import { AiOutlineSignature } from 'react-icons/ai';
 import SignatureModal from '@/components/input/SignatureModal';
+import PageTitle from '@/components/PageTitle';
+import ScrollTop from '@/components/ScrollTop';
 
 const Profile = () => {
   const { t, i18n } = useTranslation();
@@ -41,14 +43,6 @@ const Profile = () => {
   const user = useUserStore((store) => store.user);
   const fetchUser = useUserStore((store) => store.fetchUser);
   const token = useUserStore((store) => store.accessToken);
-
-  useEffect(() => {
-    if (!user) return;
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth',
-    });
-  }, [user]);
 
   const isMobile = useIsMobile();
 
@@ -103,6 +97,8 @@ const Profile = () => {
         setIsOpen={setIsSignatureModalOpen}
         onSaveSignature={addSignature}
       />
+      <PageTitle title="profile" />
+      <ScrollTop />
       <main className="mx-auto py-3 bg-background-50 -mt-2 md:mt-0 md:p-6 md:px-12 lg:px-16 xl:px-24">
         <Card shadow={isMobile ? 'none' : undefined}>
           <CardHeader className="flex justify-between items-center px-4 md:px-6 py-3 border-b-2 border-gray-200 dark:border-gray-700">

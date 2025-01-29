@@ -138,14 +138,14 @@ const Header = () => {
               <NavbarItem className="cursor-pointer">
                 <Button
                   isDisabled={
-                    location.pathname.replace(/\//g, '') === 'adminpurchases'
+                    location.pathname.replace(/\//g, '') === 'cashier'
                   }
                   as={Link}
                   color="secondary"
-                  to="/admin/purchases"
+                  to="/cashier"
                 >
                   <FaCashRegister className="mr-2" />
-                  {t('cashier.purchases')}
+                  {t('pages.cashier')}
                 </Button>
               </NavbarItem>
             </div>

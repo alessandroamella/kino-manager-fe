@@ -253,10 +253,14 @@
     "currentPurchase": "Current Purchase",
     "noItemsInPurchase": "No items in purchase",
     "discount": "Discount",
-    "discountPlaceholder": "Enter discount",
-    "logPurchaseButton": "Log Purchase"
+    "discountPlaceholder": "Enter discount"
+  },
+  "paymentMethod": {
+    "CASH": "Cash",
+    "CARD": "Card"
   },
   "pages": {
+    "home": "Kinó Café San Cesario - Games, Bar, Events & Relax",
     "profile": "Profile",
     "login": "Login",
     "signup": "Sign Up",

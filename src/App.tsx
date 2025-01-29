@@ -21,6 +21,7 @@ const App = () => {
   const isFetching = useRef(false);
   useEffect(() => {
     if (accessToken && !isFetching.current) {
+      console.log('Fetching user data from App');
       isFetching.current = true;
       fetchUser(accessToken).finally(() => {
         isFetching.current = false;

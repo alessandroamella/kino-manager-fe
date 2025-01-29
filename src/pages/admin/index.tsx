@@ -31,6 +31,9 @@ import getUnicodeFlagIcon from 'country-flag-icons/unicode';
 import { isMembershipPdfDataDto } from '@/utils/isMembershipPdfDataDto';
 import downloadStreamedFile from '@/utils/download';
 import AdminViewSignatureModal from './AdminViewSignatureModal';
+import PageTitle from '@/components/PageTitle';
+import StatsCharts from './StatsCharts';
+import ScrollTop from '@/components/ScrollTop';
 
 interface MembershipCardExtended extends Omit<MembershipCard, 'member'> {
   member: MemberExtended | null;
@@ -46,10 +49,7 @@ const AdminPanel = () => {
 
   const setError = useCallback((err: string | null) => {
     _setError(err);
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth',
-    });
+    ScrollTop.scrollTop();
   }, []);
 
   const hasFetchedUsers = useRef(false);
@@ -235,6 +235,7 @@ const AdminPanel = () => {
         signatureKey={viewingSignature}
         setSignatureKey={setViewingSignature}
       />
+      <PageTitle title="admin" />
       <main className="p-4 md:p-8 mb-4">
         {error && (
           <Alert
@@ -258,7 +259,7 @@ const AdminPanel = () => {
           </Button>
         </div>
         <div className="w-fit overflow-x-auto max-w-[92vw] md:max-w-[94vw]">
-          <Table aria-label="Users table" className="table pr-2">
+          <Table isStriped aria-label="Users table" className="table pr-2">
             <TableHeader>
               <TableColumn>{t('admin.actions')}</TableColumn>
               <TableColumn>
@@ -429,6 +430,13 @@ const AdminPanel = () => {
         </div>
 
         <Divider className="my-12" />
+
+        {users.length > 0 && (
+          <>
+            <StatsCharts users={users} />
+            <Divider className="my-12" />
+          </>
+        )}
 
         <h2 className="text-2xl font-semibold mb-4">{t('admin.cards')}</h2>
         {cards ? (

@@ -4,22 +4,23 @@ import useUserStore from '@/store/user';
 import { Image, Skeleton } from '@heroui/react';
 import { useEffect, useRef } from 'react';
 import logoDark from '../../assets/images/logo-dark.png';
+import Price from '@/components/items/Price';
 
 const KinoMenu = () => {
   const categories = usePurchasesStore((store) => store.categories);
 
   const accessToken = useUserStore((store) => store.accessToken);
-  const fetchItems = usePurchasesStore((store) => store.fetchItems);
+  const fetchItems = usePurchasesStore((store) => store.fetchAllData);
 
   const isFetching = useRef(false);
 
   useEffect(() => {
-    if (!accessToken || isFetching.current) {
+    if (!accessToken || isFetching.current || categories) {
       return;
     }
     isFetching.current = true;
     fetchItems(accessToken);
-  }, [accessToken, fetchItems]);
+  }, [accessToken, categories, fetchItems]);
 
   return (
     <div className="min-h-screen bg-gray-900 text-white p-8 pt-0">
@@ -55,7 +56,7 @@ const KinoMenu = () => {
                         )}
                       </p>
                       <p className="text-lg text-gray-400">
-                        €{item.price.toFixed(2)}
+                        <Price price={item.price} />
                       </p>
                     </li>
                   ))}
