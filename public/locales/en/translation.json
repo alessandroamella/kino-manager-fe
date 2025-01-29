@@ -69,6 +69,9 @@
     "editSignature": "Edit Signature"
   },
   "docs": {
+    "doc": "Document",
+    "tos": "Terms of Service",
+    "verifica": "Verification",
     "disclaimer": "Translation disclaimer",
     "italianDisclaimer": "This document is written in Italian. You can get an automatic translation by clicking the button below.",
     "translate": "Translate",
@@ -252,6 +255,14 @@
     "discount": "Discount",
     "discountPlaceholder": "Enter discount",
     "logPurchaseButton": "Log Purchase"
+  },
+  "pages": {
+    "profile": "Profile",
+    "login": "Login",
+    "signup": "Sign Up",
+    "admin": "Admin",
+    "cashier": "Cashier",
+    "menu": "Menu"
   },
   "countries": {
     "AF": "Afghanistan",

@@ -7,6 +7,9 @@ import LogoKinoCampus from '../../assets/images/logo-kino-campus.png';
 import { Button, Image } from '@heroui/react';
 import { Link } from 'react-router';
 import { address, googleMapsDirectionsUrl } from '../../constants/address';
+import { Email } from 'react-obfuscate-email';
+import { contactEmail } from '@/constants/contactEmail';
+import { FiMail, FiMapPin } from 'react-icons/fi';
 
 const Footer = () => {
   const { i18n, t } = useTranslation();
@@ -17,11 +20,20 @@ const Footer = () => {
       <div className="container mx-auto px-4">
         <div className="grid justify-items-center grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 space-y-3 px-4 text-center md:text-left">
           {/* Contact & Address */}
-          <div>
+          <div className="flex flex-col gap-1">
             <h4 className="text-lg font-semibold text-foreground-700 mb-2">
               {t('footer.contactUs')}
             </h4>
-            <p className="text-foreground-500 mb-2">{address}</p>
+            <div>
+              <FiMail className="inline-block mr-1 mb-1" />
+              <div className="text-foreground-500 hover:text-foreground-700 transition-colors inline">
+                <Email email={contactEmail}>{contactEmail}</Email>
+              </div>
+            </div>
+            <p className="mb-2">
+              <FiMapPin className="inline-block mr-1" />
+              <span className="text-foreground-500">{address}</span>
+            </p>
             <Button
               color="primary"
               onPress={() =>

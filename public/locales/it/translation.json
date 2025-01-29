@@ -75,6 +75,9 @@
     "editSignature": "Modifica firma"
   },
   "docs": {
+    "doc": "Documento",
+    "tos": "Termine di servizio",
+    "verifica": "Verifica",
     "disclaimer": "Disclaimer sulla traduzione",
     "italianDisclaimer": "Questo documento è scritto in italiano. Puoi ottenere una traduzione automatica cliccando sul pulsante qui sotto.",
     "translate": "Traduci",
