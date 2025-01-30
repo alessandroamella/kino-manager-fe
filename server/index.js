@@ -73,6 +73,7 @@ app.use(
       vibrate: ['none'],
       payment: [],
       syncXhr: [],
+      serial: ['self'], // cashier needs Web Serial API for esp32
     },
   }),
 );

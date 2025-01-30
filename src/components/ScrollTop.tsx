@@ -6,10 +6,17 @@ interface Props {
 }
 
 function f(props?: Props) {
-  (props?.elem || window).scrollTo({
-    top: 0,
-    behavior: 'smooth',
-  });
+  if (props?.elem) {
+    props.elem.scrollIntoView({
+      block: 'center',
+      behavior: 'smooth',
+    });
+  } else {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  }
 }
 
 const ScrollTop = ({ delay = 50, elem }: Props) => {

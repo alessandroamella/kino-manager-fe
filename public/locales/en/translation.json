@@ -256,6 +256,9 @@
     "discount": "Discount",
     "discountPlaceholder": "Enter discount"
   },
+  "serial": {
+    "noSerialSupport": "This browser does not support serial communication"
+  },
   "paymentMethod": {
     "CASH": "Cash",
     "CARD": "Card"

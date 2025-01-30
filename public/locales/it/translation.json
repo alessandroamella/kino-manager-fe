@@ -253,6 +253,9 @@
     "discount": "Sconto",
     "discountPlaceholder": "Inserisci sconto"
   },
+  "serial": {
+    "noSerialSupport": "Il tuo browser non supporta la comunicazione seriale"
+  },
   "paymentMethod": {
     "CASH": "Contanti",
     "CARD": "Carta"

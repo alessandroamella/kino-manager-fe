@@ -11,8 +11,10 @@ import {
   Listbox,
   ListboxItem,
   Divider,
+  Button,
 } from '@heroui/react';
 import { formatDate } from 'date-fns';
+import { FaPrint } from 'react-icons/fa';
 
 const PurchasesTable = () => {
   const purchases = usePurchasesStore((store) => store.purchases);
@@ -22,6 +24,7 @@ const PurchasesTable = () => {
   const columns = [
     { key: 'purchaseDate', label: 'Purchase Date' },
     { key: 'itemDetails', label: 'Item Details' },
+    { key: 'actions', label: 'Actions' },
   ];
 
   return isLoading ? (
@@ -105,6 +108,18 @@ const PurchasesTable = () => {
                     } else {
                       return 'No items';
                     }
+                  case 'actions':
+                    return (
+                      <Button
+                        color="primary"
+                        isIconOnly
+                        onPress={() => {
+                          // Do something with the item
+                        }}
+                      >
+                        <FaPrint />
+                      </Button>
+                    );
                   default:
                     return null;
                 }

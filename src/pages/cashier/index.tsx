@@ -16,13 +16,22 @@ import usePurchasesStore from '../../store/purchases';
 import useUserStore from '../../store/user';
 import { useShallow } from 'zustand/shallow';
 import ToggleTheme from '@/components/header/ToggleTheme';
-import { FaCreditCard, FaMinus, FaMoneyBillWave, FaPlus } from 'react-icons/fa';
+import {
+  FaCheck,
+  FaCreditCard,
+  FaMicrochip,
+  FaMinus,
+  FaMoneyBillWave,
+  FaPlus,
+} from 'react-icons/fa';
 import PageTitle from '@/components/PageTitle';
 import Logo from '@/components/ui/Logo';
 import PurchasesTable from './PurchasesTable';
 import ScrollTop from '@/components/ScrollTop';
 import Price from '@/components/items/Price';
 import { PaymentMethod } from '@/types/PaymentMethod';
+import CashierSerial from './CashierSerial';
+import { sumBy } from 'lodash';
 
 const CashierRegister = () => {
   const {
@@ -129,6 +138,14 @@ const CashierRegister = () => {
     setPurchaseItems(purchaseItems.filter((item) => item.itemId !== itemId));
   };
 
+  const [paymentAndTotal, setPaymentAndTotal] = useState<
+    | {
+        paymentMethod: PaymentMethod;
+        total: number;
+      }
+    | undefined
+  >(undefined);
+
   const submitPurchase = async (paymentMethod: PaymentMethod) => {
     if (!accessToken) {
       alert(t('errors.unauthorized'));
@@ -154,6 +171,7 @@ const CashierRegister = () => {
       setDiscount(0);
       setSuccessMessage(t('cashier.purchaseLoggedSuccessfully'));
       setCurrentCategory(null);
+      setPaymentAndTotal({ paymentMethod, total });
     }
   };
 
@@ -177,16 +195,46 @@ const CashierRegister = () => {
   );
 
   const total = useMemo(() => {
-    return purchaseItems.reduce((acc, item) => {
-      const itemDetails = getItemById(item.itemId);
-      if (!itemDetails) {
-        return acc;
-      }
-      return Math.max(acc + itemDetails.price * item.quantity - discount, 0);
-    }, 0);
+    // discount is in euro, not percentage
+    return Math.max(
+      sumBy(purchaseItems, (item) => {
+        const itemDetails = getItemById(item.itemId);
+        return itemDetails ? itemDetails.price * item.quantity : 0;
+      }) - discount,
+      0,
+    );
   }, [purchaseItems, getItemById, discount]);
 
+  const itemAndTotal = useMemo(() => {
+    if (purchaseItems.length === 0) {
+      return undefined;
+    }
+    const item = items.find((e) => e.id === purchaseItems.at(-1)!.itemId)!;
+    const obj = {
+      name: `${item.nameShort || item.name}${
+        item.description ? ` ${item.description}` : ''
+      }`,
+      price: item.price,
+      total,
+    };
+    console.log(
+      'itemAndTotal:\n' +
+        Object.entries(obj)
+          .map(([k, v]) => `${k}: ${v}`)
+          .join('\n'),
+    );
+    return obj;
+  }, [items, purchaseItems, total]);
+
   const selectorRef = useRef<HTMLDivElement | null>(null);
+
+  const hasSerial = useMemo(() => {
+    return 'serial' in navigator;
+  }, []);
+
+  const [isSerialConnected, setIsSerialConnected] = useState(false);
+
+  const serialSectionRef = useRef<HTMLDivElement | null>(null);
 
   return (
     <HeroUIProvider locale={i18n.language === 'en' ? 'en-gb' : i18n.language}>
@@ -200,7 +248,26 @@ const CashierRegister = () => {
           {successMessage && <Alert color="success">{successMessage}ok</Alert>}
           {purchaseError && <Alert color="danger">{purchaseError}</Alert>}
         </div>
-        <ToggleTheme />
+        <div className="flex items-center gap-2">
+          <Button
+            variant="bordered"
+            color={isSerialConnected ? 'success' : 'danger'}
+            onPress={() =>
+              serialSectionRef.current?.scrollIntoView({
+                block: 'center',
+                behavior: 'smooth',
+              })
+            }
+          >
+            <FaMicrochip />
+            {isSerialConnected ? (
+              <FaCheck className="text-success" />
+            ) : (
+              'Disconnected'
+            )}
+          </Button>
+          <ToggleTheme />
+        </div>
       </header>
       <main className="p-4 lg:-mt-6 lg:p-8">
         {/* Category and Item Selection */}
@@ -438,6 +505,21 @@ const CashierRegister = () => {
               </div>
             </div>
           </div>
+        </div>
+
+        <Divider className="my-12" />
+
+        <div ref={serialSectionRef}>
+          {hasSerial ? (
+            <CashierSerial
+              itemAndTotal={itemAndTotal}
+              paymentAndTotal={paymentAndTotal}
+              isConnected={isSerialConnected}
+              setIsConnected={setIsSerialConnected}
+            />
+          ) : (
+            <p>{t('cashier.noSerialSupport')}</p>
+          )}
         </div>
 
         <Divider className="my-12" />
