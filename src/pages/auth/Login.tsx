@@ -77,9 +77,9 @@ const Login = () => {
                   }),
                 },
               })}
-              isInvalid={Boolean(
-                error === 'errors.auth.userNotFound' || errors.email,
-              )}
+              isInvalid={
+                !!(error === 'errors.auth.userNotFound' || errors.email)
+              }
               errorMessage={error ? t(error) : errors.email?.message}
               isRequired
             />
@@ -92,9 +92,9 @@ const Login = () => {
                   field: t('auth.password'),
                 }),
               })}
-              isInvalid={Boolean(
-                error === 'errors.auth.wrongPassword' || errors.password,
-              )}
+              isInvalid={
+                !!(error === 'errors.auth.wrongPassword' || errors.password)
+              }
               errorMessage={error ? t(error) : errors.password?.message}
               isRequired
             />

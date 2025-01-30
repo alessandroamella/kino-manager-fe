@@ -14,6 +14,7 @@ import {
 } from 'chart.js';
 import { differenceInYears } from 'date-fns';
 import { MemberExtended } from '@/types/Member';
+import { chain, inRange } from 'lodash';
 
 ChartJS.register(
   CategoryScale,
@@ -74,26 +75,26 @@ const StatsCharts = ({ users }: UserDataVisualizationsProps) => {
 
   // 2. Age Chart (Bar Chart - grouped by age ranges)
   const ageRanges = {
-    '18-24': 0,
-    '25-34': 0,
-    '35-44': 0,
-    '45-54': 0,
-    '55+': 0,
+    '0-16': 0,
+    '17-18': 0,
+    '18-19': 0,
+    '20-23': 0,
+    '24-28': 0,
+    '29+': 0,
   };
+  const ageRangesArr = Object.keys(ageRanges).map((key) =>
+    key.replace('+', '-Infinity').split('-').map(Number),
+  );
 
   users.forEach((user) => {
     const age = differenceInYears(new Date(), user.birthDate); // Calculate age
 
-    if (age >= 18 && age <= 24) {
-      ageRanges['18-24']++;
-    } else if (age >= 25 && age <= 34) {
-      ageRanges['25-34']++;
-    } else if (age >= 35 && age <= 44) {
-      ageRanges['35-44']++;
-    } else if (age >= 45 && age <= 54) {
-      ageRanges['45-54']++;
-    } else if (age >= 55) {
-      ageRanges['55+']++;
+    const range = ageRangesArr.find(([min, max]) => inRange(age, min, max));
+    if (range) {
+      const key = `${range[0]}-${
+        Math.abs(range[1]) === Infinity ? '+' : range[1]
+      }`;
+      ageRanges[key as keyof typeof ageRanges] += 1;
     }
   });
 
@@ -132,16 +133,21 @@ const StatsCharts = ({ users }: UserDataVisualizationsProps) => {
     },
   };
 
-  // 3. City Chart (Bar Chart)
-  const cityCounts = users
-    .filter((e) => e.city)
-    .reduce((acc, user) => {
-      acc[user.city!] = (acc[user.city!] || 0) + 1;
-      return acc;
-    }, {} as { [city: string]: number });
+  // 3. City Chart (Bar Chart) - Case-insensitive grouping
+  const cityCounts = chain(users)
+    .filter((user) => !!user.city)
+    .groupBy((user) => user.city!.toLowerCase()) // Group by lowercase city
+    .mapValues((group) => group.length) // Count items in each group
+    .value();
+
+  const cityLabels = chain(users)
+    .filter((user) => !!user.city)
+    .groupBy((user) => user.city!.toLowerCase())
+    .map((group) => group[0].city) // Get the first city name (original case) from each group
+    .value();
 
   const cityChartData = {
-    labels: Object.keys(cityCounts),
+    labels: cityLabels, // Use original case labels
     datasets: [
       {
         label: 'User Distribution by City',
@@ -176,7 +182,7 @@ const StatsCharts = ({ users }: UserDataVisualizationsProps) => {
   };
 
   return (
-    <main className="flex flex-row flex-wrap justify-center items-center">
+    <main className="flex gap-4 flex-row flex-wrap justify-center items-center">
       <div className="w-56 m-5">
         <Pie data={genderChartData} options={genderChartOptions} />
       </div>
