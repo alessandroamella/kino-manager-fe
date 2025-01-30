@@ -20,6 +20,7 @@ PORT=Porta su cui esporre il server
 BACKEND_URL=URL del backend (nota: senza prefisso /v1)
 VITE_MAPS_API_KEY=API key di Google Maps
 VITE_GA4_KEY=Measurement ID di Google Analytics
+VITE_CONTACT_EMAIL=Email di contatto inserita nel footer
 ```
 
 ## Utilizzo - Development

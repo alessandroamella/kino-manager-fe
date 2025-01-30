@@ -21,9 +21,7 @@ const ToggleTheme = ({ className, ...rest }: ButtonProps) => {
     <Button
       onPress={toggleTheme}
       variant="ghost"
-      className={cn(className, {
-        'min-w-0': true,
-      })}
+      className={cn(className, 'min-w-0')}
       {...rest}
     >
       {isDarkMode ? <FiSun /> : <FiMoon />}

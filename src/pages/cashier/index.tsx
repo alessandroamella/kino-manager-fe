@@ -260,11 +260,13 @@ const CashierRegister = () => {
             }
           >
             <FaMicrochip />
-            {isSerialConnected ? (
-              <FaCheck className="text-success" />
-            ) : (
-              'Disconnected'
-            )}
+            <span className="hidden lg:inline">
+              {isSerialConnected ? (
+                <FaCheck className="text-success" />
+              ) : (
+                'Disconnected'
+              )}
+            </span>
           </Button>
           <ToggleTheme />
         </div>
