@@ -163,6 +163,7 @@
     "birthComune": "Comune di Nascita",
     "birthCountry": "Paese di Nascita",
     "noCardAssigned": "Nessuna tessera assegnata",
+    "notAMember": "Non tesserato",
     "membershipCardNumber": "Numero tessera",
     "membershipCardNumberShort": "Tessera",
     "verified": "Verificato",

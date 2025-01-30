@@ -99,7 +99,7 @@ const Profile = () => {
       />
       <PageTitle title="profile" />
       <ScrollTop />
-      <main className="mx-auto py-3 bg-background-50 -mt-2 md:mt-0 md:p-6 md:px-12 lg:px-16 xl:px-24">
+      <main className="mx-auto py-6 bg-background-50 -mt-2 md:mt-0 md:p-6 md:px-12 lg:px-16 xl:px-24">
         <Card shadow={isMobile ? 'none' : undefined}>
           <CardHeader className="flex justify-between items-center px-4 md:px-6 py-3 border-b-2 border-gray-200 dark:border-gray-700">
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
@@ -262,7 +262,7 @@ const Profile = () => {
                   <p className="text-foreground-500">
                     {user.membershipCardNumber
                       ? t('profile.card', { n: user.membershipCardNumber })
-                      : '-'}
+                      : t('profile.notAMember')}
                   </p>
                 </div>
               </div>

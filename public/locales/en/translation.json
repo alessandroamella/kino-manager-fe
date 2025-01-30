@@ -164,6 +164,7 @@
     "country": "Country",
     "birthProvince": "Birth Province",
     "noCardAssigned": "No card assigned",
+    "notAMember": "No membership card",
     "membershipCardNumber": "Membership Number",
     "membershipCardNumberShort": "Card Num.",
     "verified": "Verified",
