@@ -1,6 +1,5 @@
 import { Pie } from 'react-chartjs-2';
 import { Bar } from 'react-chartjs-2';
-import { Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -13,7 +12,7 @@ import {
   PointElement,
   LineElement,
 } from 'chart.js';
-import { differenceInYears, format } from 'date-fns';
+import { differenceInYears } from 'date-fns';
 import { MemberExtended } from '@/types/Member';
 
 ChartJS.register(
@@ -176,93 +175,20 @@ const StatsCharts = ({ users }: UserDataVisualizationsProps) => {
     },
   };
 
-  // 4. Registered Date Chart (Line Chart - showing trends over time)
-  const registrationCounts = users.reduce((acc, user) => {
-    const registrationMonth = format(user.createdAt, 'MMM yyyy'); // Group by month and year
-    acc[registrationMonth] = (acc[registrationMonth] || 0) + 1;
-    return acc;
-  }, {} as { [monthYear: string]: number });
-
-  const sortedRegistrationMonths = Object.keys(registrationCounts).sort(
-    (a, b) => {
-      // Sort months chronologically
-      const [monthA, yearA] = a.split(' ');
-      const [monthB, yearB] = b.split(' ');
-      const dateA = new Date(
-        new Date(Date.parse(`${monthB} 1, ${yearB}`)).getMonth(),
-        new Date(Date.parse(`${monthA} 1, ${yearA}`)).getMonth(),
-      );
-      const dateB = new Date(
-        new Date(Date.parse(`${monthA} 1, ${yearA}`)).getMonth(),
-        new Date(Date.parse(`${monthB} 1, ${yearB}`)).getMonth(),
-      );
-      return dateA.getTime() - dateB.getTime();
-    },
-  );
-
-  const registrationChartData = {
-    labels: sortedRegistrationMonths,
-    datasets: [
-      {
-        label: 'User Registrations Over Time',
-        data: sortedRegistrationMonths.map(
-          (month) => registrationCounts[month],
-        ),
-        fill: false,
-        borderColor: 'rgb(75, 192, 192)',
-        tension: 0.1, // For smoother lines
-      },
-    ],
-  };
-
-  const registrationChartOptions = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: 'top' as const,
-      },
-      title: {
-        display: true,
-        text: 'User Registrations Over Time',
-      },
-    },
-    scales: {
-      y: {
-        beginAtZero: true,
-        title: {
-          display: true,
-          text: 'Number of Users',
-        },
-      },
-      x: {
-        title: {
-          display: true,
-          text: 'Registration Month',
-        },
-      },
-    },
-  };
-
   return (
-    <div>
-      <h2>User Data Visualizations</h2>
-
-      <div style={{ width: '400px', margin: '20px' }}>
+    <main className="flex flex-row flex-wrap justify-center items-center">
+      <div className="w-56 m-5">
         <Pie data={genderChartData} options={genderChartOptions} />
       </div>
 
-      <div style={{ width: '600px', margin: '20px' }}>
+      <div className="w-96 m-5">
         <Bar data={ageChartData} options={ageChartOptions} />
       </div>
 
-      <div style={{ width: '600px', margin: '20px' }}>
+      <div className="w-96 m-5">
         <Bar data={cityChartData} options={cityChartOptions} />
       </div>
-
-      <div style={{ width: '800px', margin: '20px' }}>
-        <Line data={registrationChartData} options={registrationChartOptions} />
-      </div>
-    </div>
+    </main>
   );
 };
 

@@ -1,10 +1,12 @@
+import { MemberExtended } from '@/types/Member';
 import { MembershipPdfData } from '@/types/MembershipPdfData';
 import { isValid } from 'date-fns';
 
 export function isMembershipPdfDataDto(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  obj: any,
-): obj is MembershipPdfData {
+  _obj: any,
+): _obj is MembershipPdfData {
+  const obj = _obj as MemberExtended;
   return (
     typeof obj === 'object' &&
     obj !== null &&
@@ -22,7 +24,9 @@ export function isMembershipPdfDataDto(
     typeof obj.country === 'string' &&
     typeof obj.codiceFiscale === 'string' &&
     typeof obj.birthProvince === 'string' &&
+    !!obj.memberSince &&
     isValid(new Date(obj.memberSince)) &&
-    typeof obj.membershipCardNumber === 'number'
+    typeof obj.membershipCardNumber === 'number' &&
+    obj.signatureR2Key !== ''
   );
 }
