@@ -231,12 +231,12 @@ const Header = () => {
                   }
                   as={Link}
                   color="secondary"
-                  to="/admin/purchases"
+                  to="/cashier"
                   className="w-full"
                   onPress={handleClickItem} // Optional: close menu after purchases button click
                 >
                   <FaCashRegister className="mr-2" />
-                  {t('cashier.purchases')}
+                  {t('pages.cashier')}
                 </Button>
               </NavbarMenuItem>
             </>
