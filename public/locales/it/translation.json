@@ -252,7 +252,10 @@
     "currentPurchase": "Acquisto Corrente",
     "noItemsInPurchase": "Nessun articolo nell'acquisto",
     "discount": "Sconto",
-    "discountPlaceholder": "Inserisci sconto"
+    "discountPlaceholder": "Inserisci sconto",
+    "enterAmountGiven": "Inserisci l'importo ricevuto",
+    "insufficientAmount": "Importo insufficiente",
+    "change": "Resto: €{{change}}"
   },
   "serial": {
     "noSerialSupport": "Il tuo browser non supporta la comunicazione seriale"

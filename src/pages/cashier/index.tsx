@@ -30,8 +30,9 @@ import PurchasesTable from './PurchasesTable';
 import ScrollTop from '@/components/ScrollTop';
 import Price from '@/components/items/Price';
 import { PaymentMethod } from '@/types/PaymentMethod';
-import CashierSerial from './CashierSerial';
+import CashierSerialDisplay from './CashierSerialDisplay';
 import { sumBy } from 'lodash';
+import { wait } from '@/utils/wait';
 
 const CashierRegister = () => {
   const {
@@ -155,6 +156,36 @@ const CashierRegister = () => {
       return;
     }
 
+    setPaymentAndTotal({ paymentMethod, total });
+
+    // since prompt is blocking, wait for serial display to display total
+    await wait(300);
+
+    let givenAmount: number | null = null;
+    if (paymentMethod === PaymentMethod.CASH) {
+      const val = prompt(t('cashier.enterAmountGiven'));
+      givenAmount = parseFloat(val || '');
+      if (val === null || Number.isNaN(givenAmount)) {
+        console.log('Invalid amount given');
+        setPaymentAndTotal(undefined);
+        return;
+      }
+    }
+
+    if (givenAmount) {
+      if (givenAmount < total) {
+        alert(t('cashier.insufficientAmount'));
+        setPaymentAndTotal(undefined);
+        return;
+      } else if (total > 0 && givenAmount !== total) {
+        alert(
+          t('cashier.change', {
+            change: ((givenAmount || 0) - total).toFixed(2),
+          }),
+        );
+      }
+    }
+
     const purchasePayload = {
       discount: parseFloat(discount.toFixed(2)),
       purchasedItems: purchaseItems.map((item) => ({
@@ -163,15 +194,18 @@ const CashierRegister = () => {
       })),
       purchaseDate: new Date(),
       paymentMethod,
+      givenAmount,
     };
 
     const success = await createPurchase(accessToken, purchasePayload);
     if (success) {
+      // so it kind of syncs with the time it takes for the printer to print
+      await wait(500);
       setPurchaseItems([]);
       setDiscount(0);
       setSuccessMessage(t('cashier.purchaseLoggedSuccessfully'));
       setCurrentCategory(null);
-      setPaymentAndTotal({ paymentMethod, total });
+      setPaymentAndTotal(undefined);
     }
   };
 
@@ -477,7 +511,7 @@ const CashierRegister = () => {
                 value={discount.toString()}
                 onValueChange={(e) => setDiscount(parseFloat(e) || 0)}
               />
-              <div className="grid grid-cols-2 lg:grid-cols-3 items-center w-full gap-2">
+              <div className="grid mb-1 grid-cols-2 lg:grid-cols-3 items-center w-full gap-2">
                 {Object.keys(PaymentMethod).map((e, i) => (
                   <Button
                     key={e}
@@ -490,7 +524,7 @@ const CashierRegister = () => {
                     {creatingPurchase ? (
                       <Spinner />
                     ) : (
-                      <div className="flex gap-2 items-center">
+                      <div className="flex text-black dark:text-inherit gap-2 items-center">
                         {e === PaymentMethod.CASH ? (
                           <FaMoneyBillWave />
                         ) : (
@@ -512,16 +546,18 @@ const CashierRegister = () => {
         <Divider className="my-12" />
 
         <div ref={serialSectionRef}>
-          {hasSerial ? (
-            <CashierSerial
-              itemAndTotal={itemAndTotal}
-              paymentAndTotal={paymentAndTotal}
-              isConnected={isSerialConnected}
-              setIsConnected={setIsSerialConnected}
-            />
-          ) : (
-            <p>{t('cashier.noSerialSupport')}</p>
-          )}
+          <div className="flex justify-center gap-4">
+            {hasSerial ? (
+              <CashierSerialDisplay
+                itemAndTotal={itemAndTotal}
+                paymentAndTotal={paymentAndTotal}
+                isConnected={isSerialConnected}
+                setIsConnected={setIsSerialConnected}
+              />
+            ) : (
+              <p>{t('cashier.noSerialSupport')}</p>
+            )}
+          </div>
         </div>
 
         <Divider className="my-12" />

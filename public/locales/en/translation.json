@@ -255,7 +255,10 @@
     "currentPurchase": "Current Purchase",
     "noItemsInPurchase": "No items in purchase",
     "discount": "Discount",
-    "discountPlaceholder": "Enter discount"
+    "discountPlaceholder": "Enter discount",
+    "enterAmountGiven": "Enter amount given by customer",
+    "insufficientAmount": "Insufficient amount",
+    "change": "Change: €{{change}}"
   },
   "serial": {
     "noSerialSupport": "This browser does not support serial communication"

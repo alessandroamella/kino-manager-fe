@@ -5,7 +5,7 @@ import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import unidecode from 'unidecode';
 
-const CashierSerial = ({
+const CashierSerialDisplay = ({
   itemAndTotal,
   paymentAndTotal,
   isConnected,
@@ -70,17 +70,20 @@ const CashierSerial = ({
       // Send data to ESP32
       // force Italian locale
       const str =
-        (itemAndTotal
+        (paymentAndTotal
+          ? t(`paymentMethod.${paymentAndTotal?.paymentMethod}`, {
+              lng: 'it',
+            }) +
+            '|' +
+            toFixedItalian(paymentAndTotal!.total)
+          : itemAndTotal
           ? unidecode(itemAndTotal.name) +
             '|' +
             toFixedItalian(itemAndTotal.price) +
             '|' +
             toFixedItalian(itemAndTotal.total)
-          : t(`paymentMethod.${paymentAndTotal?.paymentMethod}`, {
-              lng: 'it',
-            }) +
-            '|' +
-            toFixedItalian(paymentAndTotal!.total)) + '\n';
+          : // impossible case
+            (console.log('sa ghé????'), null)) + '\n';
 
       console.log(
         'Sending item to ESP32:',
@@ -117,4 +120,4 @@ const CashierSerial = ({
   );
 };
 
-export default CashierSerial;
+export default CashierSerialDisplay;
