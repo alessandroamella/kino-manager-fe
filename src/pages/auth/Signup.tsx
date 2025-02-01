@@ -17,6 +17,7 @@ import {
   DropdownTrigger,
   Tooltip,
   Image,
+  Checkbox,
 } from '@heroui/react';
 import type { CalendarDate } from '@heroui/react';
 import CodiceFiscale from 'codice-fiscale-js';
@@ -86,6 +87,7 @@ const Signup = () => {
       gender: 'F',
       address: '',
       birthCountry: 'IT',
+      acceptTerms: false,
     },
   });
 
@@ -104,6 +106,7 @@ const Signup = () => {
   const phoneNumber = watch('phoneNumber');
   const gender = watch('gender');
   const signatureB64 = watch('signatureB64');
+  const acceptTerms = watch('acceptTerms');
 
   const phoneCountry = useMemo(() => {
     if (!phoneNumber) {
@@ -342,6 +345,7 @@ const Signup = () => {
       console.log('Formatted phone number:', obj.phoneNumber);
 
       delete obj.birthProvince;
+      delete obj.acceptTerms;
 
       obj = normalize(obj); // remove undefined and empty strings
       console.log(
@@ -405,6 +409,12 @@ const Signup = () => {
     }
     trigger('signatureB64');
     setIsSignatureModalOpen(false);
+  }
+
+  function toggleTerms(v?: unknown) {
+    console.log('Toggling acceptTerms');
+    setValue('acceptTerms', typeof v === 'boolean' ? v : !acceptTerms);
+    trigger('acceptTerms');
   }
 
   return (
@@ -707,6 +717,42 @@ const Signup = () => {
               )}
             </div>
 
+            <div>
+              <div className="flex items-center">
+                <Checkbox
+                  isSelected={acceptTerms}
+                  onValueChange={toggleTerms}
+                  isRequired
+                />
+                <p className="text-small cursor-pointer" onClick={toggleTerms}>
+                  {t('signup.acceptTerms.pre')}
+                  <Link
+                    to="/docs/tos"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-primary"
+                  >
+                    {t('signup.acceptTerms.tos')}
+                  </Link>
+                  {t('signup.acceptTerms.and')}
+                  <Link
+                    to="/docs/privacy"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-primary"
+                  >
+                    {t('signup.acceptTerms.privacy')}
+                  </Link>
+                  {t('signup.acceptTerms.post')}
+                </p>
+              </div>
+              {errors.acceptTerms && (
+                <p className="text-danger text-small">
+                  {errors.acceptTerms.message}
+                </p>
+              )}
+            </div>
+
             <Button
               color="primary"
               type="submit"
@@ -716,7 +762,7 @@ const Signup = () => {
               {t('signup.registerButton')}
             </Button>
 
-            <div className="flex flex-col gap-1 mt-4 items-center w-full">
+            <div className="flex flex-col gap-1 mt-6 items-center w-full">
               <p className="text-foreground-600 text-small">
                 {t('signup.alreadyAccount')}{' '}
               </p>

@@ -9,6 +9,15 @@ export default {
   ],
   theme: {
     extend: {
+      keyframes: {
+        'border-pulse': {
+          '0%, 100%': { backgroundColor: 'background' },
+          '50%': { backgroundColor: 'red' },
+        },
+      },
+      animation: {
+        'border-loop': 'border-pulse 0.5s infinite ease-in-out',
+      },
       colors: {
         kino: {
           // Keep kino colors for potential other uses

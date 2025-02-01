@@ -3,7 +3,7 @@ import { Form, Input, Button, Alert, Card } from '@heroui/react';
 import { useForm } from 'react-hook-form';
 import useUserStore from '../../store/user';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useSearchParams } from 'react-router';
+import { Link, useNavigate, useSearchParams } from 'react-router';
 import PageTitle from '@/components/PageTitle';
 import ScrollTop from '@/components/ScrollTop';
 
@@ -108,6 +108,22 @@ const Login = () => {
               {t('auth.login')}
             </Button>
           </Form>
+
+          <div className="flex flex-col gap-1 mt-6 px-6 pb-4 items-center w-full">
+            <p className="text-foreground-600 text-small">
+              {t('signup.noAccount')}{' '}
+            </p>
+            <Button
+              as={Link}
+              to="/auth/signup"
+              size="sm"
+              type="button"
+              variant="bordered"
+              className="text-small w-full"
+            >
+              {t('auth.signup')}
+            </Button>
+          </div>
         </Card>
       </main>
     </>

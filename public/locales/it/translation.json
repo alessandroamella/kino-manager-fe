@@ -68,11 +68,19 @@
     "addressDescription": "Inserisci il tuo indirizzo di residenza",
     "registerButton": "Registrati",
     "alreadyAccount": "Hai già un account?",
+    "noAccount": "Non hai un account?",
     "errorTitle": "Errore durante la registrazione",
     "errorCloseAria": "Chiudi avviso di errore",
     "tabsAriaLabel": "Registrati con o senza codice fiscale",
     "signature": "Firma",
-    "editSignature": "Modifica firma"
+    "editSignature": "Modifica firma",
+    "acceptTerms": {
+      "pre": "Accetto i ",
+      "tos": "Termini di Servizio",
+      "and": " e l'",
+      "privacy": "Informativa sulla Privacy",
+      "post": "."
+    }
   },
   "docs": {
     "doc": "Documento",
@@ -106,6 +114,9 @@
       "noUppercase": "La password deve contenere almeno una lettera maiuscola",
       "noLowercase": "La password deve contenere almeno una lettera minuscola",
       "noDigit": "La password deve contenere almeno un numero"
+    },
+    "terms": {
+      "accept": "Devi accettare i Termini di Servizio e l'Informativa sulla Privacy"
     }
   },
   "home": {
@@ -255,9 +266,7 @@
     "discountPlaceholder": "Inserisci sconto",
     "enterAmountGiven": "Inserisci l'importo ricevuto",
     "insufficientAmount": "Importo insufficiente",
-    "change": "Resto: €{{change}}"
-  },
-  "serial": {
+    "change": "Resto: €{{change}}",
     "noSerialSupport": "Il tuo browser non supporta la comunicazione seriale"
   },
   "paymentMethod": {

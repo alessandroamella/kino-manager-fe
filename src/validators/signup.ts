@@ -112,4 +112,5 @@ export const signupYupSchema = (t: TFunction, useCodiceFiscale: boolean) =>
     signatureB64: yup
       .string()
       .required(t('errors.field.required', { field: t('signup.signature') })),
+    acceptTerms: yup.boolean().oneOf([true], t('errors.terms.accept')),
   });

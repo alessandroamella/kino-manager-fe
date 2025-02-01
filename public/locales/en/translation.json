@@ -62,11 +62,19 @@
     "addressDescription": "Enter your address of residence",
     "registerButton": "Sign Up",
     "alreadyAccount": "Already have an account?",
+    "noAccount": "Don't have an account?",
     "errorTitle": "Error during registration",
     "errorCloseAria": "Close error alert",
     "tabsAriaLabel": "Sign up with or without fiscal code",
     "signature": "Signature",
-    "editSignature": "Edit Signature"
+    "editSignature": "Edit Signature",
+    "acceptTerms": {
+      "pre": "I accept the ",
+      "tos": "Terms of Service",
+      "and": " and the ",
+      "privacy": "Privacy Policy",
+      "post": "."
+    }
   },
   "docs": {
     "doc": "Document",
@@ -100,6 +108,9 @@
       "noUppercase": "Password must contain at least one uppercase letter",
       "noLowercase": "Password must contain at least one lowercase letter",
       "noDigit": "Password must contain at least one digit"
+    },
+    "terms": {
+      "accept": "You must accept the Terms of Service and Privacy Policy"
     }
   },
   "home": {
@@ -258,9 +269,7 @@
     "discountPlaceholder": "Enter discount",
     "enterAmountGiven": "Enter amount given by customer",
     "insufficientAmount": "Insufficient amount",
-    "change": "Change: €{{change}}"
-  },
-  "serial": {
+    "change": "Change: €{{change}}",
     "noSerialSupport": "This browser does not support serial communication"
   },
   "paymentMethod": {
