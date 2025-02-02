@@ -240,7 +240,9 @@
     "verifyUserWarning": "La tessera n.{{number}} sarà assegnata all'utente {{user}}, che verrà tesserato ad Almo. Questa azione è irreversibile. Assicurati di avere i dati corretti prima di cliccare su 'Ok'.",
     "cardAlreadyAssigned": "A questo utente è già stata assegnata una tessera. Non puoi modificarla.",
     "assignCard": "Assegna tessera",
-    "downloadMembershipForm": "Scarica modulo di iscrizione"
+    "downloadMembershipForm": "Scarica modulo di iscrizione",
+    "deviceInfo": "Informazioni dispositivo",
+    "ipAddress": "Indirizzo IP"
   },
   "signature": {
     "openModalButton": "Firma",

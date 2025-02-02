@@ -243,7 +243,9 @@
     "verifyUserWarning": "Card #{{number}} will be assigned to user {{user}}, who will become al Almo member. This is irreversible. Please be sure you have the correct data before clicking 'Ok'.",
     "cardAlreadyAssigned": "This user already has a membership card assigned. You cannot change it.",
     "assignCard": "Assign Card",
-    "downloadMembershipForm": "Download Membership Card"
+    "downloadMembershipForm": "Download Membership Card",
+    "deviceInfo": "Device Info",
+    "ipAddress": "IP Address"
   },
   "signature": {
     "openModalButton": "Write signature",

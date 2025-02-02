@@ -295,6 +295,8 @@ const AdminPanel = () => {
               <TableColumn>{t('profile.birthCountry')}</TableColumn>
               <TableColumn>{t('profile.memberSince')}</TableColumn>
               <TableColumn>{t('admin.isAdmin')}</TableColumn>
+              <TableColumn>{t('admin.deviceInfo')}</TableColumn>
+              <TableColumn>{t('admin.ipAddress')}</TableColumn>
               <TableColumn>{t('signup.signature')}</TableColumn>
             </TableHeader>
             <TableBody items={users}>
@@ -410,6 +412,24 @@ const AdminPanel = () => {
                       <FaTimes className="text-red-300" />
                     )}
                   </TableCell>
+                  <TableCell>
+                    {user.deviceInfo ? (
+                      <ul>
+                        {Object.entries(user.deviceInfo).map(([key, value]) => (
+                          <li key={key}>{`${key}: ${
+                            typeof value === 'boolean'
+                              ? value
+                                ? t('common.yes')
+                                : t('common.no')
+                              : value
+                          }`}</li>
+                        ))}
+                      </ul>
+                    ) : (
+                      '-'
+                    )}
+                  </TableCell>
+                  <TableCell>{user.ipAddress || '-'}</TableCell>
                   <TableCell>
                     {user.signatureR2Key ? (
                       <Button

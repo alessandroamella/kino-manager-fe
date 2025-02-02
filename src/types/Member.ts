@@ -23,11 +23,33 @@ export interface MemberExtended extends BaseDocument {
   phoneNumber: string;
   address: string;
   membershipCardNumber: MembershipCard['number'] | null;
+  deviceInfo: {
+    browser?: string;
+    cpu?: string;
+    device?: string;
+    mobile?: boolean;
+    os?: string;
+  } | null;
+  ipAddress: string | null;
 }
 
-export type Member = Omit<
+export type Member = Pick<
   MemberExtended,
-  'streetName' | 'streetNumber' | 'postalCode' | 'city' | 'province' | 'country'
+  | 'firstName'
+  | 'lastName'
+  | 'email'
+  | 'codiceFiscale'
+  | 'birthCountry'
+  | 'birthDate'
+  | 'isAdmin'
+  | 'birthComune'
+  | 'birthProvince'
+  | 'gender'
+  | 'memberSince'
+  | 'signatureR2Key'
+  | 'phoneNumber'
+  | 'address'
+  | 'membershipCardNumber'
 >;
 
 export interface MemberWithToken extends Member {
