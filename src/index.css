@@ -50,3 +50,7 @@ html {
 div.table div {
   padding: 0 !important;
 }
+
+.kino-menu * {
+  @apply select-none;
+}

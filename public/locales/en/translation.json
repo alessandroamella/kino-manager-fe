@@ -270,7 +270,8 @@
     "enterAmountGiven": "Enter amount given by customer",
     "insufficientAmount": "Insufficient amount",
     "change": "Change: €{{change}}",
-    "noSerialSupport": "This browser does not support serial communication"
+    "noSerialSupport": "This browser does not support serial communication",
+    "purchasesList": "Purchases List"
   },
   "paymentMethod": {
     "CASH": "Cash",

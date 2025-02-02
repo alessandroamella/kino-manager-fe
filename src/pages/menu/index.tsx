@@ -5,6 +5,7 @@ import { Image, Skeleton } from '@heroui/react';
 import { useEffect, useRef } from 'react';
 import logoDark from '../../assets/images/logo-dark.png';
 import Price from '@/components/items/Price';
+import { sortBy } from 'lodash';
 
 const KinoMenu = () => {
   const categories = usePurchasesStore((store) => store.categories);
@@ -15,7 +16,12 @@ const KinoMenu = () => {
   const isFetching = useRef(false);
 
   useEffect(() => {
-    if (!accessToken || isFetching.current || categories) {
+    if (!accessToken || categories.length !== 0) {
+      console.log({
+        accessToken,
+        isFetching: isFetching.current,
+        categories,
+      });
       return;
     }
     isFetching.current = true;
@@ -23,17 +29,17 @@ const KinoMenu = () => {
   }, [accessToken, categories, fetchItems]);
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-8 pt-0">
+    <main className="kino-menu min-h-screen bg-gray-900 text-white p-8 pt-0">
       {/* <h1 className="text-4xl font-bold mb-8 text-center">Kinó Café</h1> */}
-      <div className="flex justify-center py-2">
+      <div className="flex justify-center pt-8 pb-6">
         <Image src={logoDark} alt="Kinó Café" className="w-64 mx-auto" />
       </div>
       {categories && categories.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {categories.map((category) => (
             <Card
               key={category.id}
-              className="min-h-[400px] bg-gray-800 border-gray-700"
+              className="min-h-[300px] bg-gray-800 border-gray-700"
             >
               <CardHeader>
                 <CardTitle className="text-2xl font-bold text-yellow-400">
@@ -42,7 +48,7 @@ const KinoMenu = () => {
               </CardHeader>
               <CardContent>
                 <ul className="space-y-2">
-                  {category.items.map((item) => (
+                  {sortBy(category.items, 'name').map((item) => (
                     <li
                       key={item.id}
                       className="flex justify-between text-white items-center"
@@ -56,7 +62,7 @@ const KinoMenu = () => {
                         )}
                       </p>
                       <p className="text-lg text-gray-400">
-                        <Price price={item.price} />
+                        <Price price={item.price} round={false} />
                       </p>
                     </li>
                   ))}
@@ -70,7 +76,7 @@ const KinoMenu = () => {
           <div className="w-full h-96" />
         </Skeleton>
       )}
-    </div>
+    </main>
   );
 };
 

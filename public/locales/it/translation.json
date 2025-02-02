@@ -267,7 +267,8 @@
     "enterAmountGiven": "Inserisci l'importo ricevuto",
     "insufficientAmount": "Importo insufficiente",
     "change": "Resto: €{{change}}",
-    "noSerialSupport": "Il tuo browser non supporta la comunicazione seriale"
+    "noSerialSupport": "Il tuo browser non supporta la comunicazione seriale",
+    "purchasesList": "Lista Acquisti"
   },
   "paymentMethod": {
     "CASH": "Contanti",

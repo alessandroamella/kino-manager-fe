@@ -32,6 +32,7 @@ import LoginBtn from '../../pages/auth/LoginBtn';
 import SignupBtn from '../../pages/auth/SignupBtn';
 import ToggleTheme from './ToggleTheme';
 import { FaCashRegister } from 'react-icons/fa';
+import { GiHamburger } from 'react-icons/gi';
 
 const Header = () => {
   const { t } = useTranslation();
@@ -146,6 +147,19 @@ const Header = () => {
                 >
                   <FaCashRegister className="mr-2" />
                   {t('pages.cashier')}
+                </Button>
+              </NavbarItem>
+              <NavbarItem className="cursor-pointer">
+                <Button
+                  isDisabled={
+                    location.pathname.replace(/\//g, '') === 'cashier'
+                  }
+                  as={Link}
+                  color="warning"
+                  to="/menu"
+                >
+                  <GiHamburger className="mr-2" />
+                  Menu
                 </Button>
               </NavbarItem>
             </div>
