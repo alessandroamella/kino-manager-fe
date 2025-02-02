@@ -28,7 +28,7 @@ const LoginBtn = ({
             'inline-block ml-2',
           )}
         >
-          {t('home.login')}
+          {t('auth.login')}
         </span>
       )}
     </Button>

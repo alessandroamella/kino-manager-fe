@@ -20,7 +20,8 @@
     "password": "Password",
     "logout": "Logout",
     "login": "Login",
-    "signup": "Sign Up"
+    "signup": "Sign Up",
+    "resetPassword": "Reset Password"
   },
   "login": {
     "title": "Login to Kinó Café"
@@ -74,7 +75,8 @@
       "and": " and the ",
       "privacy": "Privacy Policy",
       "post": "."
-    }
+    },
+    "forgotPassword": "Forgot password?"
   },
   "docs": {
     "doc": "Document",
@@ -92,7 +94,8 @@
     "auth": {
       "userNotFound": "User not found",
       "wrongPassword": "Wrong password",
-      "userAlreadyExists": "It seems like you already have an account. Please log in instead."
+      "userAlreadyExists": "It seems like you already have an account. Please log in instead.",
+      "noTokenProvided": "No token provided"
     },
     "docs": {
       "notFound": "The document you are looking was not found. It may have been moved or deleted."
@@ -117,7 +120,6 @@
     "kinoCafeTitle": "Kinó Café: Your Space, Your Way",
     "kinoCafeSubtitle": "A place to chill, create, connect and celebrate - all under one roof!",
     "signup": "Sign up",
-    "login": "Login",
     "aboutUsTitle": "What is Kinó Café?",
     "aboutUsText1": "Kinó Café isn't just another café; it's a vibrant recreation center designed for YOU. We're here to be a hub for studying, working, socializing, gaming, reading, enjoying good food, or just finding a place to relax.",
     "aboutUsText2": "Whether you're looking for a quiet corner or a lively night out, Kinó Café is your home away from home. Our doors are open to everyone, regardless of age, background, or interests.",
@@ -284,7 +286,26 @@
     "signup": "Sign Up",
     "admin": "Admin",
     "cashier": "Cashier",
-    "menu": "Menu"
+    "menu": "Menu",
+    "forgotPassword": "Forgot Password",
+    "resetPassword": "Reset Password"
+  },
+  "forgotPassword": {
+    "title": "Forgot Password",
+    "description": "Enter your email address and we'll send you a link to reset your password.",
+    "submit": "Reset Password",
+    "successTitle": "Password Reset Email Sent",
+    "successDescription": "Please check your inbox for instructions on how to reset your password.",
+    "backToLogin": "Back to Login"
+  },
+  "resetPassword": {
+    "title": "Reset Your Password",
+    "description": "Enter your new password below.",
+    "submit": "Reset Password",
+    "successTitle": "Password Reset Successful",
+    "successDescription": "Your password has been successfully reset. You can now log in with your new password.",
+    "backToLoginPrompt": "You can now login with your new password.",
+    "newPassword": "New Password"
   },
   "countries": {
     "AF": "Afghanistan",

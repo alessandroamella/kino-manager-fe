@@ -14,6 +14,8 @@ import Docs from './components/docs/index.tsx';
 import AdminPanel from './pages/admin/index.tsx';
 import KinoMenu from './pages/menu/index.tsx';
 import CashierRegister from './pages/cashier/index.tsx';
+import ForgotPassword from './pages/auth/ForgotPassword.tsx';
+import ResetPassword from './pages/auth/ResetPassword.tsx';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -29,6 +31,8 @@ createRoot(document.getElementById('root')!).render(
               <Route index element={<Navigate to="/auth/login" />} />
               <Route path="login" element={<Login />} />
               <Route path="signup" element={<Signup />} />
+              <Route path="forgot-password" element={<ForgotPassword />} />
+              <Route path="reset-password" element={<ResetPassword />} />
             </Route>
             <Route path="docs">
               <Route index element={<Navigate to="/" />} />

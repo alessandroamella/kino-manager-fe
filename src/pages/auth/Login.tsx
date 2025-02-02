@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Form, Input, Button, Alert, Card } from '@heroui/react';
 import { useForm } from 'react-hook-form';
 import useUserStore from '../../store/user';
@@ -13,24 +13,61 @@ type FormData = {
 };
 
 const Login = () => {
+  const [search, setSearch] = useSearchParams();
+  const defaultEmail = search.get('email');
+
+  const { t } = useTranslation();
+
   const {
     register,
     handleSubmit,
     formState: { errors, isValid },
   } = useForm<FormData>({
     mode: 'onBlur',
+    defaultValues: {
+      email:
+        (defaultEmail &&
+          ((search.delete('email'), setSearch(search)), defaultEmail)) ||
+        '',
+      password: '',
+    },
   });
-  const [loginError, setLoginError] = useState<string | null>(null); // State for login error
+  const [alertError, setAlertError] = useState<string | null>(null);
 
   const login = useUserStore((store) => store.login);
   const error = useUserStore((store) => store.error);
 
   const navigate = useNavigate();
 
-  const [search] = useSearchParams();
+  const [successAlert, setSuccessAlert] = useState<{
+    title: string;
+    description: string;
+  } | null>(null);
+
+  const [alertTitle, alertDescription] = [
+    search.get('title'),
+    search.get('description'),
+  ];
+  useEffect(() => {
+    if (alertTitle && alertDescription) {
+      setSuccessAlert({ title: alertTitle, description: alertDescription });
+      search.delete('title');
+      search.delete('description');
+      setSearch(search.toString());
+    }
+  }, [alertTitle, alertDescription, search, setSearch]);
+
+  const errorSearch = search.get('error');
+  useEffect(() => {
+    if (errorSearch) {
+      setAlertError(t(errorSearch));
+      search.delete('error');
+      setSearch(search.toString());
+    }
+  }, [errorSearch, search, setSearch, t]);
 
   const onSubmit = async (formData: FormData) => {
-    setLoginError(null); // Clear previous error on new submit
+    setAlertError(null); // Clear previous error on new submit
     console.log('Login Form Data:', formData);
     const successful = await login(formData.email, formData.password);
     if (successful) {
@@ -38,29 +75,35 @@ const Login = () => {
     }
   };
 
-  const { t } = useTranslation();
-
   return (
     <>
       <PageTitle title="login" />
       <ScrollTop />
       <main className="py-12 mb-2 flex flex-col gap-4">
-        {loginError && (
-          <Alert
-            color="danger"
-            title={t('errors.error')}
-            description={loginError}
-            variant="faded"
-          />
-        )}
         <Card className="w-fit mx-auto">
           <Form
             onSubmit={handleSubmit(onSubmit)}
             className="max-w-lg md:min-w-[500px] mx-auto mt-2 md:mt-4 p-6 space-y-4"
           >
-            <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-4">
+            <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
               {t('login.title')}
             </h2>
+
+            {alertError ? (
+              <Alert
+                color="danger"
+                title={t('errors.error')}
+                description={alertError}
+                variant="faded"
+              />
+            ) : successAlert ? (
+              <Alert
+                color="success"
+                title={t(successAlert.title)}
+                description={t(successAlert.description)}
+                variant="faded"
+              />
+            ) : null}
 
             <Input
               label={t('signup.email')}
@@ -109,21 +152,29 @@ const Login = () => {
             </Button>
           </Form>
 
-          <div className="flex flex-col gap-1 mt-6 px-6 pb-4 items-center w-full">
-            <p className="text-foreground-600 text-small">
-              {t('signup.noAccount')}{' '}
-            </p>
-            <Button
-              as={Link}
-              to="/auth/signup"
-              size="sm"
-              type="button"
-              variant="bordered"
-              className="text-small w-full"
+          {[
+            ['forgotPassword', 'forgot-password', 'resetPassword'],
+            ['noAccount', 'signup', 'signup'],
+          ].map(([k1, href, k2]) => (
+            <div
+              key={k1}
+              className="flex flex-col gap-1 px-6 pb-4 items-center w-full"
             >
-              {t('auth.signup')}
-            </Button>
-          </div>
+              <p className="text-foreground-600 text-small">
+                {t(`signup.${k1}`)}{' '}
+              </p>
+              <Button
+                as={Link}
+                to={`/auth/${href}`}
+                size="sm"
+                type="button"
+                variant="bordered"
+                className="text-small w-full"
+              >
+                {t(`auth.${k2}`)}
+              </Button>
+            </div>
+          ))}
         </Card>
       </main>
     </>

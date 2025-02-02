@@ -1,4 +1,4 @@
-import { TFunction } from 'i18next';
+import type { TFunction } from 'i18next';
 import PasswordValidator from 'password-validator';
 import * as yup from 'yup';
 

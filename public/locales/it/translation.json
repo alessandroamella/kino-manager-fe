@@ -20,7 +20,8 @@
     "password": "Password",
     "logout": "Esci",
     "login": "Accedi",
-    "signup": "Registrati"
+    "signup": "Registrati",
+    "resetPassword": "Reimposta password"
   },
   "login": {
     "title": "Accedi al Kinó Café"
@@ -80,7 +81,8 @@
       "and": " e l'",
       "privacy": "Informativa sulla Privacy",
       "post": "."
-    }
+    },
+    "forgotPassword": "Password dimenticata?"
   },
   "docs": {
     "doc": "Documento",
@@ -98,7 +100,8 @@
     "auth": {
       "userNotFound": "Utente non trovato",
       "wrongPassword": "Password errata",
-      "userAlreadyExists": "Sembra che tu abbia già un account. Effettua l'accesso."
+      "userAlreadyExists": "Sembra che tu abbia già un account. Effettua l'accesso.",
+      "noTokenProvided": "Nessun token fornito"
     },
     "docs": {
       "notFound": "Il documento che stai cercando non è stato trovato. Potrebbe essere stato spostato o eliminato."
@@ -123,7 +126,6 @@
     "kinoCafeTitle": "Kinó Café: Il tuo spazio, a modo tuo",
     "kinoCafeSubtitle": "Un luogo per rilassarsi, creare, incontrarsi e festeggiare - tutto sotto lo stesso tetto!",
     "signup": "Registrati",
-    "login": "Accedi",
     "aboutUsTitle": "Cos'è Kinó Café?",
     "aboutUsText1": "Kinó Café non è solo un altro bar; è un vivace centro ricreativo pensato per TE. Siamo qui per essere un punto di riferimento per studiare, lavorare, socializzare, giocare, leggere, gustare buon cibo o semplicemente trovare un posto per rilassarsi.",
     "aboutUsText2": "Che tu stia cercando un angolo tranquillo o una serata movimentata, Kinó Café è la tua casa lontano da casa. Le nostre porte sono aperte a tutti, indipendentemente da età, provenienza o interessi.",
@@ -281,7 +283,26 @@
     "signup": "Registrazione",
     "admin": "Amministratore",
     "cashier": "Cassa",
-    "menu": "Menù"
+    "menu": "Menù",
+    "forgotPassword": "Password dimenticata",
+    "resetPassword": "Reimposta password"
+  },
+  "forgotPassword": {
+    "title": "Password dimenticata",
+    "description": "Inserisci il tuo indirizzo email e ti invieremo un link per reimpostare la tua password.",
+    "submit": "Reimposta password",
+    "successTitle": "Email inviata",
+    "successDescription": "Controlla la tua casella di posta per le istruzioni su come reimpostare la tua password.",
+    "backToLogin": "Torna al login"
+  },
+  "resetPassword": {
+    "title": "Reimposta password",
+    "description": "Inserisci la tua nuova password qui sotto.",
+    "submit": "Reimposta password",
+    "successTitle": "Reset password riuscita",
+    "successDescription": "La tua password è stata reimpostata con successo. Ora puoi accedere con la tua nuova password.",
+    "backToLoginPrompt": "Ora puoi accedere con la tua nuova password.",
+    "newPassword": "Nuova Password"
   },
   "countries": {
     "AD": "Andorra",

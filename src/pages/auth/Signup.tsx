@@ -430,7 +430,7 @@ const Signup = () => {
         <AnimatePresence>
           {signupError && (
             <motion.div
-              className="sticky top-20 mx-4 md:w-fit rounded-xl dark:bg-red-500/50 md:ml-auto z-10"
+              className="sticky top-20 mx-4 md:w-fit rounded-xl md:ml-auto z-10"
               initial={{ opacity: 0, y: -50 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -50 }}
@@ -440,7 +440,6 @@ const Signup = () => {
                 color="danger"
                 title={t('signup.errorTitle')}
                 description={signupError}
-                variant="faded"
                 onClose={() => setSignupError(null)}
                 closeButtonProps={{
                   'aria-label': t('signup.errorCloseAria'),
