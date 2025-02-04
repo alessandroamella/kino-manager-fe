@@ -70,7 +70,6 @@ app.use(
   permissionsPolicy({
     features: {
       fullscreen: ['self'],
-      vibrate: ['none'],
       payment: [],
       syncXhr: [],
       serial: ['self'], // cashier needs Web Serial API for esp32
