@@ -5,6 +5,7 @@ import {
   CardBody,
   CardHeader,
   Chip,
+  DateValue,
   Spacer,
 } from '@heroui/react';
 import { Parallax } from 'react-parallax';
@@ -16,7 +17,7 @@ import { BiMoviePlay } from 'react-icons/bi';
 import LoginBtn from './auth/LoginBtn';
 import SignupBtn from './auth/SignupBtn';
 import { dateToCalendarDate } from '../utils/calendar';
-import { format } from 'date-fns';
+import { endOfToday, format, isAfter, isSameDay } from 'date-fns';
 import { UTCDateMini } from '@date-fns/utc';
 import { dateFnsLang } from '../utils/dateFnsLang';
 import useUserStore from '../store/user';
@@ -28,11 +29,44 @@ import Countdown from 'react-countdown';
 import PageTitle from '@/components/PageTitle';
 import Logo from '@/components/ui/Logo';
 import ScrollTop from '@/components/ScrollTop';
+import { cn } from '@/lib/utils';
 
-const openingDate = new UTCDateMini(2025, 1, 5);
+// TODO - to be changed with dynamic data
+const dates = [
+  [8, 2],
+  [15, 2],
+  [23, 2],
+  [1, 3],
+  [9, 3],
+  [15, 3],
+  [23, 3],
+  // [30,3], o skip
+  [6, 4],
+  [12, 4],
+  // [20,4], pasqua -> skip
+  [26, 4],
+].map(([day, month]) => new UTCDateMini(2025, month - 1, day));
+
+const isDateUnavailable = (date: DateValue) => {
+  return !dates.some((d) => isSameDay(d, date.toDate('UTC')));
+};
+
+// const openingDate = new UTCDateMini(2025, 1, 5);
 
 const Homepage = () => {
   const { t, i18n } = useTranslation();
+
+  const nextDate = dates.find((date) => isAfter(date, endOfToday()));
+  const nextDateTime =
+    nextDate &&
+    new UTCDateMini(
+      nextDate.getFullYear(),
+      nextDate.getMonth(),
+      nextDate.getDate(),
+      19, // opening hour: 19:00
+      0,
+      0,
+    );
 
   const user = useUserStore((store) => store.user);
 
@@ -155,10 +189,17 @@ const Homepage = () => {
           className={`h-96 bg-gradient-to-br w-full from-purple-950/40 to-primary-600/20 flex items-center justify-center`}
         >
           <div>
-            <h2 className="text-2xl md:text-3xl font-semibold text-center text-gray-800 dark:text-white mb-4">
+            <h2 className="text-2xl md:text-3xl font-semibold text-center text-gray-800 dark:text-white">
               {t('home.openingCountdownTitle')}
             </h2>
-            <Countdown date={openingDate} renderer={renderer} />
+            {nextDateTime && (
+              <p className="mb-4 text-foreground-600 text-center">
+                {format(nextDateTime, 'EEEE d MMMM yyyy, HH:mm', {
+                  locale: dateFnsLang(i18n),
+                })}
+              </p>
+            )}
+            <Countdown date={nextDateTime} renderer={renderer} />
           </div>
         </div>
 
@@ -273,21 +314,37 @@ const Homepage = () => {
               <div className="grid grid-cols-1 gap-8 -my-4 md:grid-cols-2">
                 <Calendar
                   isReadOnly
+                  isDateUnavailable={isDateUnavailable}
                   aria-label="Date (Read Only)"
-                  className="mx-auto scale-90"
-                  value={dateToCalendarDate(openingDate)}
+                  className="m-auto scale-90 h-fit"
+                  value={
+                    nextDateTime &&
+                    dateToCalendarDate(new Date(nextDateTime.toISOString()))
+                  }
                 />
 
                 <div className="flex flex-col gap-8 justify-center">
                   <div className="flex flex-col gap-2">
-                    <h2 className="text-gray-800 dark:text-gray-100 text-xl font-semibold flex items-center md:justify-start justify-center">
-                      <FaCalendarAlt className="mr-1" /> {t('home.openingDate')}
+                    <h2 className="text-gray-800 mt-2 dark:text-gray-100 text-xl font-semibold flex items-center md:justify-start justify-center">
+                      <FaCalendarAlt className="mr-1" />{' '}
+                      {t('home.openingDates')}
                     </h2>
-                    <p className="text-gray-700 dark:text-gray-300 text-sm flex items-center md:justify-start justify-center">
-                      {format(openingDate, 'EEEE d MMMM yyyy', {
-                        locale: dateFnsLang(i18n),
-                      })}
-                    </p>
+                    <ul className="text-gray-700 ml-4 list-disc dark:text-gray-300 text-sm text-left">
+                      {dates
+                        .filter((d) => isAfter(d, endOfToday()))
+                        .map((e, i) => (
+                          <li
+                            className={cn({
+                              'text-primary': i === 0,
+                            })}
+                            key={e.toDateString()}
+                          >
+                            {format(e, 'EEEE d MMMM yyyy', {
+                              locale: dateFnsLang(i18n),
+                            })}
+                          </li>
+                        ))}
+                    </ul>
                   </div>
                   <div className="flex flex-col gap-2">
                     <h2 className="text-gray-800 dark:text-gray-100 text-xl font-semibold flex items-center md:justify-start justify-center">
