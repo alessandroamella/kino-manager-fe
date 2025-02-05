@@ -1,5 +1,6 @@
 import { BaseDocument } from './BaseDocument';
 import { MembershipCard } from './MembershipCard';
+import { SubscriptionStatus } from './SubscriptionStatus';
 
 export interface MemberExtended extends BaseDocument {
   firstName: string;
@@ -31,6 +32,7 @@ export interface MemberExtended extends BaseDocument {
     os?: string;
   } | null;
   ipAddress: string | null;
+  newsletterSubscriptionStatus: SubscriptionStatus;
 }
 
 export type Member = Pick<
