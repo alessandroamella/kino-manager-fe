@@ -251,7 +251,7 @@ const Homepage = () => {
                 <p className="text-lg font-medium">
                   {t('home.blandeActivitiesTitle')}
                   <Chip className="ml-2" color="primary">
-                    {t('home.everyWednesday')}
+                    {t('home.openingDay')}
                   </Chip>
                 </p>
               </CardHeader>
