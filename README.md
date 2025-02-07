@@ -34,6 +34,9 @@ VITE_CONTACT_EMAIL=Email di contatto inserita nel footer
 2. Esegui `pnpm start`
 3. Apri il browser all'indirizzo `http://localhost:3000`
 
+## Stampante
+[https://github.com/alessandroamella/kino-manager-printer](https://github.com/alessandroamella/kino-manager-printer)
+
 ## Note
 
 - Puoi usare le varianti `primary` di HeroUI e i colori `kino-{n}` di Tailwind (i gialli).
