@@ -43,3 +43,4 @@ VITE_CONTACT_EMAIL=Email di contatto inserita nel footer
 ## Note
 
 - Puoi usare le varianti `primary` di HeroUI e i colori `kino-{n}` di Tailwind (i gialli).
+- Se sei il computer della cassa e ti colleghi alla TV, puoi andare su `/menu` in fullscreen per mostrare il menù.
