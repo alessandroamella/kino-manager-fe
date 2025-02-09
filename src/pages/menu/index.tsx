@@ -8,7 +8,10 @@ import Price from '@/components/items/Price';
 import { sortBy } from 'lodash';
 
 const KinoMenu = () => {
-  const categories = usePurchasesStore((store) => store.categories);
+  const categories = sortBy(
+    usePurchasesStore((store) => store.categories),
+    'name',
+  );
 
   const accessToken = useUserStore((store) => store.accessToken);
   const fetchItems = usePurchasesStore((store) => store.fetchAllData);
