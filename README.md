@@ -37,6 +37,9 @@ VITE_CONTACT_EMAIL=Email di contatto inserita nel footer
 ## Stampante
 [https://github.com/alessandroamella/kino-manager-printer](https://github.com/alessandroamella/kino-manager-printer)
 
+## Backend
+[https://github.com/alessandroamella/kino-manager-be](https://github.com/alessandroamella/kino-manager-be)
+
 ## Note
 
 - Puoi usare le varianti `primary` di HeroUI e i colori `kino-{n}` di Tailwind (i gialli).
