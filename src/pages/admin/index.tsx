@@ -259,6 +259,9 @@ const AdminPanel = () => {
           </Button>
         </div>
         <div className="w-fit overflow-x-auto max-w-[92vw] md:max-w-[94vw]">
+          <h3 className="font-medium text-lg mb-2">
+            {t('admin.nUsers', { count: users.length })}
+          </h3>
           <Table isStriped aria-label="Users table" className="table pr-2">
             <TableHeader>
               <TableColumn>{t('admin.actions')}</TableColumn>
@@ -295,7 +298,6 @@ const AdminPanel = () => {
               <TableColumn>{t('profile.birthCountry')}</TableColumn>
               <TableColumn>{t('profile.memberSince')}</TableColumn>
               <TableColumn>{t('admin.isAdmin')}</TableColumn>
-              <TableColumn>{t('admin.deviceInfo')}</TableColumn>
               <TableColumn>{t('admin.ipAddress')}</TableColumn>
               <TableColumn>{t('signup.signature')}</TableColumn>
             </TableHeader>
@@ -413,23 +415,34 @@ const AdminPanel = () => {
                     )}
                   </TableCell>
                   <TableCell>
-                    {user.deviceInfo ? (
-                      <ul>
-                        {Object.entries(user.deviceInfo).map(([key, value]) => (
-                          <li key={key}>{`${key}: ${
-                            typeof value === 'boolean'
-                              ? value
-                                ? t('common.yes')
-                                : t('common.no')
-                              : value
-                          }`}</li>
-                        ))}
-                      </ul>
+                    {user.ipAddress ? (
+                      <Tooltip
+                        content={
+                          user.deviceInfo ? (
+                            <ul>
+                              {Object.entries(user.deviceInfo).map(
+                                ([key, value]) => (
+                                  <li key={key}>{`${key}: ${
+                                    typeof value === 'boolean'
+                                      ? value
+                                        ? t('common.yes')
+                                        : t('common.no')
+                                      : value
+                                  }`}</li>
+                                ),
+                              )}
+                            </ul>
+                          ) : (
+                            '-'
+                          )
+                        }
+                      >
+                        <p>{user.ipAddress}</p>
+                      </Tooltip>
                     ) : (
                       '-'
                     )}
                   </TableCell>
-                  <TableCell>{user.ipAddress || '-'}</TableCell>
                   <TableCell>
                     {user.signatureR2Key ? (
                       <Button

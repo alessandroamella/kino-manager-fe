@@ -231,6 +231,8 @@
     "userEditSuccess": "Utente modificato con successo",
     "userVerifySuccess": "Utente verificato con successo",
     "editUser": "Modifica utente {{user}}",
+    "nUsers_one": "{{count}} utente",
+    "nUsers_other": "{{count}} utenti",
     "verifyUserDocument": "Verifica documento utente",
     "documentData": "Dati documento",
     "enterDocumentData": "Inserisci dati documento",

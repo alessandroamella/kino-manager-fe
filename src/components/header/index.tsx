@@ -253,6 +253,19 @@ const Header = () => {
                   {t('pages.cashier')}
                 </Button>
               </NavbarMenuItem>
+              <NavbarMenuItem className="cursor-pointer w-full">
+                <Button
+                  isDisabled={location.pathname.replace(/\//g, '') === 'menu'}
+                  as={Link}
+                  color="warning"
+                  to="/menu"
+                  className="w-full"
+                  onPress={handleClickItem} // Optional: close menu after purchases button click
+                >
+                  <GiHamburger className="mr-2" />
+                  Menu
+                </Button>
+              </NavbarMenuItem>
             </>
           )}
         </NavbarMenu>

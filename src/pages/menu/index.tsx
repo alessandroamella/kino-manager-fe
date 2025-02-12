@@ -6,6 +6,7 @@ import { useEffect, useRef } from 'react';
 import logoDark from '../../assets/images/logo-dark.png';
 import Price from '@/components/items/Price';
 import { sortBy } from 'lodash';
+import { Link } from 'react-router';
 
 const KinoMenu = () => {
   const categories = sortBy(
@@ -35,7 +36,9 @@ const KinoMenu = () => {
     <main className="kino-menu min-h-screen bg-gray-900 text-white p-8 pt-0">
       {/* <h1 className="text-4xl font-bold mb-8 text-center">Kinó Café</h1> */}
       <div className="flex justify-center pt-8 pb-6">
-        <Image src={logoDark} alt="Kinó Café" className="w-64 mx-auto" />
+        <Link to="/">
+          <Image src={logoDark} alt="Kinó Café" className="w-64 mx-auto" />
+        </Link>
       </div>
       {categories && categories.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
