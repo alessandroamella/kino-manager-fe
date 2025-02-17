@@ -17,14 +17,14 @@ import { BiMoviePlay } from 'react-icons/bi';
 import LoginBtn from './auth/LoginBtn';
 import SignupBtn from './auth/SignupBtn';
 import { dateToCalendarDate } from '../utils/calendar';
-import { endOfToday, format, isAfter, isSameDay } from 'date-fns';
+import { endOfToday, format, isAfter, isBefore, isSameDay } from 'date-fns';
 import { UTCDateMini } from '@date-fns/utc';
 import { dateFnsLang } from '../utils/dateFnsLang';
 import useUserStore from '../store/user';
 import { Link } from 'react-router';
 import { FiArrowRight, FiMapPin } from 'react-icons/fi';
 import bg from '../assets/images/homepage-bg.jpg';
-import { address, googleMapsDirectionsUrl } from '../constants/address';
+import { address, directionsUrl } from '../constants/address';
 import Countdown from 'react-countdown';
 import PageTitle from '@/components/PageTitle';
 import Logo from '@/components/ui/Logo';
@@ -34,17 +34,17 @@ import { cn } from '@/lib/utils';
 // TODO - to be changed with dynamic data
 const dates = [
   [8, 2],
-  [15, 2],
   [23, 2],
   [1, 3],
   [9, 3],
   [15, 3],
   [23, 3],
-  // [30,3], o skip
-  [6, 4],
-  [12, 4],
-  // [20,4], pasqua -> skip
-  [26, 4],
+  [30, 3],
+  [2, 4],
+  [9, 4],
+  // [16,4], // skip
+  [23, 4],
+  [30, 4],
 ].map(([day, month]) => new UTCDateMini(2025, month - 1, day));
 
 const isDateUnavailable = (date: DateValue) => {
@@ -128,7 +128,7 @@ const Homepage = () => {
               {t('home.kinoCafeSubtitle')}
             </p>
             <a
-              href={googleMapsDirectionsUrl}
+              href={directionsUrl}
               className="text-lg mb-8 block text-white hover:text-primary-300 dark:hover:text-primary-600 duration-100 transition-colors max-w-2xl mx-auto"
               target="_blank"
               rel="noopener noreferrer"
@@ -331,11 +331,13 @@ const Homepage = () => {
                     </h2>
                     <ul className="text-gray-700 ml-4 list-disc dark:text-gray-300 text-sm text-left">
                       {dates
-                        .filter((d) => isAfter(d, endOfToday()))
-                        .map((e, i) => (
+                        // .filter((d) => isAfter(d, endOfToday()))
+                        .map((e) => (
                           <li
                             className={cn({
-                              'text-primary': i === 0,
+                              'text-kino-700 font-bold':
+                                nextDate && isSameDay(e, nextDate),
+                              'text-foreground-400': isBefore(e, endOfToday()),
                             })}
                             key={e.toDateString()}
                           >

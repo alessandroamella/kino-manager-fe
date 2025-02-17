@@ -6,7 +6,7 @@ import LogoComune from '../../assets/images/logo-comune.png';
 import LogoKinoCampus from '../../assets/images/logo-kino-campus.png';
 import { Button, Image } from '@heroui/react';
 import { Link } from 'react-router';
-import { address, googleMapsDirectionsUrl } from '../../constants/address';
+import { address, directionsUrl } from '../../constants/address';
 import { Email } from 'react-obfuscate-email';
 import { contactEmail } from '@/constants/contactEmail';
 import { FiMail, FiMapPin } from 'react-icons/fi';
@@ -37,11 +37,7 @@ const Footer = () => {
             <Button
               color="primary"
               onPress={() =>
-                window.open(
-                  googleMapsDirectionsUrl,
-                  '_blank',
-                  'noopener,noreferrer',
-                )
+                window.open(directionsUrl, '_blank', 'noopener,noreferrer')
               }
             >
               <MdDirections className="mr-2" />
