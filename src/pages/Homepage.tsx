@@ -17,8 +17,8 @@ import { BiMoviePlay } from 'react-icons/bi';
 import LoginBtn from './auth/LoginBtn';
 import SignupBtn from './auth/SignupBtn';
 import { dateToCalendarDate } from '../utils/calendar';
-import { endOfToday, format, isAfter, isBefore, isSameDay } from 'date-fns';
-import { UTCDateMini } from '@date-fns/utc';
+import { endOfDay, format, getUnixTime, isBefore, isSameDay } from 'date-fns';
+import { UTCDate, UTCDateMini } from '@date-fns/utc';
 import { dateFnsLang } from '../utils/dateFnsLang';
 import useUserStore from '../store/user';
 import { Link } from 'react-router';
@@ -30,88 +30,127 @@ import PageTitle from '@/components/PageTitle';
 import Logo from '@/components/ui/Logo';
 import ScrollTop from '@/components/ScrollTop';
 import { cn } from '@/lib/utils';
-
-// TODO - to be changed with dynamic data
-const dates = [
-  [8, 2],
-  [23, 2],
-  [1, 3],
-  [9, 3],
-  [15, 3],
-  [23, 3],
-  [30, 3],
-  [2, 4],
-  [9, 4],
-  // [16,4], // skip
-  [23, 4],
-  [30, 4],
-].map(([day, month]) => new UTCDateMini(2025, month - 1, day));
-
-const isDateUnavailable = (date: DateValue) => {
-  return !dates.some((d) => isSameDay(d, date.toDate('UTC')));
-};
-
-// const openingDate = new UTCDateMini(2025, 1, 5);
+import {
+  getCurrentDate,
+  getNextDate,
+  getOpeningDates,
+} from '@/constants/dates';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { motion } from 'framer-motion';
 
 const Homepage = () => {
   const { t, i18n } = useTranslation();
 
-  const nextDate = dates.find((date) => isAfter(date, endOfToday()));
-  const nextDateTime =
-    nextDate &&
-    new UTCDateMini(
-      nextDate.getFullYear(),
-      nextDate.getMonth(),
-      nextDate.getDate(),
-      19, // opening hour: 19:00
-      0,
-      0,
+  const [dates, setDates] = useState<UTCDate[] | null>(null);
+
+  useEffect(() => {
+    async function fetchDates() {
+      const dates = await getOpeningDates();
+      setDates(dates);
+    }
+    fetchDates();
+  }, []);
+
+  const isDateUnavailable = useCallback(
+    (date: DateValue) => {
+      return dates
+        ? !dates.some((d) => isSameDay(d, date.toDate('UTC')))
+        : false;
+    },
+    [dates],
+  );
+
+  const nextDate = useMemo(() => {
+    return dates && getNextDate(dates);
+  }, [dates]);
+
+  const nextDateTime = useMemo(() => {
+    return (
+      nextDate &&
+      new UTCDateMini(
+        nextDate.getFullYear(),
+        nextDate.getMonth(),
+        nextDate.getDate(),
+        19, // opening hour: 19:00
+        0,
+        0,
+      )
     );
+  }, [nextDate]);
 
   const user = useUserStore((store) => store.user);
 
-  const renderer = ({
-    days,
-    hours,
-    minutes,
-    seconds,
-    completed,
-  }: {
-    days: number;
-    hours: number;
-    minutes: number;
-    seconds: number;
-    completed: boolean;
-  }) => {
-    if (completed) {
-      return (
-        <span className="text-xl md:text-2xl font-semibold">
-          {t('home.openingNow')}!
-        </span>
-      );
-    } else {
-      return (
-        <div className="flex space-x-4 justify-center">
-          <div className="countdown-segment">
-            <span className="countdown-value">{days}</span>
-            <span className="countdown-label">{t('home.days')}</span>
+  const renderer = useCallback(
+    ({
+      days,
+      hours,
+      minutes,
+      seconds,
+      completed,
+    }: {
+      days: number;
+      hours: number;
+      minutes: number;
+      seconds: number;
+      completed: boolean;
+    }) => {
+      if (completed) {
+        return (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            className="relative inline-block"
+          >
+            <span className="text-3xl md:text-4xl font-semibold">
+              {t('home.openingNow')}
+            </span>
+            <motion.div
+              className="absolute -bottom-2 left-0 h-1 w-full rounded-full"
+              style={{
+                background:
+                  'linear-gradient(to right, #ff0000, #ff8000, #ffff00, #00ff00, #0000ff, #4b0082, #8f00ff)',
+                backgroundSize: '200% 100%',
+              }}
+              animate={{
+                backgroundPosition: ['0% 0%', '100% 0%'],
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                repeatType: 'reverse',
+                ease: 'linear',
+              }}
+            />
+          </motion.div>
+        );
+      } else {
+        return (
+          <div className="flex space-x-4 justify-center">
+            <div className="countdown-segment">
+              <span className="countdown-value">{days}</span>
+              <span className="countdown-label">{t('home.days')}</span>
+            </div>
+            <div className="countdown-segment">
+              <span className="countdown-value">{hours}</span>
+              <span className="countdown-label">{t('home.hours')}</span>
+            </div>
+            <div className="countdown-segment">
+              <span className="countdown-value">{minutes}</span>
+              <span className="countdown-label">{t('home.minutes')}</span>
+            </div>
+            <div className="countdown-segment">
+              <span className="countdown-value">{seconds}</span>
+              <span className="countdown-label">{t('home.seconds')}</span>
+            </div>
           </div>
-          <div className="countdown-segment">
-            <span className="countdown-value">{hours}</span>
-            <span className="countdown-label">{t('home.hours')}</span>
-          </div>
-          <div className="countdown-segment">
-            <span className="countdown-value">{minutes}</span>
-            <span className="countdown-label">{t('home.minutes')}</span>
-          </div>
-          <div className="countdown-segment">
-            <span className="countdown-value">{seconds}</span>
-            <span className="countdown-label">{t('home.seconds')}</span>
-          </div>
-        </div>
-      );
-    }
-  };
+        );
+      }
+    },
+    [t],
+  );
+
+  const currentDateEpoch = () => 1000 * getUnixTime(getCurrentDate());
 
   return (
     <>
@@ -199,7 +238,15 @@ const Homepage = () => {
                 })}
               </p>
             )}
-            <Countdown date={nextDateTime} renderer={renderer} />
+            <div className="w-full flex justify-center">
+              {nextDateTime && currentDateEpoch && (
+                <Countdown
+                  now={currentDateEpoch}
+                  date={nextDateTime}
+                  renderer={renderer}
+                />
+              )}
+            </div>
           </div>
         </div>
 
@@ -330,22 +377,23 @@ const Homepage = () => {
                       {t('home.openingDates')}
                     </h2>
                     <ul className="text-gray-700 ml-4 list-disc dark:text-gray-300 text-sm text-left">
-                      {dates
-                        // .filter((d) => isAfter(d, endOfToday()))
-                        .map((e) => (
-                          <li
-                            className={cn({
-                              'text-kino-700 font-bold':
-                                nextDate && isSameDay(e, nextDate),
-                              'text-foreground-400': isBefore(e, endOfToday()),
-                            })}
-                            key={e.toDateString()}
-                          >
-                            {format(e, 'EEEE d MMMM yyyy', {
-                              locale: dateFnsLang(i18n),
-                            })}
-                          </li>
-                        ))}
+                      {dates?.map((e) => (
+                        <li
+                          className={cn({
+                            'text-kino-700 font-bold':
+                              nextDate && isSameDay(e, nextDate),
+                            'text-foreground-400': isBefore(
+                              endOfDay(e),
+                              getCurrentDate(),
+                            ),
+                          })}
+                          key={e.toDateString()}
+                        >
+                          {format(e, 'EEEE d MMMM yyyy', {
+                            locale: dateFnsLang(i18n),
+                          })}
+                        </li>
+                      ))}
                     </ul>
                   </div>
                   <div className="flex flex-col gap-2">
