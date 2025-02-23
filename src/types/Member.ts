@@ -37,6 +37,7 @@ export interface MemberExtended extends BaseDocument {
 
 export type Member = Pick<
   MemberExtended,
+  | 'id'
   | 'firstName'
   | 'lastName'
   | 'email'

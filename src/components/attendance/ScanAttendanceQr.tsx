@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { OnResultFunction, QrReader } from 'react-qr-reader';
 import axios from 'axios';
 import { getErrorMsg } from '@/types/error';
@@ -12,6 +12,7 @@ import {
   useDisclosure,
   Button,
   Alert,
+  Spinner,
 } from '@heroui/react';
 import { Member } from '@/types/Member';
 
@@ -25,21 +26,30 @@ const ScanAttendanceQr = () => {
   const [logAttendanceError, setLogAttendanceError] = useState<string | null>(
     null,
   );
+  const [users, setUsers] = useState<Member[] | null>(null);
+  const [isLoadingUsers, setIsLoadingUsers] = useState<boolean>(true);
+  const [fetchUsersError, setFetchUsersError] = useState<string | null>(null);
 
-  const fetchUserData = useCallback(
-    async (userId: string) => {
+  const { t } = useTranslation();
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      setIsLoadingUsers(true);
+      setFetchUsersError(null);
       try {
-        const { data } = await axios.get(`/v1/admin/user/${userId}`);
-        setUserData(data);
+        const { data } = await axios.get('/v1/admin/users');
+        setUsers(data);
+        setIsLoadingUsers(false);
       } catch (error) {
-        console.error('Error fetching user data:', error);
-        setScanError(getErrorMsg(error));
-        setUserData(null);
-        onClose();
+        console.error('Error fetching users:', error);
+        setFetchUsersError(getErrorMsg(error));
+        setUsers(null);
+        setIsLoadingUsers(false);
       }
-    },
-    [onClose],
-  );
+    };
+
+    fetchUsers();
+  }, []);
 
   const sendDataToBackend = useCallback(
     async (userId: string) => {
@@ -63,6 +73,13 @@ const ScanAttendanceQr = () => {
 
   const handleScan: OnResultFunction = useCallback(
     (result, error) => {
+      if (isOpen) {
+        console.debug('Modal is already open, ignoring scan result', {
+          result,
+          error,
+        });
+        return;
+      }
       if (error) {
         if (error.name === 'e2') {
           console.debug('QR code not found, error e2:', error);
@@ -81,13 +98,28 @@ const ScanAttendanceQr = () => {
         setScanError(null);
 
         const userId = text;
-
         setUserIdFromQr(userId);
-        fetchUserData(userId);
-        onOpen();
+
+        if (users) {
+          const foundUser = users.find((user) => user.id.toString() === userId);
+          if (foundUser) {
+            setUserData(foundUser);
+            onOpen();
+          } else {
+            setUserData(null);
+            setScanError(t('attendance.scanErrorUserNotFound')); // Assuming you add this translation key
+            onClose(); // Or decide to keep modal open and show error in modal?
+            console.error('User not found in fetched users:', userId);
+          }
+        } else {
+          setUserData(null);
+          setScanError(t('attendance.scanErrorNoUsersFetched')); // Assuming you add this translation key
+          onClose();
+          console.error('Users data not fetched yet or fetch failed.');
+        }
       }
     },
-    [fetchUserData, onOpen, onClose],
+    [isOpen, onClose, users, onOpen, t],
   );
 
   const handleResetScan = useCallback(() => {
@@ -102,8 +134,6 @@ const ScanAttendanceQr = () => {
       sendDataToBackend(userIdFromQr);
     }
   }, [sendDataToBackend, userIdFromQr]);
-
-  const { t } = useTranslation();
 
   return (
     <div className="p-4">
@@ -124,13 +154,20 @@ const ScanAttendanceQr = () => {
             Error logging attendance: {logAttendanceError}
           </Alert>
         )}
+        {fetchUsersError && (
+          <Alert color="danger">Error fetching users: {fetchUsersError}</Alert>
+        )}
       </div>
 
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalContent>
           <ModalHeader>{t('attendance.modal.header')}</ModalHeader>
           <ModalBody>
-            {userData ? (
+            {isLoadingUsers ? (
+              <div className="flex justify-center">
+                <Spinner size="lg" />
+              </div>
+            ) : userData ? (
               <div>
                 <p>
                   <strong>{t('attendance.modal.name')}:</strong>{' '}
@@ -146,8 +183,9 @@ const ScanAttendanceQr = () => {
             ) : (
               <p>
                 {scanError
-                  ? t('attendance.modal.errorFetchingUser')
-                  : t('attendance.modal.fetchingUser')}
+                  ? scanError // Display scan error directly if user lookup failed within handleScan
+                  : t('attendance.modal.fetchingUser')}{' '}
+                {/* This text might not be relevant now as fetching happens upfront */}
               </p>
             )}
           </ModalBody>
