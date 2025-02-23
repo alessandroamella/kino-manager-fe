@@ -80,7 +80,6 @@ const Header = () => {
         </NavbarBrand>
 
         <NavbarContent justify="end" className="hidden sm:flex">
-          {/* Add other desktop NavbarItems here if needed, e.g., "Movies" or other features */}
           {user ? (
             <Dropdown placement="bottom-end">
               <DropdownTrigger>

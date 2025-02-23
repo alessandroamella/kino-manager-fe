@@ -404,7 +404,6 @@ const CashierRegister = () => {
                 )}
               </>
             )}
-            {/* <Divider ver */}
           </div>
 
           <Divider className="lg:hidden my-4" />

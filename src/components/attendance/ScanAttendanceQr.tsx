@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { OnResultFunction, QrReader } from 'react-qr-reader';
 import axios from 'axios';
 import { getErrorMsg } from '@/types/error';
@@ -17,30 +17,30 @@ import {
 import { Member } from '@/types/Member';
 import PageTitle from '../PageTitle';
 import useUserStore from '@/store/user';
+import { jwtDecode } from 'jwt-decode';
 
 const ScanAttendanceQr = () => {
   const [scanError, setScanError] = useState<string | null>(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [userData, setUserData] = useState<Member | null>(null);
-  const [userIdFromQr, setUserIdFromQr] = useState<string | null>(null);
+  const [userIdFromQr, setUserIdFromQr] = useState<number | null>(null);
   const [isLoggingAttendance, setIsLoggingAttendance] =
     useState<boolean>(false);
   const [logAttendanceError, setLogAttendanceError] = useState<string | null>(
     null,
   );
-  const [users, setUsers] = useState<Member[] | null>(null);
   const [isLoadingUsers, setIsLoadingUsers] = useState<boolean>(true);
   const [fetchUsersError, setFetchUsersError] = useState<string | null>(null);
 
-  const accessToken = useUserStore((store) => store.accessToken);
+  const usersRef = useRef<Member[] | null>(null);
 
+  const accessToken = useUserStore((store) => store.accessToken);
   const { t } = useTranslation();
 
+  // Fetch users effect remains the same
   useEffect(() => {
     const fetchUsers = async () => {
-      if (!accessToken) {
-        return;
-      }
+      if (!accessToken) return;
 
       setIsLoadingUsers(true);
       setFetchUsersError(null);
@@ -51,12 +51,11 @@ const ScanAttendanceQr = () => {
           },
         });
         console.log('Fetched users:', data);
-        setUsers(data);
-        setIsLoadingUsers(false);
+        usersRef.current = data;
       } catch (error) {
         console.error('Error fetching users:', error);
         setFetchUsersError(getErrorMsg(error));
-        setUsers(null);
+      } finally {
         setIsLoadingUsers(false);
       }
     };
@@ -64,8 +63,87 @@ const ScanAttendanceQr = () => {
     fetchUsers();
   }, [accessToken]);
 
+  const handleScan: OnResultFunction = useCallback(
+    async (result, error, reader) => {
+      if (isOpen) {
+        console.debug('Modal is already open, ignoring scan result');
+        return;
+      }
+
+      if (error) {
+        if (['e2', 't'].includes(error.name)) {
+          console.debug('QR code not found, error e2:', error);
+          return;
+        }
+        console.error('QR Scanner Error:', error.name, error.message);
+        setScanError(error.message || error.name);
+        return;
+      }
+
+      if (!result) {
+        console.error('No result found in QR code scan');
+        return;
+      }
+
+      const text = result.getText();
+      setScanError(null);
+
+      const jwtPayload = jwtDecode<{ u: number; iat: number; exp: number }>(
+        text,
+      );
+      if (!jwtPayload) {
+        setScanError('Invalid QR code');
+        console.error('Invalid QR code:', text);
+        return;
+      }
+      console.log('Decoded QR code:', jwtPayload);
+
+      const userId = jwtPayload.u;
+      setUserIdFromQr(userId);
+
+      console.log(
+        'Got QR code:',
+        text + '\npayload:',
+        jwtPayload,
+        '\nReader:',
+        reader,
+      );
+
+      // Instead of checking isLoadingUsers directly, we check the current state
+      // of users to determine if we can proceed
+      const users = usersRef.current;
+
+      if (!users) {
+        setScanError('Please wait while user data is loading...');
+        return;
+      }
+
+      const foundUser = users.find((user) => user.id === userId);
+      if (foundUser) {
+        setUserData(foundUser);
+        onOpen();
+      } else {
+        setScanError(t('errors.auth.userNotFound'));
+        console.error(
+          'User not found in fetched users:',
+          userId,
+          'users:',
+          users,
+        );
+      }
+    },
+    [isOpen, onOpen, t], // Remove isLoadingUsers from dependencies
+  );
+
+  const handleResetScan = useCallback(() => {
+    setScanError(null);
+    setUserData(null);
+    setUserIdFromQr(null);
+    setLogAttendanceError(null);
+  }, []);
+
   const sendDataToBackend = useCallback(
-    async (userId: string) => {
+    async (userId: number) => {
       if (!accessToken) {
         console.error('No access token found');
         return;
@@ -96,64 +174,6 @@ const ScanAttendanceQr = () => {
     [accessToken, onClose],
   );
 
-  const handleScan: OnResultFunction = useCallback(
-    (result, error) => {
-      if (isOpen) {
-        console.debug('Modal is already open, ignoring scan result', {
-          result,
-          error,
-        });
-        return;
-      }
-      if (error) {
-        if (error.name === 'e2') {
-          console.debug('QR code not found, error e2:', error);
-          return;
-        }
-        console.error('QR Scanner Error:', error.name, error.message);
-        setScanError(error.message || error.name);
-        setUserData(null);
-        onClose();
-        return;
-      }
-
-      if (result) {
-        console.log('QR Code Scanned:', result);
-        const text = result.getText();
-        setScanError(null);
-
-        const userId = text;
-        setUserIdFromQr(userId);
-
-        if (users) {
-          const foundUser = users.find((user) => user.id.toString() === userId);
-          if (foundUser) {
-            setUserData(foundUser);
-            onOpen();
-          } else {
-            setUserData(null);
-            setScanError(t('attendance.scanErrorUserNotFound')); // Assuming you add this translation key
-            onClose(); // Or decide to keep modal open and show error in modal?
-            console.error('User not found in fetched users:', userId);
-          }
-        } else {
-          setUserData(null);
-          setScanError(t('attendance.scanErrorNoUsersFetched')); // Assuming you add this translation key
-          onClose();
-          console.error('Users data not fetched yet or fetch failed.');
-        }
-      }
-    },
-    [isOpen, onClose, users, onOpen, t],
-  );
-
-  const handleResetScan = useCallback(() => {
-    setScanError(null);
-    setUserData(null);
-    setUserIdFromQr(null);
-    setLogAttendanceError(null);
-  }, []);
-
   const handleConfirmAttendance = useCallback(() => {
     if (userIdFromQr) {
       sendDataToBackend(userIdFromQr);
@@ -163,15 +183,11 @@ const ScanAttendanceQr = () => {
   return (
     <div className="p-4">
       <PageTitle title={t('attendance.title')} />
-      <h2 className="text-2xl font-bold">{t('attendance.title')}</h2>
-      <div className="relative max-w-full h-fit">
-        <QrReader
-          onResult={handleScan}
-          constraints={{ facingMode: 'environment' }}
-          videoContainerStyle={{ width: '100%' }}
-          videoStyle={{ width: '100%' }}
-          containerStyle={{ width: '100%' }}
-        />
+      <h2 className="text-2xl my-1 font-bold text-center">
+        {t('attendance.title')}
+      </h2>
+
+      <div className="relative max-w-full">
         {scanError && (
           <Alert color="danger">Error scanning QR code: {scanError}</Alert>
         )}
@@ -183,6 +199,14 @@ const ScanAttendanceQr = () => {
         {fetchUsersError && (
           <Alert color="danger">Error fetching users: {fetchUsersError}</Alert>
         )}
+
+        <div className="max-w-lg mx-auto">
+          <QrReader
+            onResult={handleScan}
+            scanDelay={500}
+            constraints={{ facingMode: 'environment' }}
+          />
+        </div>
       </div>
 
       <Modal isOpen={isOpen} onClose={onClose}>
@@ -203,15 +227,11 @@ const ScanAttendanceQr = () => {
                   <strong>{t('attendance.modal.email')}:</strong>{' '}
                   {userData.email}
                 </p>
-                {/* Display other user data as needed */}
                 <p>{t('attendance.modal.confirmPrompt')}</p>
               </div>
             ) : (
               <p>
-                {scanError
-                  ? scanError // Display scan error directly if user lookup failed within handleScan
-                  : t('attendance.modal.fetchingUser')}{' '}
-                {/* This text might not be relevant now as fetching happens upfront */}
+                {scanError ? scanError : t('attendance.modal.fetchingUser')}{' '}
               </p>
             )}
           </ModalBody>

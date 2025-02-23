@@ -312,10 +312,6 @@ const Homepage = () => {
                 </ul>
 
                 <p>{t('home.blandeActivitiesText2')}</p>
-                {/* Placeholder for image related to "Blande" activities */}
-                {/* <div className="mt-4 aspect-w-16 aspect-h-9">
-                <Image src="/path-to-blande-activities-image.jpg" alt="Blande Activities" className="object-cover rounded-md shadow-md" />
-              </div> */}
               </CardBody>
             </Card>
 
@@ -339,23 +335,8 @@ const Homepage = () => {
                   <li>{t('home.serieActivitiesItem2')}</li>
                   <li>{t('home.serieActivitiesItem3')}</li>
                 </ul>
-                {/* Placeholder for image related to "Serie" activities */}
-                {/* <div className="mt-4 aspect-w-16 aspect-h-9">
-                <Image src="/path-to-serie-activities-image.jpg" alt="Serie Activities" className="object-cover rounded-md shadow-md" />
-              </div> */}
               </CardBody>
             </Card>
-
-            {/* Library section */}
-            {/* <Card className="mb-8">
-            <CardHeader className="flex items-center">
-              <MdOutlineLocalLibrary className="mr-2 text-xl" />
-              <p className="text-lg font-medium">{t('home.libraryTitle')}</p>
-            </CardHeader>
-            <CardBody>
-              <p>{t('home.libraryText1')}</p>
-            </CardBody>
-          </Card> */}
 
             <div className="text-center">
               <div className="grid grid-cols-1 gap-8 -my-4 md:grid-cols-2">
