@@ -31,13 +31,10 @@ import UserData from './UserData';
 import LoginBtn from '../../pages/auth/LoginBtn';
 import SignupBtn from '../../pages/auth/SignupBtn';
 import ToggleTheme from './ToggleTheme';
-import { FaCashRegister } from 'react-icons/fa';
-import { GiHamburger } from 'react-icons/gi';
-import { MdQrCode } from 'react-icons/md';
 
 const Header = () => {
   const { t } = useTranslation();
-  const [isMenuOpen, setIsMenuOpen] = useState(false); // State to control menu open/close
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const user = useUserStore((store) => store.user);
   const loading = useUserStore((store) => store.loading);
@@ -46,7 +43,7 @@ const Header = () => {
   const location = useLocation();
 
   function handleClickItem() {
-    setIsMenuOpen(false); // Close the menu when an item is clicked
+    setIsMenuOpen(false);
   }
 
   return (
@@ -137,52 +134,11 @@ const Header = () => {
                   {t('admin.adminPanelShort')}
                 </Button>
               </NavbarItem>
-              <NavbarItem className="cursor-pointer">
-                <Button
-                  isDisabled={
-                    location.pathname.replace(/\//g, '') === 'cashier'
-                  }
-                  as={Link}
-                  color="secondary"
-                  to="/cashier"
-                >
-                  <FaCashRegister className="mr-2" />
-                  {t('pages.cashier')}
-                </Button>
-              </NavbarItem>
-              <NavbarItem className="cursor-pointer">
-                <Button
-                  isDisabled={
-                    location.pathname.replace(/\//g, '') === 'cashier'
-                  }
-                  as={Link}
-                  color="warning"
-                  to="/menu"
-                >
-                  <GiHamburger className="mr-2" />
-                  {t('pages.menu')}
-                </Button>
-              </NavbarItem>
-              <NavbarItem className="cursor-pointer">
-                <Button
-                  isDisabled={
-                    location.pathname.replace(/\//g, '') === 'cashier'
-                  }
-                  as={Link}
-                  color="success"
-                  to="/admin/scan-attendance"
-                >
-                  <MdQrCode className="mr-2" />
-                  {t('attendance.scanQrCodeShort')}
-                </Button>
-              </NavbarItem>
             </div>
           )}
         </NavbarContent>
 
         <NavbarMenu>
-          {' '}
-          {/* Use isMenuOpen to control NavbarMenu */}
           <NavbarMenuItem className="mt-4" isActive={location.pathname === '/'}>
             <Link to="/" onClick={handleClickItem}>
               <AiOutlineHome className="mr-2 inline-block" />
@@ -238,49 +194,19 @@ const Header = () => {
             <ToggleTheme className="w-full" />
           </NavbarMenuItem>
           {user?.isAdmin && (
-            <>
-              <NavbarMenuItem className="cursor-pointer w-full">
-                <Button
-                  isDisabled={location.pathname.replace(/\//g, '') === 'admin'}
-                  as={Link}
-                  color="danger"
-                  to="/admin"
-                  className="w-full"
-                  onClick={handleClickItem} // Optional: close menu after admin button click
-                >
-                  <AiFillSetting className="mr-2" />
-                  {t('admin.adminPanelShort')}
-                </Button>
-              </NavbarMenuItem>
-              <NavbarMenuItem className="cursor-pointer w-full">
-                <Button
-                  isDisabled={
-                    location.pathname.replace(/\//g, '') === 'adminpurchases'
-                  }
-                  as={Link}
-                  color="secondary"
-                  to="/cashier"
-                  className="w-full"
-                  onPress={handleClickItem} // Optional: close menu after purchases button click
-                >
-                  <FaCashRegister className="mr-2" />
-                  {t('pages.cashier')}
-                </Button>
-              </NavbarMenuItem>
-              <NavbarMenuItem className="cursor-pointer w-full">
-                <Button
-                  isDisabled={location.pathname.replace(/\//g, '') === 'menu'}
-                  as={Link}
-                  color="warning"
-                  to="/menu"
-                  className="w-full"
-                  onPress={handleClickItem} // Optional: close menu after purchases button click
-                >
-                  <GiHamburger className="mr-2" />
-                  {t('pages.menu')}
-                </Button>
-              </NavbarMenuItem>
-            </>
+            <NavbarMenuItem className="cursor-pointer w-full">
+              <Button
+                isDisabled={location.pathname.replace(/\//g, '') === 'admin'}
+                as={Link}
+                color="danger"
+                to="/admin"
+                className="w-full"
+                onPress={handleClickItem}
+              >
+                <AiFillSetting className="mr-2" />
+                {t('admin.adminPanelShort')}
+              </Button>
+            </NavbarMenuItem>
           )}
         </NavbarMenu>
       </NavbarContent>

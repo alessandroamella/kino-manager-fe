@@ -73,6 +73,7 @@ app.use(
       payment: [],
       syncXhr: [],
       serial: ['self'], // cashier needs Web Serial API for esp32
+      camera: ['self'], // admins need camera access for QR scanner
     },
   }),
 );

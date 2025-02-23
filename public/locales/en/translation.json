@@ -118,6 +118,17 @@
   },
   "attendance": {
     "title": "Register attendance",
+    "modal": {
+      "header": "Confirm Attendance",
+      "name": "Name",
+      "email": "Email",
+      "confirmPrompt": "Do you want to log attendance for this user?",
+      "errorFetchingUser": "Error fetching user data.",
+      "fetchingUser": "Fetching user data...",
+      "confirmButton": "Yes, Log Attendance",
+      "cancelButton": "No, Cancel"
+    },
+    "scanAgain": "Scan Again",
     "showQrCode": "Show QR Code",
     "scanQrCode": "Scan this QR code at the entrance!",
     "scanQrCodeShort": "Entrance QR"

@@ -763,7 +763,7 @@ const Signup = () => {
 
             <div className="flex flex-col gap-1 mt-6 items-center w-full">
               <p className="text-foreground-600 text-small">
-                {t('signup.alreadyAccount')}{' '}
+                {t('signup.alreadyAccount')}
               </p>
               <Button
                 as={Link}

@@ -161,7 +161,7 @@ const Login = () => {
               className="flex flex-col gap-1 px-6 pb-4 items-center w-full"
             >
               <p className="text-foreground-600 text-small">
-                {t(`signup.${k1}`)}{' '}
+                {t(`signup.${k1}`)}
               </p>
               <Button
                 as={Link}

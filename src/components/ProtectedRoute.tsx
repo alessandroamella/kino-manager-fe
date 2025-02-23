@@ -95,7 +95,7 @@ const ProtectedRoute = ({
 
   return !user && !mustBeLoggedOut ? (
     <Skeleton>
-      <div className="w-full h-96" />{' '}
+      <div className="w-full h-96" />
     </Skeleton>
   ) : (
     <>

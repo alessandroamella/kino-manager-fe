@@ -124,6 +124,17 @@
   },
   "attendance": {
     "title": "Registra la tua presenza",
+    "modal": {
+      "header": "Conferma Presenza",
+      "name": "Nome",
+      "email": "Email",
+      "confirmPrompt": "Vuoi registrare la presenza per questo utente?",
+      "errorFetchingUser": "Errore nel recupero dei dati utente.",
+      "fetchingUser": "Recupero dati utente...",
+      "confirmButton": "Sì, Registra Presenza",
+      "cancelButton": "No, Annulla"
+    },
+    "scanAgain": "Scansiona di Nuovo",
     "showQrCode": "Mostra QR Code",
     "scanQrCode": "Scansiona questo codice QR all'ingresso",
     "scanQrCodeShort": "QR entrata"

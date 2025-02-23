@@ -34,9 +34,8 @@ const KinoMenu = () => {
 
   return (
     <main className="kino-menu min-h-screen bg-gray-900 text-white p-8 pt-0">
-      {/* <h1 className="text-4xl font-bold mb-8 text-center">Kinó Café</h1> */}
       <div className="flex justify-center pt-8 pb-6">
-        <Link to="/">
+        <Link to="/admin">
           <Image src={logoDark} alt="Kinó Café" className="w-64 mx-auto" />
         </Link>
       </div>
