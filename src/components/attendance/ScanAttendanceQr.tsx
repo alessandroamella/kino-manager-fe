@@ -15,6 +15,8 @@ import {
   Spinner,
 } from '@heroui/react';
 import { Member } from '@/types/Member';
+import PageTitle from '../PageTitle';
+import useUserStore from '@/store/user';
 
 const ScanAttendanceQr = () => {
   const [scanError, setScanError] = useState<string | null>(null);
@@ -30,14 +32,25 @@ const ScanAttendanceQr = () => {
   const [isLoadingUsers, setIsLoadingUsers] = useState<boolean>(true);
   const [fetchUsersError, setFetchUsersError] = useState<string | null>(null);
 
+  const accessToken = useUserStore((store) => store.accessToken);
+
   const { t } = useTranslation();
 
   useEffect(() => {
     const fetchUsers = async () => {
+      if (!accessToken) {
+        return;
+      }
+
       setIsLoadingUsers(true);
       setFetchUsersError(null);
       try {
-        const { data } = await axios.get('/v1/admin/users');
+        const { data } = await axios.get('/v1/admin/users', {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        console.log('Fetched users:', data);
         setUsers(data);
         setIsLoadingUsers(false);
       } catch (error) {
@@ -49,16 +62,28 @@ const ScanAttendanceQr = () => {
     };
 
     fetchUsers();
-  }, []);
+  }, [accessToken]);
 
   const sendDataToBackend = useCallback(
     async (userId: string) => {
+      if (!accessToken) {
+        console.error('No access token found');
+        return;
+      }
       setIsLoggingAttendance(true);
       setLogAttendanceError(null);
       try {
-        const { data } = await axios.post('/v1/admin/log-attendance', {
-          userId: userId,
-        });
+        const { data } = await axios.post(
+          '/v1/admin/log-attendance',
+          {
+            userId: userId,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          },
+        );
         console.log('Attendance logged successfully:', data);
         setIsLoggingAttendance(false);
         onClose();
@@ -68,7 +93,7 @@ const ScanAttendanceQr = () => {
         setIsLoggingAttendance(false);
       }
     },
-    [onClose],
+    [accessToken, onClose],
   );
 
   const handleScan: OnResultFunction = useCallback(
@@ -137,6 +162,7 @@ const ScanAttendanceQr = () => {
 
   return (
     <div className="p-4">
+      <PageTitle title={t('attendance.title')} />
       <h2 className="text-2xl font-bold">{t('attendance.title')}</h2>
       <div className="relative max-w-full h-fit">
         <QrReader
