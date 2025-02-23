@@ -36,6 +36,7 @@ import { AiOutlineSignature } from 'react-icons/ai';
 import SignatureModal from '@/components/input/SignatureModal';
 import PageTitle from '@/components/PageTitle';
 import ScrollTop from '@/components/ScrollTop';
+import AttendanceQr from '@/components/attendance/AttendanceQr';
 
 const Profile = () => {
   const { t, i18n } = useTranslation();
@@ -158,6 +159,12 @@ const Profile = () => {
                 </div>
               </div>
               <Divider className="mb-4" />
+
+              <div className="flex justify-center">
+                <AttendanceQr />
+              </div>
+
+              <Divider className="my-4" />
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-4 md:px-8 lg:px-12">
                 <div>

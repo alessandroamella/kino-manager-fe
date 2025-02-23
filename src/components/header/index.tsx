@@ -33,6 +33,7 @@ import SignupBtn from '../../pages/auth/SignupBtn';
 import ToggleTheme from './ToggleTheme';
 import { FaCashRegister } from 'react-icons/fa';
 import { GiHamburger } from 'react-icons/gi';
+import { MdQrCode } from 'react-icons/md';
 
 const Header = () => {
   const { t } = useTranslation();
@@ -159,7 +160,20 @@ const Header = () => {
                   to="/menu"
                 >
                   <GiHamburger className="mr-2" />
-                  Menu
+                  {t('pages.menu')}
+                </Button>
+              </NavbarItem>
+              <NavbarItem className="cursor-pointer">
+                <Button
+                  isDisabled={
+                    location.pathname.replace(/\//g, '') === 'cashier'
+                  }
+                  as={Link}
+                  color="success"
+                  to="/admin/scan-attendance"
+                >
+                  <MdQrCode className="mr-2" />
+                  {t('attendance.scanQrCodeShort')}
                 </Button>
               </NavbarItem>
             </div>
@@ -263,7 +277,7 @@ const Header = () => {
                   onPress={handleClickItem} // Optional: close menu after purchases button click
                 >
                   <GiHamburger className="mr-2" />
-                  Menu
+                  {t('pages.menu')}
                 </Button>
               </NavbarMenuItem>
             </>

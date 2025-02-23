@@ -116,6 +116,12 @@
       "accept": "You must accept the Terms of Service and Privacy Policy"
     }
   },
+  "attendance": {
+    "title": "Register attendance",
+    "showQrCode": "Show QR Code",
+    "scanQrCode": "Scan this QR code at the entrance!",
+    "scanQrCodeShort": "Entrance QR"
+  },
   "home": {
     "kinoCafeTitle": "Kinó Café: Your Space, Your Way",
     "kinoCafeSubtitle": "A place to chill, create, connect and celebrate - all under one roof!",

@@ -122,6 +122,12 @@
       "accept": "Devi accettare i Termini di Servizio e l'Informativa sulla Privacy"
     }
   },
+  "attendance": {
+    "title": "Registra la tua presenza",
+    "showQrCode": "Mostra QR Code",
+    "scanQrCode": "Scansiona questo codice QR all'ingresso",
+    "scanQrCodeShort": "QR entrata"
+  },
   "home": {
     "kinoCafeTitle": "Kinó Café: Il tuo spazio, a modo tuo",
     "kinoCafeSubtitle": "Un luogo per rilassarsi, creare, incontrarsi e festeggiare - tutto sotto lo stesso tetto!",

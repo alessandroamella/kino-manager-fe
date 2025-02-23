@@ -16,6 +16,7 @@ import KinoMenu from './pages/menu/index.tsx';
 import CashierRegister from './pages/cashier/index.tsx';
 import ForgotPassword from './pages/auth/ForgotPassword.tsx';
 import ResetPassword from './pages/auth/ResetPassword.tsx';
+import ScanAttendanceQr from './components/attendance/ScanAttendanceQr.tsx';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -40,6 +41,7 @@ createRoot(document.getElementById('root')!).render(
             </Route>
             <Route path="admin" element={<ProtectedRoute mustBeAdmin />}>
               <Route index element={<AdminPanel />} />
+              <Route path="scan-attendance" element={<ScanAttendanceQr />} />
             </Route>
           </Route>
           <Route path="cashier" element={<ProtectedRoute mustBeAdmin />}>
