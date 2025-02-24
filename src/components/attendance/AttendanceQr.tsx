@@ -38,7 +38,7 @@ const AttendanceQr = () => {
 
       setIsCheckedIn(true);
       setSuccessAlert(t('attendance.checkedInSuccess'));
-      navigator.vibrate?.(200);
+      navigator.vibrate?.(400);
       clearInterval(pollingIntervalId.current!);
       pollingIntervalId.current = null;
     } catch (err) {
