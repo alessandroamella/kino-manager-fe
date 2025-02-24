@@ -8,7 +8,8 @@
     "save": "Salva",
     "warning": "Attenzione",
     "close": "Chiudi",
-    "confirm": "Conferma"
+    "confirm": "Conferma",
+    "success": "Successo"
   },
   "header": {
     "userActions": "Azioni utente",
@@ -124,6 +125,8 @@
   },
   "attendance": {
     "title": "Registra la tua presenza",
+    "checkedInSuccess": "Presenza registrata con successo!",
+    "checkedIn": "Sei registrato/a!",
     "modal": {
       "header": "Conferma Presenza",
       "name": "Nome",

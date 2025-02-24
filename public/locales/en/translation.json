@@ -8,7 +8,8 @@
     "save": "Save",
     "warning": "Warning",
     "close": "Close",
-    "confirm": "Confirm"
+    "confirm": "Confirm",
+    "success": "Success"
   },
   "header": {
     "userActions": "User actions",
@@ -118,6 +119,8 @@
   },
   "attendance": {
     "title": "Register attendance",
+    "checkedInSuccess": "Attendance checked-in successfully!",
+    "checkedIn": "You are checked-in!",
     "modal": {
       "header": "Confirm Attendance",
       "name": "Name",

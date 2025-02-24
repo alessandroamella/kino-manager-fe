@@ -31,28 +31,17 @@ import Logo from '@/components/ui/Logo';
 import ScrollTop from '@/components/ScrollTop';
 import { cn } from '@/lib/utils';
 import useOpeningDatesStore from '@/store/dates';
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 import { motion } from 'framer-motion';
 
 const Homepage = () => {
   const { t, i18n } = useTranslation();
 
   const dates = useOpeningDatesStore((store) => store.dates);
-  const fetchDates = useOpeningDatesStore((store) => store.fetchDates);
   const nextOpeningDate = useOpeningDatesStore(
     (store) => store.nextOpeningDate,
   );
   const getCurrentDate = useOpeningDatesStore((store) => store.getCurrentDate);
-
-  useEffect(() => {
-    if (dates && dates.length > 0) {
-      return;
-    }
-
-    fetchDates().catch((error) => {
-      console.error('Error fetching opening dates:', error);
-    });
-  }, [dates, fetchDates]);
 
   const isDateUnavailable = useCallback(
     (date: DateValue) => {

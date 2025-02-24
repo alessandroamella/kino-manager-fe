@@ -8,6 +8,7 @@ import { useTheme } from '@heroui/use-theme';
 import { ga4Key } from './constants/ga4';
 import ReactGA from 'react-ga4';
 import { I18nProvider } from '@react-aria/i18n';
+import useOpeningDatesStore from './store/dates';
 
 ReactGA.initialize(ga4Key);
 
@@ -30,6 +31,16 @@ const App = () => {
     // don't add user to the dependencies array
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accessToken]);
+
+  const fetchDates = useOpeningDatesStore((store) => store.fetchDates);
+
+  useEffect(() => {
+    fetchDates().catch((error) => {
+      console.error('Error fetching opening dates:', error);
+    });
+    // don't add fetchDates to the dependencies array
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     document.documentElement.lang = i18n.language;
