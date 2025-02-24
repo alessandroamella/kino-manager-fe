@@ -124,9 +124,7 @@
       "email": "Email",
       "confirmPrompt": "Do you want to log attendance for this user?",
       "errorFetchingUser": "Error fetching user data.",
-      "fetchingUser": "Fetching user data...",
-      "confirmButton": "Yes, Log Attendance",
-      "cancelButton": "No, Cancel"
+      "fetchingUser": "Fetching user data..."
     },
     "scanAgain": "Scan Again",
     "showQrCode": "Show QR Code",

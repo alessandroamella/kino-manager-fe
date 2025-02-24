@@ -235,17 +235,15 @@ const ScanAttendanceQr = () => {
               </p>
             )}
           </ModalBody>
-          <ModalFooter>
+          <ModalFooter className="md:flex md:justify-between">
+            <Button onPress={onClose}>{t('common.cancel')}</Button>
             <Button
               color="primary"
               onPress={handleConfirmAttendance}
               isLoading={isLoggingAttendance}
               isDisabled={!userData}
             >
-              {t('attendance.modal.confirmButton')}
-            </Button>
-            <Button color="secondary" onPress={onClose}>
-              {t('attendance.modal.cancelButton')}
+              {t('common.save')}
             </Button>
           </ModalFooter>
         </ModalContent>

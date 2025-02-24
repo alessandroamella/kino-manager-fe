@@ -130,9 +130,7 @@
       "email": "Email",
       "confirmPrompt": "Vuoi registrare la presenza per questo utente?",
       "errorFetchingUser": "Errore nel recupero dei dati utente.",
-      "fetchingUser": "Recupero dati utente...",
-      "confirmButton": "Sì, Registra Presenza",
-      "cancelButton": "No, Annulla"
+      "fetchingUser": "Recupero dati utente..."
     },
     "scanAgain": "Scansiona di Nuovo",
     "showQrCode": "Mostra QR Code",
