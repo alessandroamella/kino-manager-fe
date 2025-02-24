@@ -28,6 +28,7 @@
     "codice-fiscale-js": "^2.3.22",
     "country-flag-icons": "^1.5.18",
     "date-fns": "^4.1.0",
+    "date-fns-tz": "^3.2.0",
     "dotenv": "^16.4.7",
     "eslint-plugin-react": "^7.37.4",
     "framer-motion": "^12.4.7",

@@ -17,8 +17,8 @@ import { BiMoviePlay } from 'react-icons/bi';
 import LoginBtn from './auth/LoginBtn';
 import SignupBtn from './auth/SignupBtn';
 import { dateToCalendarDate } from '../utils/calendar';
-import { endOfDay, format, getUnixTime, isBefore, isSameDay } from 'date-fns';
-import { UTCDate, UTCDateMini } from '@date-fns/utc';
+import { endOfDay, getUnixTime, isBefore, isSameDay } from 'date-fns';
+import { formatInTimeZone } from 'date-fns-tz';
 import { dateFnsLang } from '../utils/dateFnsLang';
 import useUserStore from '../store/user';
 import { Link } from 'react-router';
@@ -30,53 +30,38 @@ import PageTitle from '@/components/PageTitle';
 import Logo from '@/components/ui/Logo';
 import ScrollTop from '@/components/ScrollTop';
 import { cn } from '@/lib/utils';
-import {
-  getCurrentDate,
-  getNextDate,
-  getOpeningDates,
-} from '@/constants/dates';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import useOpeningDatesStore from '@/store/dates';
+import { useCallback, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
 const Homepage = () => {
   const { t, i18n } = useTranslation();
 
-  const [dates, setDates] = useState<UTCDate[] | null>(null);
+  const dates = useOpeningDatesStore((store) => store.dates);
+  const fetchDates = useOpeningDatesStore((store) => store.fetchDates);
+  const nextOpeningDate = useOpeningDatesStore(
+    (store) => store.nextOpeningDate,
+  );
+  const getCurrentDate = useOpeningDatesStore((store) => store.getCurrentDate);
 
   useEffect(() => {
-    async function fetchDates() {
-      const dates = await getOpeningDates();
-      setDates(dates);
+    if (dates && dates.length > 0) {
+      return;
     }
-    fetchDates();
-  }, []);
+
+    fetchDates().catch((error) => {
+      console.error('Error fetching opening dates:', error);
+    });
+  }, [dates, fetchDates]);
 
   const isDateUnavailable = useCallback(
     (date: DateValue) => {
       return dates
-        ? !dates.some((d) => isSameDay(d, date.toDate('UTC')))
+        ? !dates.some((d) => isSameDay(d.openTimeUTC, date.toDate('UTC')))
         : false;
     },
     [dates],
   );
-
-  const nextDate = useMemo(() => {
-    return dates && getNextDate(dates);
-  }, [dates]);
-
-  const nextDateTime = useMemo(() => {
-    return (
-      nextDate &&
-      new UTCDateMini(
-        nextDate.getFullYear(),
-        nextDate.getMonth(),
-        nextDate.getDate(),
-        19, // opening hour: 19:00
-        0,
-        0,
-      )
-    );
-  }, [nextDate]);
 
   const user = useUserStore((store) => store.user);
 
@@ -231,18 +216,23 @@ const Homepage = () => {
             <h2 className="text-2xl md:text-3xl font-semibold text-center text-gray-800 dark:text-white">
               {t('home.openingCountdownTitle')}
             </h2>
-            {nextDateTime && (
+            {nextOpeningDate && (
               <p className="mb-4 text-foreground-600 text-center">
-                {format(nextDateTime, 'EEEE d MMMM yyyy, HH:mm', {
-                  locale: dateFnsLang(i18n),
-                })}
+                {formatInTimeZone(
+                  nextOpeningDate.openTimeUTC,
+                  'Europe/Rome',
+                  'EEEE d MMMM yyyy, HH:mm',
+                  {
+                    locale: dateFnsLang(i18n),
+                  },
+                )}
               </p>
             )}
             <div className="w-full flex justify-center">
-              {nextDateTime && currentDateEpoch && (
+              {nextOpeningDate && currentDateEpoch && (
                 <Countdown
                   now={currentDateEpoch}
-                  date={nextDateTime}
+                  date={nextOpeningDate.openTimeUTC}
                   renderer={renderer}
                 />
               )}
@@ -346,8 +336,10 @@ const Homepage = () => {
                   aria-label="Date (Read Only)"
                   className="m-auto scale-90 h-fit"
                   value={
-                    nextDateTime &&
-                    dateToCalendarDate(new Date(nextDateTime.toISOString()))
+                    nextOpeningDate &&
+                    dateToCalendarDate(
+                      new Date(nextOpeningDate.openTimeUTC.toISOString()),
+                    )
                   }
                 />
 
@@ -358,21 +350,30 @@ const Homepage = () => {
                       {t('home.openingDates')}
                     </h2>
                     <ul className="text-gray-700 ml-4 list-disc dark:text-gray-300 text-sm text-left">
-                      {dates?.map((e) => (
+                      {dates.map((e) => (
                         <li
                           className={cn({
                             'text-kino-700 font-bold':
-                              nextDate && isSameDay(e, nextDate),
+                              nextOpeningDate &&
+                              isSameDay(
+                                e.openTimeUTC,
+                                nextOpeningDate.openTimeUTC,
+                              ),
                             'text-foreground-400': isBefore(
-                              endOfDay(e),
+                              endOfDay(e.openTimeUTC),
                               getCurrentDate(),
                             ),
                           })}
-                          key={e.toDateString()}
+                          key={e.id}
                         >
-                          {format(e, 'EEEE d MMMM yyyy', {
-                            locale: dateFnsLang(i18n),
-                          })}
+                          {formatInTimeZone(
+                            e.openTimeUTC,
+                            'Europe/Rome',
+                            'EEEE d MMMM yyyy',
+                            {
+                              locale: dateFnsLang(i18n),
+                            },
+                          )}
                         </li>
                       ))}
                     </ul>
