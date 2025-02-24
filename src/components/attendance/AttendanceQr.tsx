@@ -59,6 +59,7 @@ const AttendanceQr = () => {
   useEffect(() => {
     async function fetchQrImage() {
       if (!accessToken || qrLoading) return;
+      await checkAttendanceStatus();
       setQrLoading(true);
       setError(null);
       try {
