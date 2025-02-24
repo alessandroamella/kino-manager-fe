@@ -10,7 +10,9 @@ import { motion } from 'framer-motion';
 
 const AttendanceQr = () => {
   const accessToken = useUserStore((state) => state.accessToken);
+  const user = useUserStore((state) => state.user);
   const tokenLoading = useUserStore((state) => state.loading);
+
   const [qrImageUrl, setQrImageUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -201,7 +203,9 @@ const AttendanceQr = () => {
                 </motion.div>
                 <p className="my-4 text-sm text-foreground-500">
                   {isCheckedIn
-                    ? t('attendance.checkedIn')
+                    ? t('attendance.checkedIn', {
+                        context: user?.gender === 'M' ? 'male' : 'female',
+                      })
                     : t('attendance.scanQrCode')}
                 </p>
               </div>

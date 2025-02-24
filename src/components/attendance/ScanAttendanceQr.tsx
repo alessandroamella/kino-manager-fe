@@ -162,13 +162,15 @@ const ScanAttendanceQr = () => {
         console.log('Attendance logged successfully:', data);
         setIsLoggingAttendance(false);
         onClose();
+
+        window.alert(t('attendance.checkedInSuccess'));
       } catch (error) {
         console.error('Error logging attendance:', error);
         setLogAttendanceError(getErrorMsg(error));
         setIsLoggingAttendance(false);
       }
     },
-    [accessToken, onClose],
+    [accessToken, onClose, t],
   );
 
   const handleConfirmAttendance = useCallback(() => {
