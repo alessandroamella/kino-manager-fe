@@ -23,7 +23,7 @@ const ScanAttendanceQr = () => {
   const [scanError, setScanError] = useState<string | null>(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [userData, setUserData] = useState<Member | null>(null);
-  const [userIdFromQr, setUserIdFromQr] = useState<number | null>(null);
+  const [jwt, setJwt] = useState<string | null>(null);
   const [isLoggingAttendance, setIsLoggingAttendance] =
     useState<boolean>(false);
   const [logAttendanceError, setLogAttendanceError] = useState<string | null>(
@@ -88,6 +88,8 @@ const ScanAttendanceQr = () => {
       const text = result.getText();
       setScanError(null);
 
+      setJwt(text);
+
       const jwtPayload = jwtDecode<{ u: number; iat: number; exp: number }>(
         text,
       );
@@ -97,9 +99,6 @@ const ScanAttendanceQr = () => {
         return;
       }
       console.log('Decoded QR code:', jwtPayload);
-
-      const userId = jwtPayload.u;
-      setUserIdFromQr(userId);
 
       console.log(
         'Got QR code:',
@@ -118,7 +117,7 @@ const ScanAttendanceQr = () => {
         return;
       }
 
-      const foundUser = users.find((user) => user.id === userId);
+      const foundUser = users.find((user) => user.id === jwtPayload.u);
       if (foundUser) {
         setUserData(foundUser);
         onOpen();
@@ -126,7 +125,7 @@ const ScanAttendanceQr = () => {
         setScanError(t('errors.auth.userNotFound'));
         console.error(
           'User not found in fetched users:',
-          userId,
+          jwtPayload.u,
           'users:',
           users,
         );
@@ -138,12 +137,12 @@ const ScanAttendanceQr = () => {
   const handleResetScan = useCallback(() => {
     setScanError(null);
     setUserData(null);
-    setUserIdFromQr(null);
+    setJwt(null);
     setLogAttendanceError(null);
   }, []);
 
   const sendDataToBackend = useCallback(
-    async (userId: number) => {
+    async (jwt: string) => {
       if (!accessToken) {
         console.error('No access token found');
         return;
@@ -153,9 +152,7 @@ const ScanAttendanceQr = () => {
       try {
         const { data } = await axios.post(
           '/v1/admin/log-attendance',
-          {
-            userId: userId,
-          },
+          { jwt },
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -175,10 +172,9 @@ const ScanAttendanceQr = () => {
   );
 
   const handleConfirmAttendance = useCallback(() => {
-    if (userIdFromQr) {
-      sendDataToBackend(userIdFromQr);
-    }
-  }, [sendDataToBackend, userIdFromQr]);
+    if (!jwt) return;
+    sendDataToBackend(jwt);
+  }, [sendDataToBackend, jwt]);
 
   return (
     <div className="p-4">
@@ -235,7 +231,7 @@ const ScanAttendanceQr = () => {
               </p>
             )}
           </ModalBody>
-          <ModalFooter className="md:flex md:justify-between">
+          <ModalFooter>
             <Button onPress={onClose}>{t('common.cancel')}</Button>
             <Button
               color="primary"
