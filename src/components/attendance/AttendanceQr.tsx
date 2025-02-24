@@ -30,21 +30,17 @@ const AttendanceQr = () => {
       return;
     }
     try {
-      const response = await axios.get('/v1/attendance/is-checked-in', {
+      await axios.get('/v1/attendance/is-checked-in', {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
       });
 
-      if (response.status === 200) {
-        setIsCheckedIn(true);
-        setSuccessAlert(t('attendance.checkedInSuccess'));
-        if ('vibrate' in navigator) {
-          navigator.vibrate(200); // Vibrate for 200ms
-        }
-        clearInterval(pollingIntervalId.current!);
-        pollingIntervalId.current = null;
-      }
+      setIsCheckedIn(true);
+      setSuccessAlert(t('attendance.checkedInSuccess'));
+      navigator.vibrate?.(200);
+      clearInterval(pollingIntervalId.current!);
+      pollingIntervalId.current = null;
     } catch (err) {
       if ((err as AxiosError).response?.status === 404) {
         // not checked in yet, continue polling silently
@@ -66,14 +62,14 @@ const AttendanceQr = () => {
       setQrLoading(true);
       setError(null);
       try {
-        const response = await axios.post('/v1/attendance/qr-code', null, {
+        const { data } = await axios.post('/v1/attendance/qr-code', null, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
           responseType: 'blob',
         });
 
-        const imageUrl = URL.createObjectURL(response.data);
+        const imageUrl = URL.createObjectURL(data);
         setQrImageUrl(imageUrl);
       } catch (err) {
         console.error('Error fetching QR code:', getErrorMsg(err), err);

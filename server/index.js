@@ -74,6 +74,7 @@ app.use(
       syncXhr: [],
       serial: ['self'], // cashier needs Web Serial API for esp32
       camera: ['self'], // admins need camera access for QR scanner
+      vibration: ['self'], // phone vibrates when QR code is verified
     },
   }),
 );
