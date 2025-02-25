@@ -82,10 +82,10 @@ const ExpenseTable = ({
               const user = getUserById(item.userId);
               return (
                 <TableRow key={item.id}>
-                  <TableCell>
+                  <TableCell className="min-w-52">
                     {user ? getUserStr(user) : `#${item.userId}`}
                   </TableCell>
-                  <TableCell>{item.description}</TableCell>
+                  <TableCell className="min-w-64">{item.description}</TableCell>
                   <TableCell>
                     <Price price={item.amount} />
                   </TableCell>
