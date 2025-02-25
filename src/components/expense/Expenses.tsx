@@ -69,7 +69,9 @@ const Expenses = ({ users }: { users: Member[] }) => {
             Authorization: `Bearer ${accessToken}`,
           },
         });
-        setExpenses((prev) => prev.filter((e) => e.id !== expenseId));
+        [setExpenses, setAddedExpenses].forEach((setter) =>
+          setter((prev) => prev.filter((e) => e.id !== expenseId)),
+        );
         console.log('Deleted expense', expenseId);
       } catch (error) {
         console.error('Error deleting expense:', error);
@@ -95,8 +97,10 @@ const Expenses = ({ users }: { users: Member[] }) => {
             },
           },
         );
-        setExpenses((prev) =>
-          prev.map((e) => (e.id === expenseId ? { ...e, repaid } : e)),
+        [setExpenses, setAddedExpenses].forEach((setter) =>
+          setter((prev) =>
+            prev.map((e) => (e.id === expenseId ? { ...e, repaid } : e)),
+          ),
         );
         console.log('Marked expense as repaid:', expenseId);
       } catch (error) {
