@@ -1,14 +1,25 @@
+import { useTranslation } from 'react-i18next';
+
 function formatPrice(
   price?: number,
   currencySymbol = '€',
   decimalDigits = 2,
   round = true,
+  locale = 'en',
 ) {
-  return typeof price === 'number'
-    ? `${currencySymbol}${
-        round && Number.isInteger(price) ? price : price.toFixed(decimalDigits)
-      }`
-    : '-';
+  if (typeof price !== 'number') {
+    return '-';
+  }
+
+  const actualDecimalDigits =
+    round && Number.isInteger(price) ? 0 : decimalDigits;
+
+  const formatter = new Intl.NumberFormat(locale, {
+    minimumFractionDigits: actualDecimalDigits,
+    maximumFractionDigits: actualDecimalDigits,
+  });
+
+  return `${currencySymbol}${formatter.format(price)}`;
 }
 
 const Price = ({
@@ -22,7 +33,15 @@ const Price = ({
   decimalDigits?: number;
   round?: boolean;
 }) => {
-  return formatPrice(price, currencySymbol, decimalDigits, round);
+  const { i18n } = useTranslation();
+
+  return formatPrice(
+    price,
+    currencySymbol,
+    decimalDigits,
+    round,
+    i18n.language,
+  );
 };
 
 Price.formatPrice = formatPrice;

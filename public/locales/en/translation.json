@@ -9,7 +9,11 @@
     "warning": "Warning",
     "close": "Close",
     "confirm": "Confirm",
-    "success": "Success"
+    "success": "Success",
+    "remove": "Remove"
+  },
+  "media": {
+    "picture": "Picture"
   },
   "header": {
     "userActions": "User actions",
@@ -328,6 +332,45 @@
     "successDescription": "Your password has been successfully reset. You can now log in with your new password.",
     "backToLoginPrompt": "You can now login with your new password.",
     "newPassword": "New Password"
+  },
+  "expenses": {
+    "title": "Expenses",
+    "table": {
+      "ariaLabel": "Expenses table",
+      "user": "User",
+      "description": "Description",
+      "amount": "Amount",
+      "expenseDate": "Expense Date",
+      "repaid": "Repaid",
+      "loading": "Loading expenses...",
+      "empty": "No expenses yet.",
+      "markUnrepaid": "Mark Unrepaid",
+      "markRepaid": "Mark Repaid",
+      "confirmDelete": "Are you sure you want to delete this expense?"
+    },
+    "userTable": {
+      "ariaLabel": "User Expense Summary Table",
+      "user": "User",
+      "totalAmount": "Total Amount",
+      "loading": "Loading expense summary...",
+      "empty": "No debts!"
+    },
+    "addModal": {
+      "addButton": "Add Expense",
+      "header": "Add New Expense",
+      "userLabel": "User",
+      "userPlaceholder": "Select User",
+      "userSectionTitle": "Users",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "Expense description",
+      "amountLabel": "Amount",
+      "amountPlaceholder": "0.00",
+      "dateLabel": "Expense Date",
+      "repaidLabel": "Repaid",
+      "imageDropzoneLabel": "Click or drag an image here to upload (e.g. of the receipt, optional)",
+      "imageDropzoneSubLabel": "Supported formats: .jpg, .jpeg, .png",
+      "submitButton": "Add Expense"
+    }
   },
   "countries": {
     "AF": "Afghanistan",

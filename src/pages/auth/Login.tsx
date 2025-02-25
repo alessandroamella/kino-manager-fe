@@ -4,8 +4,8 @@ import { useForm } from 'react-hook-form';
 import useUserStore from '../../store/user';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate, useSearchParams } from 'react-router';
-import PageTitle from '@/components/PageTitle';
-import ScrollTop from '@/components/ScrollTop';
+import PageTitle from '@/components/navigation/PageTitle';
+import ScrollTop from '@/components/navigation/ScrollTop';
 
 type FormData = {
   email: string;

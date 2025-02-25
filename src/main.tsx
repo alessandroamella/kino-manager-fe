@@ -4,19 +4,19 @@ import './index.css';
 import './i18n.ts';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router';
 import { HeroUIProvider } from '@heroui/react';
-import Layout from './components/Layout.tsx';
-import Homepage from './pages/Homepage.tsx';
-import Signup from './pages/auth/Signup.tsx';
-import Login from './pages/auth/Login.tsx';
-import Profile from './pages/profile/index.tsx';
-import ProtectedRoute from './components/ProtectedRoute.tsx';
-import Docs from './components/docs/index.tsx';
-import AdminPanel from './pages/admin/index.tsx';
-import KinoMenu from './pages/menu/index.tsx';
-import CashierRegister from './pages/cashier/index.tsx';
-import ForgotPassword from './pages/auth/ForgotPassword.tsx';
-import ResetPassword from './pages/auth/ResetPassword.tsx';
-import ScanAttendanceQr from './components/attendance/ScanAttendanceQr.tsx';
+import Layout from './components/layout';
+import Homepage from './pages/Homepage';
+import Signup from './pages/auth/Signup';
+import Login from './pages/auth/Login';
+import Profile from './pages/profile';
+import ProtectedRoute from './components/navigation/ProtectedRoute';
+import Docs from './components/docs';
+import AdminPanel from './pages/admin';
+import KinoMenu from './pages/menu';
+import CashierRegister from './pages/cashier';
+import ForgotPassword from './pages/auth/ForgotPassword';
+import ResetPassword from './pages/auth/ResetPassword';
+import ScanAttendanceQr from './components/attendance/ScanAttendanceQr';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

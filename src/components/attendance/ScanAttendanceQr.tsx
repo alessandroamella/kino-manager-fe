@@ -15,7 +15,7 @@ import {
   Spinner,
 } from '@heroui/react';
 import { Member } from '@/types/Member';
-import PageTitle from '../PageTitle';
+import PageTitle from '../navigation/PageTitle';
 import useUserStore from '@/store/user';
 import { jwtDecode } from 'jwt-decode';
 

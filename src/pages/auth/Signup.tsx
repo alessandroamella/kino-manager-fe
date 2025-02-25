@@ -45,8 +45,8 @@ import GoogleMapsAutocomplete from '@/components/input/GoogleMapsAutocomplete';
 import { FaEdit } from 'react-icons/fa';
 import signaturePlaceholder from '../../assets/images/firma.webp';
 import { cn } from '@/lib/utils';
-import PageTitle from '@/components/PageTitle';
-import ScrollTop from '@/components/ScrollTop';
+import PageTitle from '@/components/navigation/PageTitle';
+import ScrollTop from '@/components/navigation/ScrollTop';
 
 type FormData = InferType<ReturnType<typeof signupYupSchema>>;
 

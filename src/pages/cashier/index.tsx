@@ -24,10 +24,10 @@ import {
   FaMoneyBillWave,
   FaPlus,
 } from 'react-icons/fa';
-import PageTitle from '@/components/PageTitle';
+import PageTitle from '@/components/navigation/PageTitle';
 import Logo from '@/components/ui/Logo';
 import PurchasesTable from './PurchasesTable';
-import ScrollTop from '@/components/ScrollTop';
+import ScrollTop from '@/components/navigation/ScrollTop';
 import Price from '@/components/items/Price';
 import { PaymentMethod } from '@/types/PaymentMethod';
 import CashierSerialDisplay from './CashierSerialDisplay';

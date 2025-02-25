@@ -15,6 +15,7 @@ import {
   ListboxItem,
   Divider,
   Button,
+  Alert,
 } from '@heroui/react';
 import { formatDate } from 'date-fns';
 import { useState } from 'react';
@@ -68,7 +69,9 @@ const PurchasesTable = () => {
       <Spinner size="lg" />
     </div>
   ) : error ? (
-    <div className="text-red-500">Error: {error}</div>
+    <Alert color="danger" className="mb-4" title={t('errors.error')}>
+      {error}
+    </Alert>
   ) : !purchases ? (
     <div>No purchases data available.</div>
   ) : (

@@ -5,8 +5,8 @@ import { useParams } from 'react-router';
 import { getErrorMsg } from '../../types/error';
 import { Alert, Button, Skeleton } from '@heroui/react';
 import { useTranslation } from 'react-i18next';
-import PageTitle from '../PageTitle';
-import ScrollTop from '../ScrollTop';
+import PageTitle from '../navigation/PageTitle';
+import ScrollTop from '../navigation/ScrollTop';
 
 const Docs = () => {
   const { id } = useParams();

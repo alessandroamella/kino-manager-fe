@@ -30,13 +30,15 @@ import { hasFlag } from 'country-flag-icons';
 import getUnicodeFlagIcon from 'country-flag-icons/unicode';
 import { isMembershipPdfDataDto } from '@/utils/isMembershipPdfDataDto';
 import downloadStreamedFile from '@/utils/download';
-import AdminViewSignatureModal from './AdminViewSignatureModal';
-import PageTitle from '@/components/PageTitle';
-import StatsCharts from './StatsCharts';
-import ScrollTop from '@/components/ScrollTop';
+import ViewSignatureModal from '../../components/admin/ViewSignatureModal';
+import PageTitle from '@/components/navigation/PageTitle';
+import StatsCharts from '../../components/admin/StatsCharts';
+import ScrollTop from '@/components/navigation/ScrollTop';
 import { GiHamburger } from 'react-icons/gi';
 import { MdQrCode } from 'react-icons/md';
 import { Link } from 'react-router';
+import Expenses from '../../components/expense/Expenses';
+import { getUserStr } from '@/lib/utils';
 
 interface MembershipCardExtended extends Omit<MembershipCard, 'member'> {
   member: MemberExtended | null;
@@ -234,7 +236,7 @@ const AdminPanel = () => {
     </Skeleton>
   ) : (
     <>
-      <AdminViewSignatureModal
+      <ViewSignatureModal
         signatureKey={viewingSignature}
         setSignatureKey={setViewingSignature}
       />
@@ -281,7 +283,7 @@ const AdminPanel = () => {
             </Button>
           </div>
         </div>
-        <div className="w-fit overflow-x-auto max-w-[92vw] md:max-w-[94vw]">
+        <div className="w-full overflow-x-auto max-w-[92vw] md:max-w-[94vw]">
           <div className="flex items-center mb-4 flex-row justify-between">
             <h3 className="font-medium text-lg mb-2">
               {t('admin.nUsers', { count: users.length })}
@@ -438,14 +440,14 @@ const AdminPanel = () => {
                     {user.memberSince ? (
                       format(user.memberSince, 'dd/MM/yyyy')
                     ) : (
-                      <FaTimes className="text-red-300" />
+                      <FaTimes color="red" />
                     )}
                   </TableCell>
                   <TableCell>
                     {user.isAdmin ? (
-                      <FiCheck className="text-green-300" />
+                      <FiCheck color="green" />
                     ) : (
-                      <FaTimes className="text-red-300" />
+                      <FaTimes color="red" />
                     )}
                   </TableCell>
                   <TableCell>
@@ -487,7 +489,7 @@ const AdminPanel = () => {
                         <FaExternalLinkAlt />
                       </Button>
                     ) : (
-                      <FaTimes className="mx-auto text-red-300" />
+                      <FaTimes className="mx-auto" color="red" />
                     )}
                   </TableCell>
                 </TableRow>
@@ -507,25 +509,21 @@ const AdminPanel = () => {
 
         <h2 className="text-2xl font-semibold mb-4">{t('admin.cards')}</h2>
         {cards ? (
-          <div className="w-fit overflow-x-auto max-w-[92vw] md:max-w-[94vw]">
+          <div className="w-full overflow-x-auto max-w-[92vw] md:max-w-[94vw]">
             <Table aria-label="Cards table" className="table">
               <TableHeader>
                 <TableColumn>
                   {t('profile.membershipCardNumberShort')}
                 </TableColumn>
                 <TableColumn>{t('admin.assignedTo')}</TableColumn>
-                <TableColumn>{t('profile.firstName')}</TableColumn>
-                <TableColumn>{t('profile.lastName')}</TableColumn>
-                <TableColumn>{t('profile.email')}</TableColumn>
               </TableHeader>
               <TableBody items={cards}>
                 {(card) => (
                   <TableRow key={card.number}>
                     <TableCell>{card.number}</TableCell>
-                    <TableCell>{card.member?.id || '-'}</TableCell>
-                    <TableCell>{card.member?.firstName || '-'}</TableCell>
-                    <TableCell>{card.member?.lastName || '-'}</TableCell>
-                    <TableCell>{card.member?.email || '-'}</TableCell>
+                    <TableCell>
+                      {card.member ? getUserStr(card.member) : '-'}
+                    </TableCell>
                   </TableRow>
                 )}
               </TableBody>
@@ -536,6 +534,10 @@ const AdminPanel = () => {
             <div className="w-full h-96" />
           </Skeleton>
         )}
+
+        <Divider className="my-12" />
+
+        {users && <Expenses users={users} />}
       </main>
     </>
   );

@@ -8,8 +8,8 @@ import {
   useSearchParams,
   createSearchParams,
 } from 'react-router';
-import PageTitle from '@/components/PageTitle';
-import ScrollTop from '@/components/ScrollTop';
+import PageTitle from '@/components/navigation/PageTitle';
+import ScrollTop from '@/components/navigation/ScrollTop';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { resetPasswordYupSchema } from '@/validators/reset-password';
 import axios from 'axios';

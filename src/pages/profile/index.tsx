@@ -34,8 +34,8 @@ import axios from 'axios';
 import { getErrorMsg } from '@/types/error';
 import { AiOutlineSignature } from 'react-icons/ai';
 import SignatureModal from '@/components/input/SignatureModal';
-import PageTitle from '@/components/PageTitle';
-import ScrollTop from '@/components/ScrollTop';
+import PageTitle from '@/components/navigation/PageTitle';
+import ScrollTop from '@/components/navigation/ScrollTop';
 import AttendanceQr from '@/components/attendance/AttendanceQr';
 
 const Profile = () => {

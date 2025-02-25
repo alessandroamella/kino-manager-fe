@@ -4,7 +4,7 @@ import {
   useNavigate,
   useSearchParams,
 } from 'react-router';
-import useUserStore from '../store/user';
+import useUserStore from '../../store/user';
 import { useShallow } from 'zustand/shallow';
 import { useCallback, useEffect, useRef } from 'react';
 import { Skeleton } from '@heroui/react';

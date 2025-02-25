@@ -9,7 +9,11 @@
     "warning": "Attenzione",
     "close": "Chiudi",
     "confirm": "Conferma",
-    "success": "Successo"
+    "success": "Successo",
+    "remove": "Rimuovi"
+  },
+  "media": {
+    "picture": "Immagine"
   },
   "header": {
     "userActions": "Azioni utente",
@@ -336,6 +340,45 @@
     "successDescription": "La tua password è stata reimpostata con successo. Ora puoi accedere con la tua nuova password.",
     "backToLoginPrompt": "Ora puoi accedere con la tua nuova password.",
     "newPassword": "Nuova Password"
+  },
+  "expenses": {
+    "title": "Spese",
+    "table": {
+      "ariaLabel": "Tabella delle spese",
+      "user": "Utente",
+      "description": "Descrizione",
+      "amount": "Importo",
+      "expenseDate": "Data della spesa",
+      "repaid": "Rimborsato",
+      "loading": "Caricamento delle spese...",
+      "empty": "Ancora nessuna spesa.",
+      "markUnrepaid": "Segna come Non Rimborsato",
+      "markRepaid": "Segna come Rimborsato",
+      "confirmDelete": "Sei sicuro di voler eliminare questa spesa?"
+    },
+    "userTable": {
+      "ariaLabel": "Tabella Riepilogo Spese Utente",
+      "user": "Utente",
+      "totalAmount": "Importo Totale",
+      "loading": "Caricamento riepilogo spese...",
+      "empty": "Nessun debito!"
+    },
+    "addModal": {
+      "addButton": "Aggiungi Spesa",
+      "header": "Aggiungi Nuova Spesa",
+      "userLabel": "Utente",
+      "userPlaceholder": "Seleziona Utente",
+      "userSectionTitle": "Utenti",
+      "descriptionLabel": "Descrizione",
+      "descriptionPlaceholder": "Descrizione spesa",
+      "amountLabel": "Importo",
+      "amountPlaceholder": "0.00",
+      "dateLabel": "Data Spesa",
+      "repaidLabel": "Rimborsata",
+      "imageDropzoneLabel": "Trascina qui l'immagine (es. dello scontrino, opzionale)",
+      "imageDropzoneSubLabel": "Formati supportati: .jpg, .jpeg, .png",
+      "submitButton": "Aggiungi Spesa"
+    }
   },
   "countries": {
     "AD": "Andorra",
