@@ -1,4 +1,4 @@
-import { getUserStr } from '@/lib/utils';
+import { cn, getUserStr } from '@/lib/utils';
 import useUserStore from '@/store/user';
 import { getErrorMsg } from '@/types/error';
 import { CreateExpense, Expense } from '@/types/Expense';
@@ -23,7 +23,7 @@ import {
 } from '@heroui/react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import axios from 'axios';
-import { omit } from 'lodash';
+import { omit, orderBy } from 'lodash';
 import { minus, round, times } from 'number-precision';
 import { useCallback, useMemo, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
@@ -40,7 +40,7 @@ interface AddExpenseModalProps {
 
 const AddExpenseModal = ({
   onExpenseAdded,
-  users,
+  users: _users,
   loggedInUserId,
 }: AddExpenseModalProps) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -48,6 +48,10 @@ const AddExpenseModal = ({
   const userToken = useUserStore((state) => state.accessToken);
   const [error, setError] = useState<string | null>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+
+  const users = useMemo(() => {
+    return orderBy(_users, ['firstName', 'lastName'], ['asc', 'asc']);
+  }, [_users]);
 
   const { t } = useTranslation();
 
@@ -223,7 +227,13 @@ const AddExpenseModal = ({
                         title={t('expenses.addModal.userSectionTitle')}
                       >
                         {users.map((user) => (
-                          <SelectItem key={user.id.toString()}>
+                          <SelectItem
+                            className={cn({
+                              'font-bold': user.id === loggedInUserId,
+                              'text-danger': user.isAdmin,
+                            })}
+                            key={user.id.toString()}
+                          >
                             {getUserStr(user, true)}
                           </SelectItem>
                         ))}
