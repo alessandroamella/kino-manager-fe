@@ -75,13 +75,13 @@ const AddExpenseModal = ({
           .string()
           .min(
             1,
-            t('field.tooShort', {
+            t('errors.field.tooShort', {
               field: t('expenses.addModal.descriptionLabel'),
               min: 1,
             }),
           )
           .required(
-            t('field.required', {
+            t('errors.field.required', {
               field: t('expenses.addModal.descriptionLabel'),
             }),
           ),
