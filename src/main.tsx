@@ -1,22 +1,24 @@
-import { StrictMode } from 'react';
+import { HeroUIProvider, Spinner } from '@heroui/react';
+import { lazy, StrictMode, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
-import './index.css';
-import './i18n.ts';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router';
-import { HeroUIProvider } from '@heroui/react';
-import Layout from './components/layout';
-import Homepage from './pages/Homepage';
-import Signup from './pages/auth/Signup';
-import Login from './pages/auth/Login';
-import Profile from './pages/profile';
-import ProtectedRoute from './components/navigation/ProtectedRoute';
-import Docs from './components/docs';
-import AdminPanel from './pages/admin';
-import KinoMenu from './pages/menu';
-import CashierRegister from './pages/cashier';
-import ForgotPassword from './pages/auth/ForgotPassword';
-import ResetPassword from './pages/auth/ResetPassword';
 import ScanAttendanceQr from './components/attendance/ScanAttendanceQr';
+import Docs from './components/docs';
+import Layout from './components/layout';
+import ProtectedRoute from './components/navigation/ProtectedRoute';
+import './i18n.ts';
+import './index.css';
+import Homepage from './pages/Homepage';
+import ForgotPassword from './pages/auth/ForgotPassword';
+import Login from './pages/auth/Login';
+import ResetPassword from './pages/auth/ResetPassword';
+import Signup from './pages/auth/Signup';
+import KinoMenu from './pages/menu';
+import Profile from './pages/profile';
+
+// Dynamically import admin components
+const AdminPanel = lazy(() => import('./pages/admin'));
+const CashierRegister = lazy(() => import('./pages/cashier'));
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -40,12 +42,26 @@ createRoot(document.getElementById('root')!).render(
               <Route path=":id" element={<Docs />} />
             </Route>
             <Route path="admin" element={<ProtectedRoute mustBeAdmin />}>
-              <Route index element={<AdminPanel />} />
+              <Route
+                index
+                element={
+                  <Suspense fallback={<Spinner />}>
+                    <AdminPanel />
+                  </Suspense>
+                }
+              />
               <Route path="scan-attendance" element={<ScanAttendanceQr />} />
             </Route>
           </Route>
           <Route path="cashier" element={<ProtectedRoute mustBeAdmin />}>
-            <Route index element={<CashierRegister />} />
+            <Route
+              index
+              element={
+                <Suspense fallback={<Spinner />}>
+                  <CashierRegister />
+                </Suspense>
+              }
+            />
           </Route>
           <Route path="menu" element={<KinoMenu />} />
         </Routes>
