@@ -84,7 +84,7 @@ const AddExpenseModal = ({
         amount: yup
           .number()
           .positive(
-            t('field.positive', {
+            t('errors.field.positive', {
               field: t('expenses.addModal.amountLabel'),
             }),
           )
