@@ -116,7 +116,8 @@
       "required": "Il campo {{field}} è obbligatorio",
       "invalid": "Il campo {{field}} non è valido",
       "tooShort": "Il campo {{field}} è troppo corto",
-      "tooLong": "Il campo {{field}} è troppo lungo"
+      "tooLong": "Il campo {{field}} è troppo lungo",
+      "positive": "Il campo {{field}} deve essere un numero positivo"
     },
     "password": {
       "tooShort": "La password deve essere lunga almeno 8 caratteri",
