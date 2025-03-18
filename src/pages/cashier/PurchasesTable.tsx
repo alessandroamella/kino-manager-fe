@@ -4,18 +4,18 @@ import useUserStore from '@/store/user';
 import { getErrorMsg } from '@/types/error';
 import downloadStreamedFile from '@/utils/download';
 import {
-  Table,
-  TableHeader,
-  TableBody,
-  TableColumn,
-  TableRow,
-  TableCell,
-  Spinner,
+  Alert,
+  Button,
+  Divider,
   Listbox,
   ListboxItem,
-  Divider,
-  Button,
-  Alert,
+  Spinner,
+  Table,
+  TableBody,
+  TableCell,
+  TableColumn,
+  TableHeader,
+  TableRow,
 } from '@heroui/react';
 import { formatDate } from 'date-fns';
 import { useState } from 'react';
@@ -25,8 +25,9 @@ import { FiDownload } from 'react-icons/fi';
 
 const PurchasesTable = () => {
   const purchases = usePurchasesStore((store) => store.purchases);
-  const isLoading = usePurchasesStore((store) => store.loadingData);
-  const error = usePurchasesStore((store) => store.errorData);
+
+  const isLoading = usePurchasesStore((store) => store.loadingPurchases);
+  const error = usePurchasesStore((store) => store.errorPurchases);
 
   const token = useUserStore((store) => store.accessToken);
 

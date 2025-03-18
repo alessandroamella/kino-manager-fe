@@ -1,21 +1,24 @@
-import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import ToggleTheme from '@/components/header/ToggleTheme';
+import Price from '@/components/items/Price';
+import PageTitle from '@/components/navigation/PageTitle';
+import ScrollTop from '@/components/navigation/ScrollTop';
+import Logo from '@/components/ui/Logo';
+import { PaymentMethod } from '@/types/PaymentMethod';
+import { wait } from '@/utils/wait';
 import {
-  Button,
-  Image,
-  Input,
   Alert,
-  Spinner,
-  Breadcrumbs,
   BreadcrumbItem,
+  Breadcrumbs,
+  Button,
   Divider,
   HeroUIProvider,
+  Image,
+  Input,
+  Spinner,
 } from '@heroui/react';
+import { sumBy } from 'lodash';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FiX, FiArrowLeft } from 'react-icons/fi';
-import usePurchasesStore from '../../store/purchases';
-import useUserStore from '../../store/user';
-import { useShallow } from 'zustand/shallow';
-import ToggleTheme from '@/components/header/ToggleTheme';
 import {
   FaCheck,
   FaCreditCard,
@@ -24,22 +27,19 @@ import {
   FaMoneyBillWave,
   FaPlus,
 } from 'react-icons/fa';
-import PageTitle from '@/components/navigation/PageTitle';
-import Logo from '@/components/ui/Logo';
-import PurchasesTable from './PurchasesTable';
-import ScrollTop from '@/components/navigation/ScrollTop';
-import Price from '@/components/items/Price';
-import { PaymentMethod } from '@/types/PaymentMethod';
+import { FiArrowLeft, FiX } from 'react-icons/fi';
+import { useShallow } from 'zustand/shallow';
+import usePurchasesStore from '../../store/purchases';
+import useUserStore from '../../store/user';
 import CashierSerialDisplay from './CashierSerialDisplay';
-import { sumBy } from 'lodash';
-import { wait } from '@/utils/wait';
+import PurchasesTable from './PurchasesTable';
 
 const CashierRegister = () => {
   const {
     items,
     categories,
-    loadingData,
-    errorData,
+    loadingItems,
+    errorItems,
     fetchAllData,
     creatingPurchase,
     purchaseError,
@@ -48,8 +48,8 @@ const CashierRegister = () => {
     useShallow((store) => ({
       items: store.items,
       categories: store.categories,
-      loadingData: store.loadingData,
-      errorData: store.errorData,
+      loadingItems: store.loadingItems,
+      errorItems: store.errorItems,
       fetchAllData: store.fetchAllData,
       creatingPurchase: store.creatingPurchase,
       purchaseError: store.purchaseError,
@@ -357,11 +357,11 @@ const CashierRegister = () => {
               </div>
             ) : (
               <>
-                {loadingData ? (
+                {loadingItems ? (
                   <div>{t('common.loading')}...</div>
-                ) : errorData ? (
+                ) : errorItems ? (
                   <Alert color="danger" title={t('errors.error')}>
-                    {errorData}
+                    {errorItems}
                   </Alert>
                 ) : (
                   <div className="grid grid-cols-2 lg:grid-cols-5 gap-2">
