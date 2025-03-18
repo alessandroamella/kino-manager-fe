@@ -50,7 +50,14 @@ createRoot(document.getElementById('root')!).render(
                   </Suspense>
                 }
               />
-              <Route path="scan-attendance" element={<ScanAttendanceQr />} />
+              <Route
+                path="scan-attendance"
+                element={
+                  <Suspense fallback={<Spinner />}>
+                    <ScanAttendanceQr />
+                  </Suspense>
+                }
+              />
             </Route>
           </Route>
           <Route path="cashier" element={<ProtectedRoute mustBeAdmin />}>
