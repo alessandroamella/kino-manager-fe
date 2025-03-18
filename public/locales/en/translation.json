@@ -110,7 +110,8 @@
       "required": "{{field}} is required",
       "invalid": "Invalid {{field}}",
       "tooShort": "{{field}} is too short",
-      "tooLong": "{{field}} is too long"
+      "tooLong": "{{field}} is too long",
+      "positive": "{{field}} must be a positive number"
     },
     "password": {
       "tooShort": "Password must be at least 8 characters long",

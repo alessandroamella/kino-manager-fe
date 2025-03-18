@@ -38,21 +38,6 @@ interface AddExpenseModalProps {
   loggedInUserId: number;
 }
 
-const validationSchema = yup.object().shape({
-  userId: yup.number().required('User is required'),
-  description: yup
-    .string()
-    .min(1, 'Description must be at least 1 character long')
-    .required('Description is required'),
-  amount: yup
-    .number()
-    .positive('Amount must be greater than 0')
-    .required('Amount is required'),
-  repaid: yup.boolean().required(),
-  expenseDate: yup.date().required(),
-  imageBase64: yup.string().nullable().defined(),
-});
-
 const AddExpenseModal = ({
   onExpenseAdded,
   users,
@@ -76,6 +61,39 @@ const AddExpenseModal = ({
       imageBase64: '',
     }),
     [loggedInUserId],
+  );
+
+  const validationSchema = useMemo(
+    () =>
+      yup.object().shape({
+        userId: yup.number().required('User is required'),
+        description: yup
+          .string()
+          .min(
+            1,
+            t('field.tooShort', {
+              field: t('expenses.addModal.descriptionLabel'),
+              min: 1,
+            }),
+          )
+          .required(
+            t('field.required', {
+              field: t('expenses.addModal.descriptionLabel'),
+            }),
+          ),
+        amount: yup
+          .number()
+          .positive(
+            t('field.positive', {
+              field: t('expenses.addModal.amountLabel'),
+            }),
+          )
+          .required(),
+        repaid: yup.boolean().required(),
+        expenseDate: yup.date().required(),
+        imageBase64: yup.string().nullable().defined(),
+      }),
+    [t],
   );
 
   const {
