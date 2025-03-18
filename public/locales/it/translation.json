@@ -304,11 +304,14 @@
     "noItemsInPurchase": "Nessun articolo nell'acquisto",
     "discount": "Sconto",
     "discountPlaceholder": "Inserisci sconto",
-    "enterAmountGiven": "Inserisci l'importo ricevuto",
+    "enterAmountGiven": "TOTALE: {{amount}}. Inserisci l'importo in contanti ricevuto:",
+    "cardAlert": "Confermi che il pagamento è stato effettuato con metodo elettronico?",
     "insufficientAmount": "Importo insufficiente",
     "change": "Resto: €{{change}}",
     "noSerialSupport": "Il tuo browser non supporta la comunicazione seriale",
-    "purchasesList": "Lista Acquisti"
+    "purchasesList": "Lista Acquisti",
+    "connected": "Connesso",
+    "disconnected": "Disconnesso"
   },
   "paymentMethod": {
     "CASH": "Contanti",
@@ -373,7 +376,7 @@
       "descriptionLabel": "Descrizione",
       "descriptionPlaceholder": "Descrizione spesa",
       "amountLabel": "Importo",
-      "amountPlaceholder": "0.00",
+      "amountPlaceholder": "0,00",
       "dateLabel": "Data Spesa",
       "repaidLabel": "Rimborsata",
       "imageDropzoneLabel": "Trascina qui l'immagine (es. dello scontrino, opzionale)",

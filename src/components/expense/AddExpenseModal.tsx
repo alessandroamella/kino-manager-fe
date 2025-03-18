@@ -24,6 +24,7 @@ import {
 import { yupResolver } from '@hookform/resolvers/yup';
 import axios from 'axios';
 import { omit } from 'lodash';
+import { minus, round, times } from 'number-precision';
 import { useCallback, useMemo, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { Controller, useForm } from 'react-hook-form';
@@ -91,6 +92,7 @@ const AddExpenseModal = ({
     resolver: yupResolver(validationSchema),
   });
 
+  const amount = watch('amount');
   const expenseDate = watch('expenseDate');
 
   const openModal = () => setIsOpen(true);
@@ -236,13 +238,26 @@ const AddExpenseModal = ({
                               color="gray"
                             />
                           }
+                          step={0.01}
                           placeholder={t('expenses.addModal.amountPlaceholder')}
-                          value={field.value}
-                          onValueChange={(value) => field.onChange(value)}
+                          onValueChange={(value) => {
+                            setValue('amount', value ? round(value, 2) : 0);
+                          }}
+                          description={
+                            amount &&
+                            `= ${Math.floor(amount)} EUR ${times(
+                              minus(amount, Math.floor(amount)),
+                              100,
+                            )} cent`
+                          }
                           isInvalid={!!errors.amount}
                           errorMessage={errors.amount?.message}
                           className="md:mt-2"
-                          {...omit(field, ['value'])}
+                          onBlur={() => {
+                            trigger('amount');
+                            field.onBlur();
+                          }}
+                          {...omit(field, ['onChange', 'onBlur'])}
                         />
                       )}
                     />

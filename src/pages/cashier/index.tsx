@@ -3,6 +3,7 @@ import Price from '@/components/items/Price';
 import PageTitle from '@/components/navigation/PageTitle';
 import ScrollTop from '@/components/navigation/ScrollTop';
 import Logo from '@/components/ui/Logo';
+import { cn } from '@/lib/utils';
 import { PaymentMethod } from '@/types/PaymentMethod';
 import { wait } from '@/utils/wait';
 import {
@@ -17,6 +18,7 @@ import {
   Spinner,
 } from '@heroui/react';
 import { sumBy } from 'lodash';
+import { round } from 'number-precision';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -159,15 +161,25 @@ const CashierRegister = () => {
     setPaymentAndTotal({ paymentMethod, total });
 
     // since prompt is blocking, wait for serial display to display total
-    await wait(300);
+    if (isSerialConnected) {
+      await wait(300);
+    }
 
     let givenAmount: number | null = null;
     if (paymentMethod === PaymentMethod.CASH) {
-      const val = prompt(t('cashier.enterAmountGiven'));
+      const val = window.prompt(
+        t('cashier.enterAmountGiven', {
+          amount: Price.formatPrice(i18n.language, total, 2),
+        }),
+      );
       givenAmount = parseFloat(val || '');
       if (val === null || Number.isNaN(givenAmount)) {
         console.log('Invalid amount given');
         setPaymentAndTotal(undefined);
+        return;
+      }
+    } else if (paymentMethod === PaymentMethod.CARD) {
+      if (!window.confirm(t('cashier.cardAlert'))) {
         return;
       }
     }
@@ -294,11 +306,15 @@ const CashierRegister = () => {
             }
           >
             <FaMicrochip />
-            <span className="hidden lg:inline">
+            <span
+              className={cn('hidden lg:inline relative', {
+                'animate-pulse': !isSerialConnected,
+              })}
+            >
               {isSerialConnected ? (
                 <FaCheck className="text-success" />
               ) : (
-                'Disconnected'
+                t('cashier.disconnected')
               )}
             </span>
           </Button>
@@ -507,7 +523,9 @@ const CashierRegister = () => {
                 placeholder={t('cashier.discountPlaceholder')}
                 className="w-full col-span-2"
                 value={discount}
-                onValueChange={(e) => setDiscount(e)}
+                onValueChange={(value) => {
+                  setDiscount(value ? round(value, 2) : 0);
+                }}
               />
               <div className="grid mb-1 grid-cols-2 lg:grid-cols-3 items-center w-full gap-2">
                 {Object.keys(PaymentMethod).map((e, i) => (

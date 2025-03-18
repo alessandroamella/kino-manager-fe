@@ -297,11 +297,14 @@
     "noItemsInPurchase": "No items in purchase",
     "discount": "Discount",
     "discountPlaceholder": "Enter discount",
-    "enterAmountGiven": "Enter amount given by customer",
+    "enterAmountGiven": "TOTAL: {{amount}}. Enter cash amount given by customer:",
+    "cardAlert": "Confirm that the payment was made with an electronic method?",
     "insufficientAmount": "Insufficient amount",
     "change": "Change: €{{change}}",
     "noSerialSupport": "This browser does not support serial communication",
-    "purchasesList": "Purchases List"
+    "purchasesList": "Purchases List",
+    "connected": "Connected",
+    "disconnected": "Disconnected"
   },
   "paymentMethod": {
     "CASH": "Cash",

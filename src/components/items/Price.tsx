@@ -3,9 +3,9 @@ import { useTranslation } from 'react-i18next';
 function formatPrice(
   locale: string,
   price: number,
-  currencySymbol = '€',
   decimalDigits?: number,
   round?: boolean,
+  currencySymbol = '€',
 ) {
   if (typeof price !== 'number') {
     return '-';
@@ -37,9 +37,9 @@ const Price = ({
   return formatPrice(
     i18n.language,
     price,
-    currencySymbol,
     decimalDigits,
     round,
+    currencySymbol,
   );
 };
 
