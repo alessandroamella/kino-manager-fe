@@ -1,12 +1,11 @@
+import Price from '@/components/items/Price';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import usePurchasesStore from '@/store/purchases';
-import useUserStore from '@/store/user';
 import { Image, Skeleton } from '@heroui/react';
-import { useEffect, useRef } from 'react';
-import logoDark from '../../assets/images/logo-dark.png';
-import Price from '@/components/items/Price';
 import { sortBy } from 'lodash';
+import { useEffect } from 'react';
 import { Link } from 'react-router';
+import logoDark from '../../assets/images/logo-dark.png';
 
 const KinoMenu = () => {
   const categories = sortBy(
@@ -14,23 +13,11 @@ const KinoMenu = () => {
     'name',
   );
 
-  const accessToken = useUserStore((store) => store.accessToken);
-  const fetchItems = usePurchasesStore((store) => store.fetchAllData);
-
-  const isFetching = useRef(false);
+  const fetchItems = usePurchasesStore((store) => store.fetchItems);
 
   useEffect(() => {
-    if (!accessToken || categories.length !== 0) {
-      console.log({
-        accessToken,
-        isFetching: isFetching.current,
-        categories,
-      });
-      return;
-    }
-    isFetching.current = true;
-    fetchItems(accessToken);
-  }, [accessToken, categories, fetchItems]);
+    fetchItems();
+  }, [fetchItems]);
 
   return (
     <main className="kino-menu min-h-screen bg-gray-900 text-white p-8 pt-0">

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+
+  <url>
+    <loc>https://cafe.kinocampus.it/</loc>
+    <lastmod>2025-03-18T14:27:35+00:00</lastmod>
+  </url>
+  <url>
+    <loc>https://cafe.kinocampus.it/profile</loc>
+  </url>
+  <url>
+    <loc>https://cafe.kinocampus.it/auth/login</loc>
+  </url>
+  <url>
+    <loc>https://cafe.kinocampus.it/auth/signup</loc>
+  </url>
+  <url>
+    <loc>https://cafe.kinocampus.it/auth/forgot-password</loc>
+  </url>
+  <url>
+    <loc>https://cafe.kinocampus.it/auth/reset-password</loc>
+  </url>
+  <url>
+    <loc>https://cafe.kinocampus.it/docs/tos</loc>
+  </url>
+  <url>
+    <loc>https://cafe.kinocampus.it/docs/privacy</loc>
+  </url>
+  <url>
+    <loc>https://cafe.kinocampus.it/menu</loc>
+  </url>
+</urlset>

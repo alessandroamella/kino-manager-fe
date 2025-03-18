@@ -1,10 +1,10 @@
-import { create } from 'zustand';
+import { Category, CategoryWithItems } from '@/types/Category';
 import axios from 'axios';
+import { create } from 'zustand';
 import { getErrorMsg } from '../types/error';
 import { Item } from '../types/Item';
 import { Purchase, PurchaseExtended } from '../types/Purchase';
 import { PurchasedItemNoPurchaseId } from '../types/PurchasedItem';
-import { Category, CategoryWithItems } from '@/types/Category';
 
 type CreatePurchase = Pick<Purchase, 'discount' | 'paymentMethod'> & {
   purchasedItems: PurchasedItemNoPurchaseId[];
@@ -17,8 +17,14 @@ interface PurchasesState {
   categories: CategoryWithItems[];
   purchases: PurchaseExtended[];
 
-  loadingData: boolean;
-  errorData: string | null;
+  loadingItems: boolean;
+  loadingPurchases: boolean;
+  errorItems: string | null;
+  errorPurchases: string | null;
+
+  // Fetch functions
+  fetchItems: () => Promise<void>;
+  fetchPurchases: (accessToken: string) => Promise<void>;
   fetchAllData: (accessToken: string) => Promise<void>;
 
   creatingPurchase: boolean;
@@ -34,23 +40,18 @@ const usePurchasesStore = create<PurchasesState>((set, get) => ({
   categories: [],
   purchases: [],
 
-  loadingData: false,
-  errorData: null,
-  fetchAllData: async (accessToken: string) => {
-    set({ loadingData: true, errorData: null });
-    try {
-      const [itemsResponse, purchasesResponse] = await Promise.all([
-        axios.get<ItemWithCategory[]>('/v1/item', {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        }),
-        axios.get<Purchase[]>('/v1/purchase', {
-          headers: { Authorization: `Bearer ${accessToken}` },
-          params: { limit: 50 },
-        }),
-      ]);
+  loadingItems: false,
+  loadingPurchases: false,
+  errorItems: null,
+  errorPurchases: null,
 
-      const itemsData = itemsResponse.data;
-      const purchasesData = purchasesResponse.data;
+  // Fetch only items and categories
+  fetchItems: async () => {
+    set({ loadingItems: true, errorItems: null });
+    try {
+      const response = await axios.get<ItemWithCategory[]>('/v1/item');
+
+      const itemsData = response.data;
 
       const categories: CategoryWithItems[] = [];
       for (const item of itemsData) {
@@ -69,11 +70,33 @@ const usePurchasesStore = create<PurchasesState>((set, get) => ({
         }
       }
 
+      set({
+        items: itemsData,
+        categories,
+        loadingItems: false,
+      });
+    } catch (error) {
+      set({ errorItems: getErrorMsg(error), loadingItems: false });
+    }
+  },
+
+  // Fetch only purchases
+  fetchPurchases: async (accessToken: string) => {
+    set({ loadingPurchases: true, errorPurchases: null });
+    try {
+      const response = await axios.get<Purchase[]>('/v1/purchase', {
+        headers: { Authorization: `Bearer ${accessToken}` },
+        params: { limit: 50 },
+      });
+
+      const purchasesData = response.data;
+      const { items } = get();
+
       const purchases = purchasesData.map((purchase) => {
         return {
           ...purchase,
           purchasedItems: purchase.purchasedItems.map((purchasedItem) => {
-            const item = itemsData.find(
+            const item = items.find(
               (item) => item.id === purchasedItem.itemId,
             )!;
             return { ...purchasedItem, item };
@@ -82,14 +105,18 @@ const usePurchasesStore = create<PurchasesState>((set, get) => ({
       });
 
       set({
-        items: itemsData,
-        categories,
         purchases,
-        loadingData: false,
+        loadingPurchases: false,
       });
     } catch (error) {
-      set({ errorData: getErrorMsg(error), loadingData: false });
+      set({ errorPurchases: getErrorMsg(error), loadingPurchases: false });
     }
+  },
+
+  // Fetch both items and purchases
+  fetchAllData: async (accessToken: string) => {
+    await get().fetchItems();
+    await get().fetchPurchases(accessToken);
   },
 
   creatingPurchase: false,

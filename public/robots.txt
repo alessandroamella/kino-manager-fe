@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /admin
+Disallow: /v1
+Allow: /
+Sitemap: https://cafe.kinocampus.it/sitemap.xml
