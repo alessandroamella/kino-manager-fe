@@ -1,52 +1,53 @@
-import { useState, useEffect, useCallback, useMemo, Key } from 'react';
+import GoogleMapsAutocomplete from '@/components/input/GoogleMapsAutocomplete';
+import SignatureModal from '@/components/input/SignatureModal';
+import PageTitle from '@/components/navigation/PageTitle';
+import ScrollTop from '@/components/navigation/ScrollTop';
+import { cn } from '@/lib/utils';
+import { Comune } from '@/types/Comune';
+import { dateFnsLang } from '@/utils/dateFnsLang';
+import { parseAddress } from '@/utils/parseAddress';
+import { UTCDateMini } from '@date-fns/utc';
+import type { CalendarDate } from '@heroui/react';
 import {
-  Form,
-  Input,
-  Button,
+  Alert,
   Autocomplete,
   AutocompleteItem,
-  DatePicker,
-  Alert,
-  Divider,
-  Tab,
-  Tabs,
+  Button,
   Card,
+  Checkbox,
+  DateInput,
+  Divider,
   Dropdown,
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
-  Tooltip,
+  Form,
   Image,
-  Checkbox,
+  Input,
+  Tab,
+  Tabs,
+  Tooltip,
 } from '@heroui/react';
-import type { CalendarDate } from '@heroui/react';
-import CodiceFiscale from 'codice-fiscale-js';
-import { useForm } from 'react-hook-form';
-import axios, { AxiosError } from 'axios';
 import { yupResolver } from '@hookform/resolvers/yup';
+import axios, { AxiosError } from 'axios';
+import CodiceFiscale from 'codice-fiscale-js';
+import { format, formatDate, subYears } from 'date-fns';
+import { AnimatePresence, motion } from 'framer-motion';
 import countries from 'i18n-iso-countries';
+import parsePhoneNumber from 'libphonenumber-js';
+import { Key, useCallback, useEffect, useMemo, useState } from 'react';
+import ReactGA from 'react-ga4';
+import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
+import { FaEdit } from 'react-icons/fa';
+import { Link, useNavigate, useSearchParams } from 'react-router';
+import { InferType } from 'yup';
+import signaturePlaceholder from '../../assets/images/firma.webp';
+import useUserStore from '../../store/user';
 import { getErrorMsg } from '../../types/error';
 import { dateToCalendarDate } from '../../utils/calendar';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Link, useNavigate, useSearchParams } from 'react-router';
-import useUserStore from '../../store/user';
-import { UTCDateMini } from '@date-fns/utc';
-import { signupYupSchema } from '../../validators/signup';
-import { format, subYears } from 'date-fns';
-import ReactGA from 'react-ga4';
-import parsePhoneNumber from 'libphonenumber-js';
 import normalize from '../../utils/normalize';
-import { Comune } from '@/types/Comune';
-import { InferType } from 'yup';
-import { parseAddress } from '@/utils/parseAddress';
-import SignatureModal from '@/components/input/SignatureModal';
-import GoogleMapsAutocomplete from '@/components/input/GoogleMapsAutocomplete';
-import { FaEdit } from 'react-icons/fa';
-import signaturePlaceholder from '../../assets/images/firma.webp';
-import { cn } from '@/lib/utils';
-import PageTitle from '@/components/navigation/PageTitle';
-import ScrollTop from '@/components/navigation/ScrollTop';
+import { signupYupSchema } from '../../validators/signup';
 
 type FormData = InferType<ReturnType<typeof signupYupSchema>>;
 
@@ -56,7 +57,7 @@ interface Country {
 }
 
 const Signup = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [useCodiceFiscale, setUseCodiceFiscale] = useState(true);
 
   const [loading, setLoading] = useState(false);
@@ -74,7 +75,8 @@ const Signup = () => {
     setValue,
     watch,
     trigger,
-    formState: { errors, isValid },
+    control,
+    formState: { errors, isValid, touchedFields },
   } = useForm<FormData>({
     mode: 'onBlur',
     resolver: yupResolver(validationSchema, {
@@ -99,7 +101,6 @@ const Signup = () => {
   const [signupError, setSignupError] = useState<string | null>(null);
 
   const codiceFiscaleValue = watch('codiceFiscale')?.toUpperCase() || '';
-  const birthDate = watch('birthDate');
   const birthComune = watch('birthComune');
   const birthCountry = watch('birthCountry');
   const address = watch('address');
@@ -163,7 +164,7 @@ const Signup = () => {
     if (!useCodiceFiscale) {
       return;
     } else if (!codiceFiscaleData) {
-      setValue('birthDate', subYears(new Date(), 18));
+      setValue('birthDate', subYears(new Date(), 20));
       setValue('birthCountry', '');
       setValue('birthComune', null);
       trigger(['birthDate', 'birthCountry', 'birthComune']);
@@ -578,21 +579,47 @@ const Signup = () => {
                 className="w-full"
               >
                 <div className="space-y-5 w-full">
-                  <DatePicker
-                    label={t('signup.birthDate')}
-                    onChange={handleDateChange}
-                    onBlur={() => trigger('birthDate')}
-                    value={birthDate ? dateToCalendarDate(birthDate) : null}
-                    isRequired
-                    labelPlacement="outside"
-                    isInvalid={!!errors.birthDate}
-                    errorMessage={errors.birthDate?.message}
+                  <Controller
+                    name="birthDate"
+                    control={control}
+                    render={({
+                      field: { onChange, onBlur, value },
+                      fieldState: { error },
+                    }) => (
+                      <DateInput
+                        label={t('signup.birthDate')}
+                        onChange={(date) => {
+                          onChange(date);
+                          handleDateChange(date);
+                        }}
+                        description={
+                          value && touchedFields.birthDate
+                            ? formatDate(value, 'dd MMMM yyyy', {
+                                locale: dateFnsLang(i18n),
+                              })
+                            : ''
+                        }
+                        onBlur={() => {
+                          onBlur();
+                          trigger('birthDate');
+                        }}
+                        value={value ? dateToCalendarDate(value) : null}
+                        isRequired
+                        labelPlacement="outside"
+                        isInvalid={!!error}
+                        errorMessage={error?.message}
+                      />
+                    )}
                   />
+
                   <Autocomplete
                     label={t('signup.birthCountry')}
                     placeholder={t('signup.birthCountryPlaceholder')}
                     defaultItems={countrySuggestions}
                     defaultInputValue="IT"
+                    listboxProps={{
+                      emptyContent: t('errors.noResults'),
+                    }}
                     items={countrySuggestions}
                     onInputChange={handleCountryInputChange}
                     onSelectionChange={handleCountryChange} // Use handleCountryChange to manage value
@@ -619,6 +646,9 @@ const Signup = () => {
                         onSelectionChange={handleComuneChange}
                         onInputChange={handleComuneInputChange}
                         isRequired
+                        listboxProps={{
+                          emptyContent: t('errors.noResults'),
+                        }}
                         labelPlacement="outside"
                         {...register('birthComune')}
                         isInvalid={!!errors.birthComune}

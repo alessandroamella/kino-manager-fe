@@ -1,3 +1,8 @@
+import PageTitle from '@/components/navigation/PageTitle';
+import ScrollTop from '@/components/navigation/ScrollTop';
+import Logo from '@/components/ui/Logo';
+import { cn } from '@/lib/utils';
+import useOpeningDatesStore from '@/store/dates';
 import {
   Button,
   Calendar,
@@ -8,31 +13,26 @@ import {
   DateValue,
   Spacer,
 } from '@heroui/react';
-import { Parallax } from 'react-parallax';
-import { useTranslation } from 'react-i18next';
-import { FaClock, FaCalendarAlt } from 'react-icons/fa';
-import { GiFilmProjector } from 'react-icons/gi';
-import { MdOutlineRestaurantMenu } from 'react-icons/md';
-import { BiMoviePlay } from 'react-icons/bi';
-import LoginBtn from './auth/LoginBtn';
-import SignupBtn from './auth/SignupBtn';
-import { dateToCalendarDate } from '../utils/calendar';
 import { endOfDay, getUnixTime, isBefore, isSameDay } from 'date-fns';
 import { formatInTimeZone } from 'date-fns-tz';
-import { dateFnsLang } from '../utils/dateFnsLang';
-import useUserStore from '../store/user';
-import { Link } from 'react-router';
+import { motion } from 'framer-motion';
+import { useCallback } from 'react';
+import Countdown from 'react-countdown';
+import { useTranslation } from 'react-i18next';
+import { BiMoviePlay } from 'react-icons/bi';
+import { FaCalendarAlt, FaClock } from 'react-icons/fa';
 import { FiArrowRight, FiMapPin } from 'react-icons/fi';
+import { GiFilmProjector } from 'react-icons/gi';
+import { MdOutlineRestaurantMenu } from 'react-icons/md';
+import { Parallax } from 'react-parallax';
+import { Link } from 'react-router';
 import bg from '../assets/images/homepage-bg.jpg';
 import { address, directionsUrl } from '../constants/address';
-import Countdown from 'react-countdown';
-import PageTitle from '@/components/navigation/PageTitle';
-import Logo from '@/components/ui/Logo';
-import ScrollTop from '@/components/navigation/ScrollTop';
-import { cn } from '@/lib/utils';
-import useOpeningDatesStore from '@/store/dates';
-import { useCallback } from 'react';
-import { motion } from 'framer-motion';
+import useUserStore from '../store/user';
+import { dateToCalendarDate } from '../utils/calendar';
+import { dateFnsLang } from '../utils/dateFnsLang';
+import LoginBtn from './auth/LoginBtn';
+import SignupBtn from './auth/SignupBtn';
 
 const Homepage = () => {
   const { t, i18n } = useTranslation();
@@ -372,7 +372,7 @@ const Homepage = () => {
                       <FaClock className="mr-1" /> {t('home.openingHours')}
                     </h2>
                     <p className="text-gray-700 dark:text-gray-300 text-sm flex items-center md:justify-start justify-center">
-                      {t('home.openDays')}
+                      {t('home.openHours')}
                     </p>
                   </div>
                 </div>

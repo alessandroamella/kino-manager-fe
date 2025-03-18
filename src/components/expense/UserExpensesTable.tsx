@@ -1,18 +1,19 @@
+import { getUserStr } from '@/lib/utils';
 import { Expense } from '@/types/Expense';
 import { Member } from '@/types/Member';
 import {
   Alert,
   Table,
-  TableHeader,
-  TableColumn,
   TableBody,
-  TableRow,
   TableCell,
+  TableColumn,
+  TableHeader,
+  TableRow,
 } from '@heroui/react';
+import { clamp } from 'lodash';
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import Price from '../items/Price';
-import { getUserStr } from '@/lib/utils';
 
 interface UserExpenseSummary {
   userId: number;
@@ -68,7 +69,14 @@ const UserExpensesTable = ({
         </Alert>
       )}
       <div className="w-full overflow-x-auto max-w-[92vw] md:max-w-[94vw]">
-        <Table aria-label={t('expenses.userTable.ariaLabel')}>
+        <Table
+          isVirtualized
+          rowHeight={50}
+          maxTableHeight={clamp(userExpenseData.length, 1, 4) * 100}
+          isStriped
+          className="table"
+          aria-label={t('expenses.userTable.ariaLabel')}
+        >
           <TableHeader>
             <TableColumn>{t('expenses.userTable.user')}</TableColumn>
             <TableColumn>{t('expenses.userTable.totalAmount')}</TableColumn>
@@ -86,7 +94,7 @@ const UserExpensesTable = ({
                     {item.user ? getUserStr(item.user) : `#${item.userId}`}
                   </TableCell>
                   <TableCell>
-                    <Price price={item.totalAmount} />
+                    <Price price={item.totalAmount} round={false} />
                   </TableCell>
                 </TableRow>
               );

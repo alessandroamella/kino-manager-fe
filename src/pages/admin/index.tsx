@@ -1,44 +1,46 @@
-import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
-import axios from 'axios';
+import PageTitle from '@/components/navigation/PageTitle';
+import ScrollTop from '@/components/navigation/ScrollTop';
+import { getUserStr } from '@/lib/utils';
+import downloadStreamedFile from '@/utils/download';
+import { isMembershipPdfDataDto } from '@/utils/isMembershipPdfDataDto';
 import {
-  Table,
-  TableHeader,
-  TableBody,
-  TableColumn,
-  TableRow,
-  TableCell,
-  Button,
-  Dropdown,
-  DropdownTrigger,
-  DropdownMenu,
-  DropdownItem,
-  Spinner,
-  Skeleton,
-  Divider,
   Alert,
+  Button,
+  Code,
+  Divider,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+  Skeleton,
+  Spinner,
+  Table,
+  TableBody,
+  TableCell,
+  TableColumn,
+  TableHeader,
+  TableRow,
   Tooltip,
 } from '@heroui/react';
-import { getErrorMsg } from '../../types/error';
-import { MemberExtended } from '../../types/Member';
-import { useTranslation } from 'react-i18next';
-import { FiCheck, FiDownload, FiPrinter } from 'react-icons/fi';
-import useUserStore from '../../store/user';
-import { FaCashRegister, FaExternalLinkAlt, FaTimes } from 'react-icons/fa';
-import { MembershipCard } from '../../types/MembershipCard';
-import { format, formatDate } from 'date-fns';
+import axios from 'axios';
 import { hasFlag } from 'country-flag-icons';
 import getUnicodeFlagIcon from 'country-flag-icons/unicode';
-import { isMembershipPdfDataDto } from '@/utils/isMembershipPdfDataDto';
-import downloadStreamedFile from '@/utils/download';
-import ViewSignatureModal from '../../components/admin/ViewSignatureModal';
-import PageTitle from '@/components/navigation/PageTitle';
-import StatsCharts from '../../components/admin/StatsCharts';
-import ScrollTop from '@/components/navigation/ScrollTop';
+import { format, formatDate } from 'date-fns';
+import { clamp } from 'lodash';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { FaCashRegister, FaExternalLinkAlt, FaTimes } from 'react-icons/fa';
+import { FiCheck, FiDownload, FiPrinter } from 'react-icons/fi';
 import { GiHamburger } from 'react-icons/gi';
 import { MdQrCode } from 'react-icons/md';
 import { Link } from 'react-router';
+import StatsCharts from '../../components/admin/StatsCharts';
+import ViewSignatureModal from '../../components/admin/ViewSignatureModal';
 import Expenses from '../../components/expense/Expenses';
-import { getUserStr } from '@/lib/utils';
+import useUserStore from '../../store/user';
+import { getErrorMsg } from '../../types/error';
+import { MemberExtended } from '../../types/Member';
+import { MembershipCard } from '../../types/MembershipCard';
 
 interface MembershipCardExtended extends Omit<MembershipCard, 'member'> {
   member: MemberExtended | null;
@@ -285,7 +287,7 @@ const AdminPanel = () => {
         </div>
         <div className="w-full overflow-x-auto max-w-[92vw] md:max-w-[94vw]">
           <div className="flex items-center mb-4 flex-row justify-between">
-            <h3 className="font-medium text-lg mb-2">
+            <h3 className="font-medium text-lg">
               {t('admin.nUsers', { count: users.length })}
             </h3>
             <Button
@@ -298,7 +300,14 @@ const AdminPanel = () => {
               {t('admin.exportToExcel')}
             </Button>
           </div>
-          <Table isStriped aria-label="Users table" className="table pr-2">
+          <Table
+            isVirtualized
+            rowHeight={50}
+            isStriped
+            maxTableHeight={clamp(users.length, 1, 5) * 100}
+            aria-label="Users table"
+            className="table pr-2"
+          >
             <TableHeader>
               <TableColumn>{t('admin.actions')}</TableColumn>
               <TableColumn>
@@ -416,7 +425,9 @@ const AdminPanel = () => {
                   <TableCell className="min-w-36">
                     {user.phoneNumber.toString()}
                   </TableCell>
-                  <TableCell>{user.codiceFiscale || '-'}</TableCell>
+                  <TableCell>
+                    <Code>{user.codiceFiscale || '-'}</Code>
+                  </TableCell>
 
                   <TableCell>{user.address}</TableCell>
                   <TableCell>{user.streetName || '-'}</TableCell>
@@ -510,7 +521,7 @@ const AdminPanel = () => {
         <h2 className="text-2xl font-semibold mb-4">{t('admin.cards')}</h2>
         {cards ? (
           <div className="w-full overflow-x-auto max-w-[92vw] md:max-w-[94vw]">
-            <Table aria-label="Cards table" className="table">
+            <Table isStriped aria-label="Cards table" className="table">
               <TableHeader>
                 <TableColumn>
                   {t('profile.membershipCardNumberShort')}

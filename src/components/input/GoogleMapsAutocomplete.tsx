@@ -1,14 +1,14 @@
-import { useState, useCallback, useRef, useEffect, Key } from 'react';
+import { Loader } from '@googlemaps/js-api-loader';
 import {
   Autocomplete,
   AutocompleteItem,
   AutocompleteProps,
   AutocompleteSection,
 } from '@heroui/react';
-import { Loader } from '@googlemaps/js-api-loader';
+import { Key, useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { mapsApiKey } from '../../constants/maps';
 import { sanCesarioCoords } from '../../constants/coords';
+import { mapsApiKey } from '../../constants/maps';
 
 const DEBOUNCE_DELAY = 300; // Time to wait after typing before searching
 
@@ -191,6 +191,8 @@ const GoogleMapsAutocomplete = ({
 
   const ref = useRef<HTMLInputElement | null>(null);
 
+  const { t } = useTranslation();
+
   return (
     <Autocomplete
       label={label}
@@ -203,6 +205,9 @@ const GoogleMapsAutocomplete = ({
       onSelectionChange={handleSelectionChange}
       onOpenChange={handleOpenChange}
       allowsCustomValue={false} // Prevent free-form input, only suggestions allowed
+      listboxProps={{
+        emptyContent: t('errors.noResults'),
+      }}
       {...props} // Pass through other Autocomplete props, including form integration props
     >
       {autocompleteItems.length > 0 ? (
@@ -214,7 +219,9 @@ const GoogleMapsAutocomplete = ({
           ))}
         </AutocompleteSection>
       ) : (
-        <AutocompleteItem key="no-results">No results found</AutocompleteItem>
+        <AutocompleteItem key="no-results">
+          {t('errors.noResults')}
+        </AutocompleteItem>
       )}
     </Autocomplete>
   );

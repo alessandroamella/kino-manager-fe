@@ -13,7 +13,7 @@ import {
   Divider,
   HeroUIProvider,
   Image,
-  Input,
+  NumberInput,
   Spinner,
 } from '@heroui/react';
 import { sumBy } from 'lodash';
@@ -471,7 +471,7 @@ const CashierRegister = () => {
                             <Price
                               price={
                                 items.find((e) => e.id === purchaseItem.itemId)
-                                  ?.price
+                                  ?.price || 0
                               }
                             />
                           </span>
@@ -500,15 +500,14 @@ const CashierRegister = () => {
 
             {/* Discount and Submit */}
             <div className="flex flex-col lg:mt-0 gap-2">
-              <Input
+              <NumberInput
                 label={t('cashier.discount')}
                 startContent="-"
                 endContent="€"
                 placeholder={t('cashier.discountPlaceholder')}
-                type="number"
                 className="w-full col-span-2"
-                value={discount.toString()}
-                onValueChange={(e) => setDiscount(parseFloat(e) || 0)}
+                value={discount}
+                onValueChange={(e) => setDiscount(e)}
               />
               <div className="grid mb-1 grid-cols-2 lg:grid-cols-3 items-center w-full gap-2">
                 {Object.keys(PaymentMethod).map((e, i) => (

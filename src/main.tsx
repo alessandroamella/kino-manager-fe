@@ -1,4 +1,4 @@
-import { HeroUIProvider, Spinner } from '@heroui/react';
+import { Spinner } from '@heroui/react';
 import { lazy, StrictMode, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router';
@@ -22,7 +22,7 @@ const CashierRegister = lazy(() => import('./pages/cashier'));
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <HeroUIProvider>
+    <Suspense fallback={<Spinner />}>
       <BrowserRouter>
         <Routes>
           <Route element={<Layout />}>
@@ -73,6 +73,6 @@ createRoot(document.getElementById('root')!).render(
           <Route path="menu" element={<KinoMenu />} />
         </Routes>
       </BrowserRouter>
-    </HeroUIProvider>
+    </Suspense>
   </StrictMode>,
 );

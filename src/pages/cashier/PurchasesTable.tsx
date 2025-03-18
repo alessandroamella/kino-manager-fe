@@ -18,6 +18,7 @@ import {
   TableRow,
 } from '@heroui/react';
 import { formatDate } from 'date-fns';
+import { clamp } from 'lodash';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FaPrint } from 'react-icons/fa';
@@ -31,7 +32,7 @@ const PurchasesTable = () => {
 
   const token = useUserStore((store) => store.accessToken);
 
-  const { t } = useTranslation();
+  const { i18n, t } = useTranslation();
 
   const [isExporting, setIsExporting] = useState(false);
 
@@ -89,7 +90,13 @@ const PurchasesTable = () => {
           {t('admin.exportToExcel')}
         </Button>
       </div>
-      <Table isStriped aria-label="Purchases Table">
+      <Table
+        isVirtualized
+        rowHeight={50}
+        maxTableHeight={clamp(purchases.length, 1, 4) * 100}
+        isStriped
+        aria-label="Purchases Table"
+      >
         <TableHeader>
           {columns.map((column) => (
             <TableColumn key={column.key}>{column.label}</TableColumn>
@@ -128,6 +135,7 @@ const PurchasesTable = () => {
                                   textValue={`${
                                     item.name
                                   } x ${quantity} = ${Price.formatPrice(
+                                    i18n.language,
                                     item.price * quantity,
                                   )}`}
                                   key={item.id}
@@ -149,6 +157,7 @@ const PurchasesTable = () => {
                             <Listbox aria-label="Total">
                               <ListboxItem
                                 textValue={`Total: ${Price.formatPrice(
+                                  i18n.language,
                                   item.total,
                                 )}`}
                               >
@@ -156,8 +165,11 @@ const PurchasesTable = () => {
                                   <div />
                                   <div className="ml-6 flex flex-col">
                                     <p className="text-danger">
-                                      {!!item.discount &&
-                                        `-${Price.formatPrice(item.discount)}`}
+                                      {!!item.discount && (
+                                        <span>
+                                          - <Price price={item.discount} />
+                                        </span>
+                                      )}
                                     </p>
                                     <p className="text-primary">
                                       <Price price={item.total} />

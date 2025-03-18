@@ -1,20 +1,20 @@
-import { Pie } from 'react-chartjs-2';
-import { Bar } from 'react-chartjs-2';
+import { MemberExtended } from '@/types/Member';
 import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
+  ArcElement,
   BarElement,
+  CategoryScale,
+  Chart as ChartJS,
+  Legend,
+  LinearScale,
+  LineElement,
+  PointElement,
   Title,
   Tooltip,
-  Legend,
-  ArcElement,
-  PointElement,
-  LineElement,
 } from 'chart.js';
 import { differenceInYears } from 'date-fns';
-import { MemberExtended } from '@/types/Member';
 import { chain, inRange } from 'lodash';
+import { Bar, Line, Pie } from 'react-chartjs-2';
+import { useTranslation } from 'react-i18next';
 
 ChartJS.register(
   CategoryScale,
@@ -33,6 +33,8 @@ interface UserDataVisualizationsProps {
 }
 
 const StatsCharts = ({ users }: UserDataVisualizationsProps) => {
+  const { t } = useTranslation();
+
   // 1. Gender Chart (Pie Chart)
   const genderCounts = users.reduce((acc, user) => {
     acc[user.gender] = (acc[user.gender] || 0) + 1;
@@ -43,7 +45,7 @@ const StatsCharts = ({ users }: UserDataVisualizationsProps) => {
     labels: Object.keys(genderCounts),
     datasets: [
       {
-        label: 'Gender Distribution',
+        label: t('charts.genderDistribution'),
         data: Object.values(genderCounts),
         backgroundColor: [
           'rgba(54, 162, 235, 0.8)',
@@ -58,19 +60,6 @@ const StatsCharts = ({ users }: UserDataVisualizationsProps) => {
         borderWidth: 1,
       },
     ],
-  };
-
-  const genderChartOptions = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: 'top' as const,
-      },
-      title: {
-        display: true,
-        text: 'User Gender Distribution',
-      },
-    },
   };
 
   // 2. Age Chart (Bar Chart - grouped by age ranges)
@@ -102,35 +91,13 @@ const StatsCharts = ({ users }: UserDataVisualizationsProps) => {
     labels: Object.keys(ageRanges),
     datasets: [
       {
-        label: 'User Age Distribution',
+        label: t('charts.ageDistribution'),
         data: Object.values(ageRanges),
         backgroundColor: 'rgba(75, 192, 192, 0.8)',
         borderColor: 'rgba(75, 192, 192, 1)',
         borderWidth: 1,
       },
     ],
-  };
-
-  const ageChartOptions = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: 'top' as const,
-      },
-      title: {
-        display: true,
-        text: 'User Age Distribution',
-      },
-    },
-    scales: {
-      y: {
-        beginAtZero: true,
-        title: {
-          display: true,
-          text: 'Number of Users',
-        },
-      },
-    },
   };
 
   // 3. City Chart (Bar Chart) - Case-insensitive grouping
@@ -150,7 +117,7 @@ const StatsCharts = ({ users }: UserDataVisualizationsProps) => {
     labels: cityLabels, // Use original case labels
     datasets: [
       {
-        label: 'User Distribution by City',
+        label: t('charts.cityDistribution'),
         data: Object.values(cityCounts),
         backgroundColor: 'rgba(255, 159, 64, 0.8)',
         borderColor: 'rgba(255, 159, 64, 1)',
@@ -159,40 +126,84 @@ const StatsCharts = ({ users }: UserDataVisualizationsProps) => {
     ],
   };
 
-  const cityChartOptions = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: 'top' as const,
-      },
-      title: {
-        display: true,
-        text: 'User Distribution by City',
-      },
-    },
-    scales: {
-      y: {
-        beginAtZero: true,
-        title: {
-          display: true,
-          text: 'Number of Users',
-        },
-      },
-    },
-  };
-
   return (
     <main className="flex gap-4 flex-row flex-wrap justify-center items-center">
       <div className="w-56 m-5">
-        <Pie data={genderChartData} options={genderChartOptions} />
+        <Pie
+          data={genderChartData}
+          options={{
+            responsive: true,
+            plugins: {
+              legend: {
+                position: 'top' as const,
+              },
+              title: {
+                display: true,
+                text: t('charts.genderDistribution'),
+              },
+            },
+          }}
+        />
       </div>
 
       <div className="w-96 m-5">
-        <Bar data={ageChartData} options={ageChartOptions} />
+        <Line
+          data={ageChartData}
+          options={{
+            responsive: true,
+            plugins: {
+              legend: {
+                position: 'top' as const,
+              },
+              title: {
+                display: true,
+                text: t('charts.ageDistribution'),
+              },
+            },
+            scales: {
+              y: {
+                ticks: {
+                  stepSize: 1,
+                },
+                beginAtZero: true,
+                title: {
+                  display: true,
+                  text: t('charts.numberOfUsers'),
+                },
+              },
+            },
+          }}
+        />
       </div>
 
       <div className="w-96 m-5">
-        <Bar data={cityChartData} options={cityChartOptions} />
+        <Bar
+          data={cityChartData}
+          options={{
+            responsive: true,
+            plugins: {
+              legend: {
+                position: 'top' as const,
+              },
+              title: {
+                display: true,
+                text: t('charts.cityDistribution'),
+              },
+            },
+            scales: {
+              y: {
+                ticks: {
+                  stepSize: 1,
+                },
+                beginAtZero: true,
+                title: {
+                  display: true,
+                  text: t('charts.numberOfUsers'),
+                },
+              },
+            },
+          }}
+        />
       </div>
     </main>
   );

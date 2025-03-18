@@ -1,33 +1,35 @@
+import { getUserStr } from '@/lib/utils';
 import useUserStore from '@/store/user';
 import { getErrorMsg } from '@/types/error';
-import { Expense, CreateExpense } from '@/types/Expense';
+import { CreateExpense, Expense } from '@/types/Expense';
 import { Member } from '@/types/Member';
 import { dateToCalendarDate } from '@/utils/calendar';
 import {
   Alert,
   Button,
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  Input,
+  CalendarDate,
   Checkbox,
+  DatePicker,
+  Input,
+  Modal,
+  ModalBody,
+  ModalContent,
   ModalFooter,
+  ModalHeader,
+  NumberInput,
   Select,
   SelectItem,
   SelectSection,
-  DatePicker,
-  CalendarDate,
 } from '@heroui/react';
-import axios from 'axios';
-import { useState, useCallback, useMemo } from 'react';
-import { useDropzone } from 'react-dropzone';
-import { useForm } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
 import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
-import { getUserStr } from '@/lib/utils';
+import axios from 'axios';
+import { omit } from 'lodash';
+import { useCallback, useMemo, useState } from 'react';
+import { useDropzone } from 'react-dropzone';
+import { Controller, useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { FaEuroSign } from 'react-icons/fa';
+import * as yup from 'yup';
 
 interface AddExpenseModalProps {
   onExpenseAdded: (e: Expense) => void;
@@ -82,6 +84,7 @@ const AddExpenseModal = ({
     reset,
     trigger,
     watch,
+    control,
     formState: { errors },
   } = useForm<CreateExpense>({
     defaultValues,
@@ -170,7 +173,7 @@ const AddExpenseModal = ({
           {error}
         </Alert>
       )}
-      <div className="flex flex-col md:flex-row md:justify-between gap-4">
+      <div className="flex flex-row justify-between gap-4">
         <h2 className="text-2xl font-semibold mb-4">{t('expenses.title')}</h2>
         <Button color="secondary" onPress={openModal}>
           <FaEuroSign />
@@ -220,21 +223,28 @@ const AddExpenseModal = ({
                     />
                   </div>
                   <div>
-                    <Input
-                      isRequired
-                      label={t('expenses.addModal.amountLabel')}
-                      type="number"
-                      startContent={
-                        <FaEuroSign
-                          className="scale-85 mb-[2.3px]"
-                          color="gray"
+                    <Controller
+                      name="amount"
+                      control={control}
+                      render={({ field }) => (
+                        <NumberInput
+                          isRequired
+                          label={t('expenses.addModal.amountLabel')}
+                          startContent={
+                            <FaEuroSign
+                              className="scale-85 mb-[2.3px]"
+                              color="gray"
+                            />
+                          }
+                          placeholder={t('expenses.addModal.amountPlaceholder')}
+                          value={field.value}
+                          onValueChange={(value) => field.onChange(value)}
+                          isInvalid={!!errors.amount}
+                          errorMessage={errors.amount?.message}
+                          className="md:mt-2"
+                          {...omit(field, ['value'])}
                         />
-                      }
-                      placeholder={t('expenses.addModal.amountPlaceholder')}
-                      {...register('amount', { valueAsNumber: true })}
-                      isInvalid={!!errors.amount}
-                      errorMessage={errors.amount?.message}
-                      className="md:mt-2"
+                      )}
                     />
                   </div>
                   <div>

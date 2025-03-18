@@ -1,18 +1,25 @@
+import { getUserStr } from '@/lib/utils';
 import { Expense } from '@/types/Expense';
 import { Member } from '@/types/Member';
 import {
   Alert,
-  Table,
-  TableHeader,
-  TableColumn,
-  TableBody,
-  TableRow,
-  TableCell,
   Button,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+  Table,
+  TableBody,
+  TableCell,
+  TableColumn,
+  TableHeader,
+  TableRow,
   Tooltip,
 } from '@heroui/react';
+import { clamp } from 'lodash';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { BsThreeDots } from 'react-icons/bs';
 import {
   FaCheckCircle,
   FaExternalLinkAlt,
@@ -20,9 +27,9 @@ import {
   FaTimesCircle,
   FaTrash,
 } from 'react-icons/fa';
+import { MdMoneyOff } from 'react-icons/md';
 import Price from '../items/Price';
 import ViewExpensePictureModal from './ExpensePictureModal';
-import { getUserStr } from '@/lib/utils';
 
 const ExpenseTable = ({
   expenses,
@@ -62,7 +69,14 @@ const ExpenseTable = ({
         setPictureKey={setViewingPicture}
       />
       <div className="w-full overflow-x-auto max-w-[92vw] md:max-w-[94vw]">
-        <Table aria-label={t('expenses.table.ariaLabel')}>
+        <Table
+          isVirtualized
+          rowHeight={50}
+          maxTableHeight={clamp(Math.ceil(expenses.length / 1.5), 1, 4) * 100}
+          isStriped
+          aria-label={t('expenses.table.ariaLabel')}
+          className="table"
+        >
           <TableHeader>
             <TableColumn>{t('expenses.table.user')}</TableColumn>
             <TableColumn>{t('expenses.table.description')}</TableColumn>
@@ -85,9 +99,15 @@ const ExpenseTable = ({
                   <TableCell className="min-w-52">
                     {user ? getUserStr(user) : `#${item.userId}`}
                   </TableCell>
-                  <TableCell className="min-w-64">{item.description}</TableCell>
+                  <TableCell className="w-64 text-wrap">
+                    <Tooltip content={item.description}>
+                      <span className="w-fit line-clamp-2">
+                        {item.description}
+                      </span>
+                    </Tooltip>
+                  </TableCell>
                   <TableCell>
-                    <Price price={item.amount} />
+                    <Price price={item.amount} round={false} />
                   </TableCell>
                   <TableCell>
                     {new Date(item.expenseDate).toLocaleDateString()}
@@ -113,36 +133,50 @@ const ExpenseTable = ({
                     )}
                   </TableCell>
                   <TableCell>
-                    <div className="flex gap-2">
-                      <Tooltip
-                        content={t(
-                          item.repaid
-                            ? 'expenses.table.markUnrepaid'
-                            : 'expenses.table.markRepaid',
-                        )}
-                      >
-                        <Button
+                    <Dropdown>
+                      <DropdownTrigger>
+                        <Button variant="bordered">
+                          <BsThreeDots />
+                        </Button>
+                      </DropdownTrigger>
+                      <DropdownMenu aria-label="Static Actions">
+                        <DropdownItem
                           onPress={() =>
                             markExpenseAsRepaid(item.id, !item.repaid)
                           }
-                          isIconOnly
-                          variant="bordered"
+                          key="mark-repaid"
                         >
                           {item.repaid ? (
-                            <FaMoneyBill color="yellow" />
+                            <MdMoneyOff
+                              color="yellow"
+                              className="inline-block mr-2 mb-[2px]"
+                            />
                           ) : (
-                            <FaMoneyBill color="green" />
+                            <FaMoneyBill
+                              color="green"
+                              className="inline-block mr-2 mb-[2px]"
+                            />
                           )}
-                        </Button>
-                      </Tooltip>
-                      <Button
-                        onPress={() => deleteExpense(item.id)}
-                        isIconOnly
-                        variant="bordered"
-                      >
-                        <FaTrash color="red" />
-                      </Button>
-                    </div>
+                          {t(
+                            item.repaid
+                              ? 'expenses.table.markUnrepaid'
+                              : 'expenses.table.markRepaid',
+                          )}
+                        </DropdownItem>
+                        <DropdownItem
+                          key="delete"
+                          onPress={() => deleteExpense(item.id)}
+                          className="text-danger"
+                          color="danger"
+                        >
+                          <FaTrash
+                            color="red"
+                            className="inline-block mr-2 mb-[2px]"
+                          />
+                          {t('admin.delete')}
+                        </DropdownItem>
+                      </DropdownMenu>
+                    </Dropdown>
                   </TableCell>
                 </TableRow>
               );

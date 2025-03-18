@@ -1,8 +1,8 @@
-import * as yup from 'yup';
-import type { TFunction } from 'i18next';
 import CodiceFiscale from 'codice-fiscale-js';
-import { passwordYupSchema } from './password';
+import type { TFunction } from 'i18next';
 import parsePhoneNumber from 'libphonenumber-js';
+import * as yup from 'yup';
+import { passwordYupSchema } from './password';
 
 export const signupYupSchema = (t: TFunction, useCodiceFiscale: boolean) =>
   yup.object().shape({
@@ -71,7 +71,7 @@ export const signupYupSchema = (t: TFunction, useCodiceFiscale: boolean) =>
       .string()
       .notRequired()
       .nullable()
-      .min(1, t('errors.field.tooShort', { field: t('profile.birthComune') }))
+      .min(1, t('errors.field.required', { field: t('profile.birthComune') }))
       .max(255, t('errors.field.tooLong', { field: t('profile.birthComune') })),
     birthProvince: yup
       .string()
