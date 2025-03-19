@@ -1,16 +1,16 @@
-import { useEffect, useState } from 'react';
-import { Form, Input, Button, Alert, Card } from '@heroui/react';
-import { useForm } from 'react-hook-form';
-import useUserStore from '../../store/user';
-import { useTranslation } from 'react-i18next';
-import { Link, useNavigate, useSearchParams } from 'react-router';
 import PageTitle from '@/components/navigation/PageTitle';
 import ScrollTop from '@/components/navigation/ScrollTop';
+import { loginYupSchema } from '@/validators/login';
+import { Alert, Button, Card, Form, Input } from '@heroui/react';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useEffect, useMemo, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
+import { Link, useNavigate, useSearchParams } from 'react-router';
+import type { InferType } from 'yup';
+import useUserStore from '../../store/user';
 
-type FormData = {
-  email: string;
-  password: string;
-};
+type FormData = InferType<ReturnType<typeof loginYupSchema>>;
 
 const Login = () => {
   const [search, setSearch] = useSearchParams();
@@ -18,12 +18,17 @@ const Login = () => {
 
   const { t } = useTranslation();
 
+  const validationSchema = useMemo(() => loginYupSchema(t), [t]);
+
+  const [touchedAfterSubmit, setTouchedAfterSubmit] = useState(false);
+
   const {
     register,
     handleSubmit,
     formState: { errors, isValid },
   } = useForm<FormData>({
     mode: 'onBlur',
+    resolver: yupResolver(validationSchema),
     defaultValues: {
       email:
         (defaultEmail &&
@@ -36,9 +41,21 @@ const Login = () => {
 
   const login = useUserStore((store) => store.login);
   const error = useUserStore((store) => store.error);
+  const clearError = useUserStore((store) => store.clearError);
+
+  useEffect(() => {
+    return () => {
+      clearError();
+    };
+  }, [clearError]);
+
+  useEffect(() => {
+    if (touchedAfterSubmit && error) {
+      clearError();
+    }
+  }, [clearError, error, touchedAfterSubmit]);
 
   const navigate = useNavigate();
-
   const [successAlert, setSuccessAlert] = useState<{
     title: string;
     description: string;
@@ -67,7 +84,8 @@ const Login = () => {
   }, [errorSearch, search, setSearch, t]);
 
   const onSubmit = async (formData: FormData) => {
-    setAlertError(null); // Clear previous error on new submit
+    setAlertError(null);
+    setTouchedAfterSubmit(false);
     console.log('Login Form Data:', formData);
     const successful = await login(formData.email, formData.password);
     if (successful) {
@@ -109,6 +127,7 @@ const Login = () => {
               label={t('signup.email')}
               placeholder={t('signup.emailPlaceholder')}
               type="email"
+              id="email"
               {...register('email', {
                 required: t('errors.field.required', {
                   field: t('profile.lastName'),
@@ -130,6 +149,7 @@ const Login = () => {
               label={t('auth.password')}
               placeholder={t('signup.passwordPlaceholder')}
               type="password"
+              id="password"
               {...register('password', {
                 required: t('errors.field.required', {
                   field: t('auth.password'),
@@ -138,6 +158,7 @@ const Login = () => {
               isInvalid={
                 !!(error === 'errors.auth.wrongPassword' || errors.password)
               }
+              onValueChange={() => setTouchedAfterSubmit(true)}
               errorMessage={error ? t(error) : errors.password?.message}
               isRequired
             />

@@ -117,7 +117,8 @@
       "tooShort": "Password must be at least 8 characters long",
       "noUppercase": "Password must contain at least one uppercase letter",
       "noLowercase": "Password must contain at least one lowercase letter",
-      "noDigit": "Password must contain at least one digit"
+      "noDigit": "Password must contain at least one digit",
+      "noLeadingTrailingSpaces": "Password should not start or end with a space"
     },
     "terms": {
       "accept": "You must accept the Terms of Service and Privacy Policy"

@@ -6,6 +6,9 @@ export const passwordYupSchema = (t: TFunction, field = 'auth.password') =>
   yup
     .string()
     .required(t('errors.field.required', { field: t(field) }))
+    .test('no-trim', t('errors.password.noLeadingTrailingSpaces'), (value) => {
+      return value === value?.trim();
+    })
     .test('password', t('signup.passwordDisclaimer'), (value) => {
       if (!value) return false;
       const schema = new PasswordValidator();

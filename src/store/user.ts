@@ -1,6 +1,6 @@
+import axios, { isAxiosError } from 'axios';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware'; // Import the persist middleware
-import axios, { isAxiosError } from 'axios';
 import { Member, MemberWithToken } from '../types/Member';
 import { getErrorMsg } from '../types/error';
 import { sha256 } from '../utils/sha256';
@@ -15,6 +15,7 @@ interface UserState {
   accessToken: string | null;
   loading: boolean;
   error: string | null;
+  clearError: () => void;
   fetchUser: (accessToken: string) => Promise<void>;
   login: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
@@ -28,6 +29,7 @@ const useUserStore = create<UserState>()(
       emailHash: null,
       loading: false,
       error: null,
+      clearError: () => set({ error: null }),
       fetchUser: async (_accessToken: string) => {
         set({ loading: true, error: null });
         try {
@@ -75,7 +77,7 @@ const useUserStore = create<UserState>()(
           set({ accessToken: data.access_token, user: null });
           return true;
         } catch (error) {
-          console.error('Login error:', error);
+          console.error('Login error:', error, getErrorMsg(error));
           set({
             error: isAxiosError(error)
               ? error.response?.status === 401

@@ -123,7 +123,8 @@
       "tooShort": "La password deve essere lunga almeno 8 caratteri",
       "noUppercase": "La password deve contenere almeno una lettera maiuscola",
       "noLowercase": "La password deve contenere almeno una lettera minuscola",
-      "noDigit": "La password deve contenere almeno un numero"
+      "noDigit": "La password deve contenere almeno un numero",
+      "noLeadingTrailingSpaces": "La password non deve iniziare o finire con uno spazio"
     },
     "terms": {
       "accept": "Devi accettare i Termini di Servizio e l'Informativa sulla Privacy"
