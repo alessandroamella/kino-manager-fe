@@ -130,11 +130,11 @@ const CashierSerialDisplay = ({
       // force Italian locale
       const str =
         (paymentAndTotal
-          ? t(`paymentMethod.${paymentAndTotal?.paymentMethod}`, {
+          ? t(`paymentMethod.${paymentAndTotal.paymentMethod}`, {
               lng: 'it',
             }) +
             '|' +
-            toFixedItalian(paymentAndTotal!.total)
+            toFixedItalian(paymentAndTotal.total)
           : itemAndTotal
           ? unidecode(itemAndTotal.name) +
             '|' +

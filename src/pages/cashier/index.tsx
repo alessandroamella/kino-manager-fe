@@ -255,7 +255,11 @@ const CashierRegister = () => {
     if (purchaseItems.length === 0) {
       return undefined;
     }
-    const item = items.find((e) => e.id === purchaseItems.at(-1)!.itemId)!;
+    const item = items.find((e) => e.id === purchaseItems.at(-1)?.itemId);
+    if (!item) {
+      console.log('itemAndTotal: item not found');
+      return undefined;
+    }
     const obj = {
       name: `${item.nameShort || item.name}${
         item.description ? ` ${item.description}` : ''
