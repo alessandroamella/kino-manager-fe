@@ -35,6 +35,7 @@ import { format, formatDate, subYears } from 'date-fns';
 import { AnimatePresence, motion } from 'framer-motion';
 import countries from 'i18n-iso-countries';
 import parsePhoneNumber from 'libphonenumber-js';
+import { omit, pick } from 'lodash';
 import { Key, useCallback, useEffect, useMemo, useState } from 'react';
 import ReactGA from 'react-ga4';
 import { Controller, useForm } from 'react-hook-form';
@@ -348,10 +349,13 @@ const Signup = () => {
       delete obj.birthProvince;
       delete obj.acceptTerms;
 
-      obj = normalize(obj); // remove undefined and empty strings
+      const objNormalized = normalize(omit(obj, ['password']));
+
+      obj = { ...objNormalized, ...pick(obj, ['password']) };
+
       console.log(
         'Sending signup request:',
-        obj,
+        objNormalized,
         'useCodiceFiscale:',
         useCodiceFiscale,
       );
