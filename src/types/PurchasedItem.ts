@@ -10,5 +10,5 @@ export type PurchasedItemNoPurchaseId = Omit<PurchasedItem, 'purchaseId'>;
 
 export interface PurchasedItemWithItemNoPurchaseId
   extends PurchasedItemNoPurchaseId {
-  item: Item;
+  item?: Item;
 }

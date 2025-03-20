@@ -2,6 +2,7 @@ import Price from '@/components/items/Price';
 import usePurchasesStore from '@/store/purchases';
 import useUserStore from '@/store/user';
 import { getErrorMsg } from '@/types/error';
+import { Item } from '@/types/Item';
 import downloadStreamedFile from '@/utils/download';
 import {
   Alert,
@@ -128,7 +129,12 @@ const PurchasesTable = () => {
                           <>
                             <Listbox
                               aria-label="Purchased Items"
-                              items={item.purchasedItems}
+                              items={
+                                item.purchasedItems.filter((e) => e.item) as {
+                                  item: Item;
+                                  quantity: number;
+                                }[]
+                              }
                             >
                               {({ item, quantity }) => (
                                 <ListboxItem
