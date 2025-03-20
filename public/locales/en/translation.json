@@ -136,7 +136,7 @@
       "errorFetchingUser": "Error fetching user data.",
       "fetchingUser": "Fetching user data..."
     },
-    "scanAgain": "Scan Again",
+    "resetScan": "Reset QR Code Scanner",
     "showQrCode": "Show QR Code",
     "scanQrCode": "Scan this QR code at the entrance!",
     "scanQrCodeShort": "Entrance QR"

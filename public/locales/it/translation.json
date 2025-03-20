@@ -144,7 +144,7 @@
       "errorFetchingUser": "Errore nel recupero dei dati utente.",
       "fetchingUser": "Recupero dati utente..."
     },
-    "scanAgain": "Scansiona di Nuovo",
+    "resetScan": "Resetta scansione QR",
     "showQrCode": "Mostra QR Code",
     "scanQrCode": "Scansiona questo codice QR all'ingresso",
     "scanQrCodeShort": "QR entrata"

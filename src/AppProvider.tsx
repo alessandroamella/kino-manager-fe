@@ -1,18 +1,18 @@
-import { Outlet } from 'react-router';
-import useUserStore from './store/user';
-import { useEffect, useRef } from 'react';
-import { useTranslation } from 'react-i18next';
-import { HeroUIProvider } from '@heroui/react';
-import useThemeStore from './store/theme';
+import { HeroUIProvider, ToastProvider } from '@heroui/react';
 import { useTheme } from '@heroui/use-theme';
-import { ga4Key } from './constants/ga4';
-import ReactGA from 'react-ga4';
 import { I18nProvider } from '@react-aria/i18n';
+import { useEffect, useMemo, useRef } from 'react';
+import ReactGA from 'react-ga4';
+import { useTranslation } from 'react-i18next';
+import { Outlet } from 'react-router';
+import { ga4Key } from './constants/ga4';
 import useOpeningDatesStore from './store/dates';
+import useThemeStore from './store/theme';
+import useUserStore from './store/user';
 
 ReactGA.initialize(ga4Key);
 
-const App = () => {
+const AppProvider = () => {
   const { i18n } = useTranslation();
   const { setTheme: setHeroUITheme } = useTheme();
 
@@ -22,7 +22,7 @@ const App = () => {
   const isFetching = useRef(false);
   useEffect(() => {
     if (accessToken && !isFetching.current) {
-      console.log('Fetching user data from App');
+      console.log('Fetching user data from AppProvider');
       isFetching.current = true;
       fetchUser(accessToken).finally(() => {
         isFetching.current = false;
@@ -67,12 +67,16 @@ const App = () => {
     setHeroUITheme(theme);
   }, [setHeroUITheme, theme]);
 
+  const locale = useMemo(() => {
+    // use en-gb for English (for date formatting)
+    return i18n.language === 'en' ? 'en-gb' : i18n.language;
+  }, [i18n.language]);
+
   return (
     <main className={`${theme} text-foreground bg-background`}>
-      <I18nProvider locale={i18n.language}>
-        <HeroUIProvider
-          locale={i18n.language === 'en' ? 'en-gb' : i18n.language}
-        >
+      <I18nProvider locale={locale}>
+        <HeroUIProvider locale={locale}>
+          <ToastProvider />
           <Outlet />
         </HeroUIProvider>
       </I18nProvider>
@@ -80,4 +84,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default AppProvider;

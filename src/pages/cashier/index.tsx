@@ -12,7 +12,6 @@ import {
   Breadcrumbs,
   Button,
   Divider,
-  HeroUIProvider,
   Image,
   NumberInput,
   Spinner,
@@ -287,7 +286,7 @@ const CashierRegister = () => {
   const serialSectionRef = useRef<HTMLDivElement | null>(null);
 
   return (
-    <HeroUIProvider locale={i18n.language === 'en' ? 'en-gb' : i18n.language}>
+    <>
       <PageTitle title="cashier" />
       <ScrollTop />
       <header className="bg-background-100 lg:bg-inherit lg:min-h-32 p-4 lg:p-8 flex gap-4 justify-between">
@@ -584,7 +583,7 @@ const CashierRegister = () => {
 
         <PurchasesTable />
       </main>
-    </HeroUIProvider>
+    </>
   );
 };
 

@@ -368,7 +368,9 @@ const Signup = () => {
       });
 
       await login(formData.email, formData.password);
-      navigate(search.get('to') || '/profile');
+      navigate(search.get('to') || '/profile', {
+        state: { justSignedUp: true },
+      });
     } catch (error) {
       console.error('Error signing up:', getErrorMsg(error));
       setSignupError(

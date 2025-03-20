@@ -1,23 +1,23 @@
-import { useState, useCallback, useEffect, useRef } from 'react';
-import { OnResultFunction, QrReader } from 'react-qr-reader';
-import axios from 'axios';
-import { getErrorMsg } from '@/types/error';
-import { useTranslation } from 'react-i18next';
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  useDisclosure,
-  Button,
-  Alert,
-  Spinner,
-} from '@heroui/react';
-import { Member } from '@/types/Member';
-import PageTitle from '../navigation/PageTitle';
 import useUserStore from '@/store/user';
+import { getErrorMsg } from '@/types/error';
+import { Member } from '@/types/Member';
+import {
+  Alert,
+  Button,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  Spinner,
+  useDisclosure,
+} from '@heroui/react';
+import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { OnResultFunction, QrReader } from 'react-qr-reader';
+import PageTitle from '../navigation/PageTitle';
 
 const ScanAttendanceQr = () => {
   const [scanError, setScanError] = useState<string | null>(null);
@@ -248,7 +248,7 @@ const ScanAttendanceQr = () => {
       </Modal>
 
       <div className="mt-5 flex justify-center">
-        <Button onPress={handleResetScan}>{t('attendance.scanAgain')}</Button>
+        <Button onPress={handleResetScan}>{t('attendance.resetScan')}</Button>
       </div>
     </div>
   );

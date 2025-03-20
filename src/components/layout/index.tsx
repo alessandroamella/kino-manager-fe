@@ -1,12 +1,12 @@
-import Header from '../header';
-import App from '../../App';
+import { Outlet } from 'react-router';
 import Footer from '../footer';
+import Header from '../header';
 
 const Layout = () => {
   return (
     <>
       <Header />
-      <App />
+      <Outlet />
       <Footer />
     </>
   );
