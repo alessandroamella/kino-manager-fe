@@ -206,6 +206,8 @@ const ScanAttendanceQr = () => {
       setScanErrorMessage(null);
       setJwt(rawValue);
 
+      navigator.vibrate?.(400); // vibrate on successful scan
+
       try {
         const jwtPayload = jwtDecode<{ u: number; iat: number; exp: number }>(
           rawValue,
@@ -240,7 +242,6 @@ const ScanAttendanceQr = () => {
             users,
           );
         }
-        navigator.vibrate?.(400);
       } catch (error) {
         setScanErrorMessage('Invalid QR code format or content');
         setScanErrorModalOpen(true);
@@ -437,7 +438,7 @@ const ScanAttendanceQr = () => {
       <Modal isOpen={scanErrorModalOpen} onClose={handleScanErrorModalClose}>
         <ModalContent>
           <ModalHeader>
-            <FaTimesCircle className="mr-2 inline-block text-red-500" />
+            <FaTimesCircle className="mr-2 mt-[5px] inline-block text-red-500" />
             {t('errors.error')}
           </ModalHeader>
           <ModalBody>
@@ -463,8 +464,8 @@ const ScanAttendanceQr = () => {
             )}
             {statusModalType === 'error' && (
               <>
-                <FaTimesCircle className="mr-2 inline-block text-red-500" />
-                {t('common.error')}
+                <FaTimesCircle className="mr-2 mt-[5px] inline-block text-red-500" />
+                {t('errors.error')}
               </>
             )}
             {statusModalType === 'warning' && (
