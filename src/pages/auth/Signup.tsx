@@ -41,7 +41,12 @@ import ReactGA from 'react-ga4';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { FaEdit } from 'react-icons/fa';
-import { Link, useNavigate, useSearchParams } from 'react-router';
+import {
+  createSearchParams,
+  Link,
+  useNavigate,
+  useSearchParams,
+} from 'react-router';
 import { InferType } from 'yup';
 import signaturePlaceholder from '../../assets/images/firma.webp';
 import useUserStore from '../../store/user';
@@ -368,9 +373,17 @@ const Signup = () => {
       });
 
       await login(formData.email, formData.password);
-      navigate(search.get('to') || '/profile', {
-        state: { justSignedUp: true },
-      });
+      navigate(
+        {
+          pathname: search.get('to') || '/profile',
+          search: createSearchParams({
+            ...omit(Object.fromEntries(search.entries()), ['to']),
+          }).toString(),
+        },
+        {
+          state: { justSignedUp: true },
+        },
+      );
     } catch (error) {
       console.error('Error signing up:', getErrorMsg(error));
       setSignupError(

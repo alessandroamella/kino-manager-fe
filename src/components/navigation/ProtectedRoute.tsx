@@ -1,13 +1,13 @@
+import { Skeleton } from '@heroui/react';
+import { useCallback, useEffect, useRef } from 'react';
 import {
   createSearchParams,
   Outlet,
   useNavigate,
   useSearchParams,
 } from 'react-router';
-import useUserStore from '../../store/user';
 import { useShallow } from 'zustand/shallow';
-import { useCallback, useEffect, useRef } from 'react';
-import { Skeleton } from '@heroui/react';
+import useUserStore from '../../store/user';
 
 const ProtectedRoute = ({
   mustBeAdmin,
@@ -61,6 +61,7 @@ const ProtectedRoute = ({
                 pathname: '/auth/login',
                 search: createSearchParams({
                   to: search.get('to') || location.pathname,
+                  ...Object.fromEntries(search.entries()),
                 }).toString(),
               }
             : '/profile');

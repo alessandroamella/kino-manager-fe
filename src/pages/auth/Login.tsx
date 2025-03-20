@@ -3,10 +3,16 @@ import ScrollTop from '@/components/navigation/ScrollTop';
 import { loginYupSchema } from '@/validators/login';
 import { Alert, Button, Card, Form, Input } from '@heroui/react';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { omit } from 'lodash';
 import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { Link, useNavigate, useSearchParams } from 'react-router';
+import {
+  createSearchParams,
+  Link,
+  useNavigate,
+  useSearchParams,
+} from 'react-router';
 import type { InferType } from 'yup';
 import useUserStore from '../../store/user';
 
@@ -89,7 +95,12 @@ const Login = () => {
     console.log('Login Form Data:', formData);
     const successful = await login(formData.email, formData.password);
     if (successful) {
-      navigate(search.get('to') || '/profile');
+      navigate({
+        pathname: search.get('to') || '/profile',
+        search: createSearchParams({
+          ...omit(Object.fromEntries(search.entries()), ['to']),
+        }).toString(),
+      });
     }
   };
 

@@ -104,6 +104,7 @@
     "error": "Errore",
     "generic": "Si è verificato un errore",
     "noResults": "Nessun risultato",
+    "unauthorized": "Non autorizzato, prova ad effettuare nuovamente l'accesso",
     "auth": {
       "userNotFound": "Utente non trovato",
       "wrongPassword": "Password errata",

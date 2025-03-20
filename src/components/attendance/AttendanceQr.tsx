@@ -11,25 +11,39 @@ import {
 } from '@heroui/react';
 import axios, { AxiosError } from 'axios';
 import { motion } from 'framer-motion';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AiFillSetting } from 'react-icons/ai';
-import { createSearchParams, Link, Navigate, useLocation } from 'react-router';
+import { Link, useSearchParams } from 'react-router';
+
+const queryKey = 'show-qr';
 
 const AttendanceQr = () => {
   const accessToken = useUserStore((state) => state.accessToken);
   const user = useUserStore((state) => state.user);
   const tokenLoading = useUserStore((state) => state.loading);
 
+  const [search, setSearch] = useSearchParams();
+  const isModalOpen = search.get(queryKey) === 'true';
+  const setIsModalOpen = useCallback(
+    (isOpen: boolean) => {
+      if (isOpen) {
+        search.set(queryKey, 'true');
+      } else {
+        search.delete(queryKey);
+      }
+      setSearch(search);
+    },
+    [search, setSearch],
+  );
+
   const [qrImageUrl, setQrImageUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [qrLoading, setQrLoading] = useState(false);
   const [isCheckedIn, setIsCheckedIn] = useState(false);
   const [successAlert, setSuccessAlert] = useState<string | null>(null);
   const pollingIntervalId = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const location = useLocation();
   const { t } = useTranslation();
 
   const checkAttendanceStatus = async () => {
@@ -229,28 +243,18 @@ const AttendanceQr = () => {
             ) : !error && accessToken && !tokenLoading && qrLoading ? (
               <div className="mx-auto mb-4 rounded-xl w-80 h-80 bg-background-600 animate-pulse" />
             ) : !error && !accessToken && !tokenLoading ? (
-              <Navigate
-                to={{
-                  pathname: '/auth/login',
-                  search: createSearchParams({
-                    to: location.pathname,
-                  }).toString(),
-                }}
-              />
+              <Alert className="mb-4" color="danger" title={t('errors.error')}>
+                {t('errors.unauthorized')}
+              </Alert>
             ) : null}
           </ModalBody>
         </ModalContent>
       </Modal>
 
       {!isModalOpen && !accessToken && !tokenLoading && !error && (
-        <Navigate
-          to={{
-            pathname: '/auth/login',
-            search: createSearchParams({
-              to: location.pathname,
-            }).toString(),
-          }}
-        />
+        <Alert color="danger" title={t('errors.error')}>
+          {t('errors.unauthorized')}
+        </Alert>
       )}
     </div>
   );

@@ -98,6 +98,7 @@
     "error": "Error",
     "generic": "An error occurred",
     "noResults": "No results found",
+    "unauthorized": "Unauthorized, please try to log back in",
     "auth": {
       "userNotFound": "User not found",
       "wrongPassword": "Wrong password",
