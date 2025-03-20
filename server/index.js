@@ -1,9 +1,9 @@
+import 'dotenv/config';
 import express from 'express';
 import helmet from 'helmet';
 import { join } from 'path';
-import ViteExpress from 'vite-express';
 import permissionsPolicy from 'permissions-policy';
-import 'dotenv/config';
+import ViteExpress from 'vite-express';
 
 const app = express();
 ViteExpress.config({
@@ -74,7 +74,6 @@ app.use(
       syncXhr: [],
       serial: ['self'], // cashier needs Web Serial API for esp32
       camera: ['self'], // admins need camera access for QR scanner
-      vibration: ['self'], // phone vibrates when QR code is verified
     },
   }),
 );
