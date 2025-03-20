@@ -32,6 +32,7 @@ app.use(
         defaultSrc: ["'self'"],
         scriptSrc: [
           "'self'",
+          "'wasm-unsafe-eval'",
           'https://maps.googleapis.com',
           'https://maps.gstatic.com',
           'https://www.googletagmanager.com',
