@@ -1,12 +1,20 @@
 import useUserStore from '@/store/user';
 import { getErrorMsg } from '@/types/error';
-import { Alert, Image, Button } from '@heroui/react';
-import { Modal, ModalContent, ModalHeader, ModalBody } from '@heroui/react';
+import {
+  Alert,
+  Button,
+  Image,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalHeader,
+} from '@heroui/react';
 import axios, { AxiosError } from 'axios';
-import { useEffect, useState, useRef } from 'react';
-import { useTranslation } from 'react-i18next';
-import { createSearchParams, Navigate, useLocation } from 'react-router';
 import { motion } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { AiFillSetting } from 'react-icons/ai';
+import { createSearchParams, Link, Navigate, useLocation } from 'react-router';
 
 const AttendanceQr = () => {
   const accessToken = useUserStore((state) => state.accessToken);
@@ -131,9 +139,18 @@ const AttendanceQr = () => {
 
   return (
     <div>
-      <Button onPress={handleOpenModal} color="primary">
-        {t('attendance.showQrCode')}
-      </Button>
+      <div className="flex items-center justify-between space-x-2">
+        <Button onPress={handleOpenModal} color="primary">
+          {t('attendance.showQrCode')}
+        </Button>
+
+        {user?.isAdmin && (
+          <Button as={Link} color="danger" to="/admin">
+            <AiFillSetting className="mr-2" />
+            {t('admin.adminPanelShort')}
+          </Button>
+        )}
+      </div>
 
       <Modal
         isOpen={isModalOpen}

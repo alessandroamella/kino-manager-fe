@@ -128,6 +128,18 @@
     },
     "terms": {
       "accept": "Devi accettare i Termini di Servizio e l'Informativa sulla Privacy"
+    },
+    "scanner": {
+      "qrCodeNotSupported": "Il formato QR code non è supportato dal tuo browser.",
+      "barcodeApiError": "Errore nell'inizializzazione dello scanner di codici a barre.",
+      "videoElementError": "Elemento video non trovato.",
+      "cameraAccessError": "Impossibile accedere alla fotocamera. Controlla i permessi della fotocamera.",
+      "barcodeDetectionError": "Errore durante il rilevamento del codice a barre.",
+      "auth": {
+        "userNotFound": "Utente non trovato."
+      },
+      "barcodeApiNotSupportedAction": "L'API Barcode non è supportata nel tuo browser. Utilizza un browser supportato.",
+      "cameraNotActive": "La fotocamera non è attiva. Assicurati che l'accesso alla fotocamera sia consentito."
     }
   },
   "attendance": {
@@ -144,7 +156,7 @@
       "errorFetchingUser": "Errore nel recupero dei dati utente.",
       "fetchingUser": "Recupero dati utente..."
     },
-    "resetScan": "Resetta scansione QR",
+    "scanAgain": "Scansiona di Nuovo",
     "showQrCode": "Mostra QR Code",
     "scanQrCode": "Scansiona questo codice QR all'ingresso",
     "scanQrCodeShort": "QR entrata"

@@ -122,6 +122,18 @@
     },
     "terms": {
       "accept": "You must accept the Terms of Service and Privacy Policy"
+    },
+    "scanner": {
+      "qrCodeNotSupported": "QR code format is not supported by your browser.",
+      "barcodeApiError": "Error initializing barcode scanner.",
+      "videoElementError": "Video element not found.",
+      "cameraAccessError": "Failed to access camera. Please check camera permissions.",
+      "barcodeDetectionError": "Error during barcode detection.",
+      "auth": {
+        "userNotFound": "User not found."
+      },
+      "barcodeApiNotSupportedAction": "Barcode API is not supported in your browser. Please use a supported browser.",
+      "cameraNotActive": "Camera is not active. Please ensure camera access is granted."
     }
   },
   "attendance": {
