@@ -1,3 +1,4 @@
+import { cn } from '@/lib/utils';
 import useUserStore from '@/store/user';
 import { getErrorMsg } from '@/types/error';
 import { Member } from '@/types/Member';
@@ -13,28 +14,48 @@ import {
   useDisclosure,
 } from '@heroui/react';
 import axios from 'axios';
-import 'barcode-detector/polyfill';
+import {
+  BarcodeDetector,
+  ZXING_WASM_VERSION,
+  prepareZXingModule,
+} from 'barcode-detector/ponyfill';
 import { jwtDecode } from 'jwt-decode';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import {
+  FaCheckCircle,
+  FaExclamationTriangle,
+  FaTimesCircle,
+} from 'react-icons/fa';
 import PageTitle from '../navigation/PageTitle';
 
 const ScanAttendanceQr = () => {
-  const [scanError, setScanError] = useState<string | null>(null);
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  // **New States for Modals and Messages**
+  const [scanErrorModalOpen, setScanErrorModalOpen] = useState(false);
+  const [scanErrorMessage, setScanErrorMessage] = useState<string | null>(null);
+  const {
+    isOpen: isSuccessModalOpen,
+    onOpen: onSuccessModalOpen,
+    onClose: onSuccessModalClose,
+  } = useDisclosure();
+  const [statusModalMessage, setStatusModalMessage] = useState<string | null>(
+    null,
+  );
+  const [statusModalType, setStatusModalType] = useState<
+    'success' | 'error' | 'warning' | null
+  >(null); // 'success' | 'error' | 'warning'
+
   const [userData, setUserData] = useState<Member | null>(null);
   const [jwt, setJwt] = useState<string | null>(null);
   const [isLoggingAttendance, setIsLoggingAttendance] =
     useState<boolean>(false);
-  const [logAttendanceError, setLogAttendanceError] = useState<string | null>(
-    null,
-  );
   const [isLoadingUsers, setIsLoadingUsers] = useState<boolean>(true);
   const [fetchUsersError, setFetchUsersError] = useState<string | null>(null);
   const [isBarcodeAPISupported, setIsBarcodeAPISupported] =
-    useState<boolean>(false); // Initially false, updated after checking support
+    useState<boolean>(false);
   const [isCameraStreamActive, setIsCameraStreamActive] =
     useState<boolean>(false);
+  const [isScanActive, setIsScanActive] = useState<boolean>(false);
 
   const usersRef = useRef<Member[] | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -62,99 +83,127 @@ const ScanAttendanceQr = () => {
       } catch (error) {
         console.error('Error fetching users:', error);
         setFetchUsersError(getErrorMsg(error));
+        setStatusModalType('error');
+        setStatusModalMessage(getErrorMsg(error));
+        onSuccessModalOpen(); // Reusing the success modal for errors too
       } finally {
         setIsLoadingUsers(false);
       }
     };
 
     fetchUsers();
-  }, [accessToken]);
+  }, [accessToken, onSuccessModalOpen]);
 
-  useEffect(() => {
-    let isMounted = true; // Track component mounted state
+  const stopCameraStream = useCallback(() => {
+    const videoElement = videoRef.current;
+    if (videoElement && videoElement.srcObject) {
+      const stream = videoElement.srcObject as MediaStream;
+      stream.getTracks().forEach((track) => track.stop());
+      videoElement.srcObject = null;
+      setIsCameraStreamActive(false);
+    }
+  }, []);
 
-    const checkBarcodeSupportAndStartCamera = async () => {
-      setIsBarcodeAPISupported(false); // Reset to false initially
+  const startScan = useCallback(async () => {
+    setIsScanActive(true);
+    setIsBarcodeAPISupported(false);
+    setIsCameraStreamActive(false);
+    setScanErrorMessage(null);
+
+    const videoElement = videoRef.current;
+
+    try {
+      const supportedFormats = await BarcodeDetector.getSupportedFormats();
+      console.log('Supported Barcode Formats (polyfill):', supportedFormats);
+      if (!supportedFormats.includes('qr_code')) {
+        console.warn(
+          'QR code format not supported by BarcodeDetector polyfill.',
+        );
+        setScanErrorMessage(t('errors.scanner.qrCodeNotSupported'));
+        setScanErrorModalOpen(true);
+        setIsBarcodeAPISupported(false);
+        setIsScanActive(false); // Stop scan if QR code not supported
+        return;
+      }
+
+      setIsBarcodeAPISupported(true);
+
+      prepareZXingModule({
+        overrides: {
+          locateFile: (path: string, prefix: string) => {
+            if (path.endsWith('.wasm')) {
+              const url = `https://unpkg.com/zxing-wasm@${ZXING_WASM_VERSION}/dist/reader/${path}`;
+              console.log('Loading ZXing WASM:', url, {
+                path,
+                prefix,
+                ZXING_WASM_VERSION,
+              });
+              return url;
+            }
+            return prefix + path;
+          },
+        },
+      });
+
+      barcodeDetectorRef.current = new BarcodeDetector({
+        formats: ['qr_code'],
+      });
 
       try {
-        const supportedFormats = await BarcodeDetector.getSupportedFormats();
-        console.log('Supported Barcode Formats (polyfill):', supportedFormats);
-        if (!supportedFormats.includes('qr_code')) {
-          console.warn(
-            'QR code format not supported by BarcodeDetector polyfill.',
-          );
-          if (isMounted) {
-            setScanError(t('errors.scanner.qrCodeNotSupported'));
-            setIsBarcodeAPISupported(false);
-          }
-          return; // Stop further execution if QR code is not supported
-        }
-
-        if (isMounted) {
-          setIsBarcodeAPISupported(true);
-        }
-        barcodeDetectorRef.current = new BarcodeDetector({
-          formats: ['qr_code'],
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'environment' },
         });
-
-        // Start camera only after confirming barcode API support
-        try {
-          const stream = await navigator.mediaDevices.getUserMedia({
-            video: { facingMode: 'environment' },
-          });
-          console.log('Camera stream:', stream);
-          if (isMounted && videoRef.current) {
-            videoRef.current.srcObject = stream;
-            setIsCameraStreamActive(true);
-          } else if (!videoRef.current) {
-            console.error('Video element ref is not available');
-            if (isMounted) {
-              setScanError(t('errors.scanner.videoElementError'));
-              setIsCameraStreamActive(false);
-            }
-          }
-        } catch (cameraError) {
-          console.error('Error accessing camera:', cameraError);
-          if (isMounted) {
-            setScanError(t('errors.scanner.cameraAccessError'));
-            setIsCameraStreamActive(false);
-          }
+        console.log('Camera stream:', stream);
+        if (videoElement) {
+          videoElement.srcObject = stream;
+          setIsCameraStreamActive(true);
+        } else {
+          console.error('Video element ref is not available');
+          setScanErrorMessage(t('errors.scanner.videoElementError'));
+          setScanErrorModalOpen(true);
+          setIsCameraStreamActive(false);
+          setIsScanActive(false); // Stop scan if video element error
         }
-      } catch (error) {
-        console.error(
-          'Error getting supported formats from BarcodeDetector polyfill:',
-          error,
-        );
-        if (isMounted) {
-          setScanError(t('errors.scanner.barcodeApiError'));
-          setIsBarcodeAPISupported(false);
-        }
-      }
-    };
-
-    checkBarcodeSupportAndStartCamera();
-
-    return () => {
-      isMounted = false; // Set flag to indicate component unmounted
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      const videoElement = videoRef.current;
-      if (videoElement && videoElement.srcObject) {
-        const stream = videoElement.srcObject as MediaStream;
-        stream.getTracks().forEach((track) => track.stop());
-        videoElement.srcObject = null;
+      } catch (cameraError) {
+        console.error('Error accessing camera:', cameraError);
+        setScanErrorMessage(t('errors.scanner.cameraAccessError'));
+        setScanErrorModalOpen(true);
         setIsCameraStreamActive(false);
+        setIsScanActive(false); // Stop scan if camera access error
       }
-    };
+    } catch (error) {
+      console.error(
+        'Error getting supported formats from BarcodeDetector polyfill:',
+        error,
+      );
+      setScanErrorMessage(t('errors.scanner.barcodeApiError'));
+      setScanErrorModalOpen(true);
+      setIsBarcodeAPISupported(false);
+      setIsScanActive(false); // Stop scan if barcode API error
+    }
   }, [t]);
+
+  const stopScan = useCallback(() => {
+    setIsScanActive(false);
+    stopCameraStream();
+  }, [stopCameraStream]);
+
+  useEffect(() => {
+    prepareZXingModule(); // Initialize ZXing module on component mount
+    return () => {
+      stopScan();
+    };
+  }, [stopScan]);
 
   const handleBarcodeScan = useCallback(
     async (rawValue: string) => {
-      if (isOpen) {
+      if (isSuccessModalOpen || scanErrorModalOpen) {
+        // Check both modals
         console.debug('Modal is already open, ignoring scan result');
         return;
       }
 
-      setScanError(null);
+      setScanErrorMessage(null);
       setJwt(rawValue);
 
       try {
@@ -162,7 +211,8 @@ const ScanAttendanceQr = () => {
           rawValue,
         );
         if (!jwtPayload) {
-          setScanError('Invalid QR code');
+          setScanErrorMessage('Invalid QR code');
+          setScanErrorModalOpen(true);
           console.error('Invalid QR code:', rawValue);
           return;
         }
@@ -171,16 +221,18 @@ const ScanAttendanceQr = () => {
         const users = usersRef.current;
 
         if (!users) {
-          setScanError('Please wait while user data is loading...');
+          setScanErrorMessage('Please wait while user data is loading...');
+          setScanErrorModalOpen(true);
           return;
         }
 
         const foundUser = users.find((user) => user.id === jwtPayload.u);
         if (foundUser) {
           setUserData(foundUser);
-          onOpen();
+          onSuccessModalOpen(); // Open success modal now for confirmation
         } else {
-          setScanError(t('errors.scanner.auth.userNotFound'));
+          setScanErrorMessage(t('errors.scanner.auth.userNotFound'));
+          setScanErrorModalOpen(true);
           console.error(
             'User not found in fetched users:',
             jwtPayload.u,
@@ -190,23 +242,25 @@ const ScanAttendanceQr = () => {
         }
         navigator.vibrate?.(400);
       } catch (error) {
-        setScanError('Invalid QR code format or content');
+        setScanErrorMessage('Invalid QR code format or content');
+        setScanErrorModalOpen(true);
         console.error('Error decoding or processing QR code:', error);
       }
     },
-    [isOpen, onOpen, t],
+    [isSuccessModalOpen, onSuccessModalOpen, t, scanErrorModalOpen],
   );
 
-  // Barcode detection effect - starts only when camera stream is active and barcode API is supported
   useEffect(() => {
-    if (!isBarcodeAPISupported || !isCameraStreamActive) return;
+    if (!isScanActive || !isBarcodeAPISupported || !isCameraStreamActive)
+      return;
 
     const detectBarcode = async () => {
       if (
         !videoRef.current ||
         videoRef.current.readyState < 2 ||
         !barcodeDetectorRef.current ||
-        isOpen
+        isSuccessModalOpen ||
+        scanErrorModalOpen // Check both modals
       ) {
         animationFrameRef.current = requestAnimationFrame(detectBarcode);
         return;
@@ -224,7 +278,7 @@ const ScanAttendanceQr = () => {
             const rawValue = qrBarcode.rawValue;
             if (rawValue) {
               handleBarcodeScan(rawValue);
-              return; // Stop scanning after successful detection and processing
+              return;
             } else {
               console.warn('QR code raw value is empty.');
             }
@@ -239,13 +293,13 @@ const ScanAttendanceQr = () => {
         }
       } catch (error) {
         if ((error as Error)?.name !== 'AbortError') {
-          // Ignore AbortError which can happen during rapid component unmount
           console.error('Barcode detection error:', error);
-          setScanError(t('errors.scanner.barcodeDetectionError'));
+          setScanErrorMessage(t('errors.scanner.barcodeDetectionError'));
+          setScanErrorModalOpen(true);
         }
       } finally {
-        if (!isOpen) {
-          // Continue scanning only if modal is not open
+        if (!isSuccessModalOpen && !scanErrorModalOpen) {
+          // Check both modals
           animationFrameRef.current = requestAnimationFrame(detectBarcode);
         }
       }
@@ -259,17 +313,22 @@ const ScanAttendanceQr = () => {
   }, [
     handleBarcodeScan,
     isBarcodeAPISupported,
-    isCameraStreamActive,
-    isOpen,
+    isSuccessModalOpen,
     t,
+    scanErrorModalOpen,
+    isScanActive,
+    isCameraStreamActive,
   ]);
 
-  const handleResetScan = useCallback(() => {
-    setScanError(null);
+  const handleStopScanButton = useCallback(() => {
+    setScanErrorMessage(null);
+    setScanErrorModalOpen(false);
     setUserData(null);
     setJwt(null);
-    setLogAttendanceError(null);
-  }, []);
+    stopScan();
+    setStatusModalMessage(null);
+    setStatusModalType(null);
+  }, [stopScan]);
 
   const sendDataToBackend = useCallback(
     async (jwt: string) => {
@@ -278,7 +337,8 @@ const ScanAttendanceQr = () => {
         return;
       }
       setIsLoggingAttendance(true);
-      setLogAttendanceError(null);
+      setStatusModalMessage(null);
+      setStatusModalType(null);
       try {
         const { data } = await axios.post(
           '/v1/admin/log-attendance',
@@ -291,22 +351,35 @@ const ScanAttendanceQr = () => {
         );
         console.log('Attendance logged successfully:', data);
         setIsLoggingAttendance(false);
-        onClose();
-
-        window.alert(t('attendance.checkedInSuccess'));
+        setStatusModalType('success');
+        setStatusModalMessage(t('attendance.checkedInSuccess'));
+        onSuccessModalOpen(); // Open success modal with success message
       } catch (error) {
         console.error('Error logging attendance:', error);
-        setLogAttendanceError(getErrorMsg(error));
         setIsLoggingAttendance(false);
+        setStatusModalType('error');
+        setStatusModalMessage(getErrorMsg(error));
+        onSuccessModalOpen(); // Open success modal with error message
       }
     },
-    [accessToken, onClose, t],
+    [accessToken, onSuccessModalOpen, t],
   );
 
   const handleConfirmAttendance = useCallback(() => {
     if (!jwt) return;
     sendDataToBackend(jwt);
   }, [sendDataToBackend, jwt]);
+
+  const handleScanErrorModalClose = () => {
+    setScanErrorModalOpen(false);
+    setScanErrorMessage(null);
+  };
+
+  const handleStatusModalClose = () => {
+    onSuccessModalClose();
+    setStatusModalMessage(null);
+    setStatusModalType(null);
+  };
 
   return (
     <div className="p-4">
@@ -316,52 +389,99 @@ const ScanAttendanceQr = () => {
       </h2>
 
       <div className="relative max-w-full">
-        {scanError && <Alert color="danger">{scanError}</Alert>}
-        {logAttendanceError && (
-          <Alert color="danger">
-            Error logging attendance: {logAttendanceError}
-          </Alert>
-        )}
-        {fetchUsersError && (
+        {fetchUsersError && ( // Keep fetch users error as alert for initial load issues
           <Alert color="danger">Error fetching users: {fetchUsersError}</Alert>
         )}
 
         {!isBarcodeAPISupported ? (
-          <Alert color="warning">
+          <Alert
+            color="warning"
+            icon={<FaExclamationTriangle />}
+            className={isScanActive ? '' : 'hidden'}
+          >
             {t('errors.scanner.barcodeApiNotSupportedAction')}
           </Alert>
         ) : (
           <>
             {!isCameraStreamActive && (
-              <Alert color="warning">
+              <Alert
+                color="warning"
+                icon={<FaExclamationTriangle />}
+                className={isScanActive ? '' : 'hidden'}
+              >
                 {t('errors.scanner.cameraNotActive')}
               </Alert>
             )}
-            <div className="max-w-lg mx-auto relative aspect-video">
-              <video
-                id="qr-video"
-                ref={videoRef}
-                className="w-full"
-                autoPlay
-                playsInline
-                muted
-                style={{ transform: 'scaleX(-1)' }}
-              />
-              <div className="absolute inset-0 border-4 border-green-500 pointer-events-none" />{' '}
-            </div>
           </>
         )}
+
+        <div
+          className={cn('max-w-lg mx-auto relative aspect-video', {
+            hidden: !isCameraStreamActive,
+          })}
+        >
+          <video
+            id="qr-video"
+            ref={videoRef}
+            className="w-full"
+            autoPlay
+            playsInline
+            muted
+            style={{ transform: 'scaleX(-1)' }}
+          />
+          <div className="absolute inset-0 border-4 border-green-500 pointer-events-none" />
+        </div>
       </div>
 
-      <Modal isOpen={isOpen} onClose={onClose}>
+      {/* Scan Error Modal */}
+      <Modal isOpen={scanErrorModalOpen} onClose={handleScanErrorModalClose}>
         <ModalContent>
-          <ModalHeader>{t('attendance.modal.header')}</ModalHeader>
+          <ModalHeader>
+            <FaTimesCircle className="mr-2 inline-block text-red-500" />
+            {t('errors.error')}
+          </ModalHeader>
           <ModalBody>
-            {isLoadingUsers ? (
+            <p>{scanErrorMessage}</p>
+          </ModalBody>
+          <ModalFooter>
+            <Button color="danger" onPress={handleScanErrorModalClose}>
+              {t('common.ok')}
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
+      {/* Success/Status Modal - now handles both success and error */}
+      <Modal isOpen={isSuccessModalOpen} onClose={handleStatusModalClose}>
+        <ModalContent>
+          <ModalHeader>
+            {statusModalType === 'success' && (
+              <>
+                <FaCheckCircle className="mr-2 inline-block text-green-500" />
+                {t('common.success')}
+              </>
+            )}
+            {statusModalType === 'error' && (
+              <>
+                <FaTimesCircle className="mr-2 inline-block text-red-500" />
+                {t('common.error')}
+              </>
+            )}
+            {statusModalType === 'warning' && (
+              <>
+                <FaExclamationTriangle className="mr-2 inline-block text-yellow-500" />
+                {t('common.warning')}
+              </>
+            )}
+            {!statusModalType && t('attendance.modal.header')}{' '}
+            {/* Default header if type is not set */}
+          </ModalHeader>
+          <ModalBody>
+            {isLoadingUsers && statusModalType !== 'error' ? ( // Show spinner only for loading and not error from loading
               <div className="flex justify-center">
                 <Spinner size="lg" />
               </div>
-            ) : userData ? (
+            ) : userData && statusModalType !== 'error' ? (
               <div>
                 <p>
                   <strong>{t('attendance.modal.name')}:</strong>{' '}
@@ -373,29 +493,48 @@ const ScanAttendanceQr = () => {
                 </p>
                 <p>{t('attendance.modal.confirmPrompt')}</p>
               </div>
+            ) : statusModalMessage ? (
+              <p>{statusModalMessage}</p> // Display status message for both success and error
             ) : (
-              <p>
-                {scanError ? scanError : t('attendance.modal.fetchingUser')}{' '}
-              </p>
+              <p>{t('attendance.modal.fetchingUser')}</p>
             )}
           </ModalBody>
           <ModalFooter>
-            <Button onPress={onClose}>{t('common.cancel')}</Button>
-            <Button
-              color="primary"
-              onPress={handleConfirmAttendance}
-              isLoading={isLoggingAttendance}
-              isDisabled={!userData}
-            >
-              {t('common.save')}
+            <Button onPress={handleStatusModalClose}>
+              {t('common.cancel')}
             </Button>
+            {statusModalType !== 'error' && ( // Conditionally show confirm button if it's not an error modal
+              <Button
+                color="primary"
+                onPress={handleConfirmAttendance}
+                isLoading={isLoggingAttendance}
+                isDisabled={!userData}
+              >
+                {t('common.save')}
+              </Button>
+            )}
+            {statusModalType === 'error' && ( // For error modal only OK button
+              <Button color="danger" onPress={handleStatusModalClose}>
+                {t('common.ok')}
+              </Button>
+            )}
           </ModalFooter>
         </ModalContent>
       </Modal>
 
-      <div className="mt-5 flex justify-center">
-        <Button onPress={handleResetScan}>{t('attendance.resetScan')}</Button>
-      </div>
+      {!isScanActive ? (
+        <div className="mt-5 flex justify-center">
+          <Button color="primary" onPress={startScan}>
+            {t('attendance.startScan')}
+          </Button>
+        </div>
+      ) : (
+        <div className="mt-5 flex justify-center">
+          <Button onPress={handleStopScanButton}>
+            {t('attendance.stopScan')}
+          </Button>
+        </div>
+      )}
     </div>
   );
 };

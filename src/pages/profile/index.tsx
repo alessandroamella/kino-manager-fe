@@ -1,42 +1,44 @@
-import {
-  Card,
-  CardBody,
-  CardHeader,
-  Code,
-  Skeleton,
-  Divider,
-  Avatar,
-  Chip,
-  Tooltip,
-  Alert,
-  Button,
-} from '@heroui/react';
-import { format, isToday } from 'date-fns';
-import { useTranslation } from 'react-i18next';
-import useUserStore from '../../store/user';
-import {
-  FiMail,
-  FiCalendar,
-  FiMapPin,
-  FiCode,
-  FiPhone,
-  FiHome,
-} from 'react-icons/fi';
-import { dateFnsLang } from '../../utils/dateFnsLang';
-import { BiTime } from 'react-icons/bi';
-import useIsMobile from '../../utils/isMobile';
-import parsePhoneNumber from 'libphonenumber-js';
-import { useCallback, useMemo, useState } from 'react';
-import { hasFlag } from 'country-flag-icons';
-import getUnicodeFlagIcon from 'country-flag-icons/unicode';
-import { FaIdCard } from 'react-icons/fa';
-import axios from 'axios';
-import { getErrorMsg } from '@/types/error';
-import { AiOutlineSignature } from 'react-icons/ai';
+import AttendanceQr from '@/components/attendance/AttendanceQr';
 import SignatureModal from '@/components/input/SignatureModal';
 import PageTitle from '@/components/navigation/PageTitle';
 import ScrollTop from '@/components/navigation/ScrollTop';
-import AttendanceQr from '@/components/attendance/AttendanceQr';
+import { getErrorMsg } from '@/types/error';
+import {
+  addToast,
+  Alert,
+  Avatar,
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  Chip,
+  Code,
+  Divider,
+  Skeleton,
+  Tooltip,
+} from '@heroui/react';
+import axios from 'axios';
+import { hasFlag } from 'country-flag-icons';
+import getUnicodeFlagIcon from 'country-flag-icons/unicode';
+import { format, isToday } from 'date-fns';
+import parsePhoneNumber from 'libphonenumber-js';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { AiOutlineSignature } from 'react-icons/ai';
+import { BiTime } from 'react-icons/bi';
+import { FaIdCard } from 'react-icons/fa';
+import {
+  FiCalendar,
+  FiCode,
+  FiHome,
+  FiMail,
+  FiMapPin,
+  FiPhone,
+} from 'react-icons/fi';
+import { useLocation } from 'react-router';
+import useUserStore from '../../store/user';
+import { dateFnsLang } from '../../utils/dateFnsLang';
+import useIsMobile from '../../utils/isMobile';
 
 const Profile = () => {
   const { t, i18n } = useTranslation();
@@ -46,6 +48,20 @@ const Profile = () => {
   const token = useUserStore((store) => store.accessToken);
 
   const isMobile = useIsMobile();
+
+  const { state } = useLocation();
+
+  useEffect(() => {
+    if (user && state?.justSignedUp) {
+      addToast({
+        title: t('profile.welcome', {
+          context: user.gender === 'M' ? 'male' : 'female',
+        }),
+        description: t('profile.welcomeMessage'),
+        color: 'success',
+      });
+    }
+  }, [user, state?.justSignedUp, t]);
 
   const [phoneCountry, phoneFormatted] = useMemo(() => {
     const parsed = parsePhoneNumber(user?.phoneNumber || '-');

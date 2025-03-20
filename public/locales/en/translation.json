@@ -3,6 +3,7 @@
     "title": "Kinó Café",
     "yes": "Yes",
     "no": "No",
+    "ok": "OK",
     "loading": "Loading",
     "cancel": "Cancel",
     "save": "Save",
@@ -148,7 +149,8 @@
       "errorFetchingUser": "Error fetching user data.",
       "fetchingUser": "Fetching user data..."
     },
-    "resetScan": "Reset QR Code Scanner",
+    "startScan": "Start Scan",
+    "stopScan": "Stop Scan",
     "showQrCode": "Show QR Code",
     "scanQrCode": "Scan this QR code at the entrance!",
     "scanQrCodeShort": "Entrance QR"
@@ -237,7 +239,9 @@
     "hi": "Hi {{name}}!",
     "addSignature": "Add Signature",
     "noSignature": "No signature",
-    "noSignatureMessage": "You haven't added a signature yet. Please add one to complete your profile in order to be eligible for a membership card"
+    "noSignatureMessage": "You haven't added a signature yet. Please add one to complete your profile in order to be eligible for a membership card",
+    "welcome": "Welcome to Kinó Café!",
+    "welcomeMessage": "We're glad to have you on board."
   },
   "languages": {
     "it": "Italian",

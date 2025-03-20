@@ -35,6 +35,7 @@ app.use(
           'https://maps.googleapis.com',
           'https://maps.gstatic.com',
           'https://www.googletagmanager.com',
+          'https://unpkg.com',
         ],
         styleSrc: [
           "'self'",
