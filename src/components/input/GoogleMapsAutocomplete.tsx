@@ -131,11 +131,11 @@ const GoogleMapsAutocomplete = ({
 
   const handleSelectionChange = useCallback(
     (key: Key | null) => {
-      console.log('Google Maps Places Selection:', key);
       if (!key) {
         onPlaceSelect?.(null); // Inform parent about no selection
         return; // No selection made
       }
+      console.log('Google Maps Places Selection:', key);
 
       const selectedPlaceId = String(key);
       const selectedItem = autocompleteItems.find(

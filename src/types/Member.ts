@@ -14,7 +14,7 @@ export interface MemberExtended extends BaseDocument {
   birthProvince: string | null;
   gender: 'M' | 'F' | 'X';
   streetName: string | null;
-  streetNumber: number | null;
+  streetNumber: string | null;
   postalCode: string | null;
   city: string | null;
   province: string | null;
@@ -41,6 +41,7 @@ export type Member = Pick<
   | 'firstName'
   | 'lastName'
   | 'email'
+  | 'country'
   | 'codiceFiscale'
   | 'birthCountry'
   | 'birthDate'

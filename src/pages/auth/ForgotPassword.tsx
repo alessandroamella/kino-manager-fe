@@ -1,12 +1,12 @@
+import PageTitle from '@/components/navigation/PageTitle';
+import ScrollTop from '@/components/navigation/ScrollTop';
+import { getErrorMsg } from '@/types/error';
+import { Alert, Button, Card, Form, Input } from '@heroui/react';
+import axios from 'axios';
 import { useState } from 'react';
-import { Form, Input, Button, Alert, Card } from '@heroui/react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router';
-import PageTitle from '@/components/navigation/PageTitle';
-import ScrollTop from '@/components/navigation/ScrollTop';
-import axios from 'axios';
-import { getErrorMsg } from '@/types/error';
 
 type FormData = {
   email: string;

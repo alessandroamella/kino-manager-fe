@@ -7,7 +7,7 @@ export interface MembershipPdfData
   > {
   birthComune: string;
   streetName: string;
-  streetNumber: number;
+  streetNumber: string;
   postalCode: string;
   city: string;
   province: string;

@@ -24,6 +24,7 @@
   },
   "auth": {
     "password": "Password",
+    "repeatPassword": "Repeat Password",
     "logout": "Logout",
     "login": "Login",
     "signup": "Sign Up",
@@ -46,8 +47,8 @@
     "emailPlaceholder": "Enter your email",
     "phoneNumber": "Phone Number",
     "phoneNumberPlaceholder": "Enter your phone number",
-    "password": "Password",
     "passwordPlaceholder": "Enter your password",
+    "repeatPasswordPlaceholder": "Repeat your password",
     "personalDataHeading": "Personal Data",
     "personalDataDescription": "If you have an Italian fiscal code, enter it to automatically fill in your personal data.\nIf you don't have a fiscal code or don't rember it, click on \"Manual\" to enter the data manually.",
     "cfTab": "Fiscal Code",
@@ -120,7 +121,8 @@
       "noUppercase": "Password must contain at least one uppercase letter",
       "noLowercase": "Password must contain at least one lowercase letter",
       "noDigit": "Password must contain at least one digit",
-      "noLeadingTrailingSpaces": "Password should not start or end with a space"
+      "noLeadingTrailingSpaces": "Password should not start or end with a space",
+      "mismatch": "Passwords do not match"
     },
     "terms": {
       "accept": "You must accept the Terms of Service and Privacy Policy"
@@ -217,7 +219,7 @@
     "country": "Country",
     "birthProvince": "Birth Province",
     "noCardAssigned": "No card assigned",
-    "notAMember": "No membership card",
+    "notAMember": "No membership card (yet)",
     "membershipCardNumber": "Membership Number",
     "membershipCardNumberShort": "Card Num.",
     "verified": "Verified",

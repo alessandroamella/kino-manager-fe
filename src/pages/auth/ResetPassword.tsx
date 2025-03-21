@@ -1,19 +1,19 @@
-import { useState, useEffect } from 'react';
-import { Form, Input, Button, Alert, Card } from '@heroui/react';
+import PageTitle from '@/components/navigation/PageTitle';
+import ScrollTop from '@/components/navigation/ScrollTop';
+import { getErrorMsg } from '@/types/error';
+import { resetPasswordYupSchema } from '@/validators/reset-password';
+import { Alert, Button, Card, Form, Input } from '@heroui/react';
+import { yupResolver } from '@hookform/resolvers/yup';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import {
+  createSearchParams,
   Link,
   useNavigate,
   useSearchParams,
-  createSearchParams,
 } from 'react-router';
-import PageTitle from '@/components/navigation/PageTitle';
-import ScrollTop from '@/components/navigation/ScrollTop';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { resetPasswordYupSchema } from '@/validators/reset-password';
-import axios from 'axios';
-import { getErrorMsg } from '@/types/error';
 
 type FormData = {
   password: string;
@@ -47,7 +47,7 @@ const ResetPassword = () => {
     formState: { errors, isValid },
     trigger,
   } = useForm<FormData>({
-    mode: 'onBlur',
+    mode: 'onChange',
     resolver: yupResolver(resetPasswordYupSchema(t)),
     defaultValues: {
       password: '',

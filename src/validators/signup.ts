@@ -4,7 +4,7 @@ import parsePhoneNumber from 'libphonenumber-js';
 import * as yup from 'yup';
 import { passwordYupSchema } from './password';
 
-export const signupYupSchema = (t: TFunction, useCodiceFiscale: boolean) =>
+export const signupYupSchema = (t: TFunction) =>
   yup.object().shape({
     firstName: yup
       .string()
@@ -39,25 +39,39 @@ export const signupYupSchema = (t: TFunction, useCodiceFiscale: boolean) =>
         },
       ),
     password: passwordYupSchema(t, 'auth.password'),
+    repeatPassword: yup
+      .string()
+      .required(t('errors.field.required', { field: t('auth.repeatPassword') }))
+      .oneOf([yup.ref('password')], t('errors.password.mismatch')),
     codiceFiscale: yup
       .string()
       .notRequired()
       .nullable()
       .trim()
       .uppercase()
-      .test('codiceFiscale', t('signup.cfInvalid'), (value) => {
+      .when('$useCodiceFiscale', ([useCodiceFiscale], schema) => {
         if (!useCodiceFiscale) {
+          return schema;
+        }
+        return schema.required(
+          t('errors.field.required', { field: t('signup.codiceFiscale') }),
+        );
+      })
+      .test(
+        'codiceFiscale',
+        t('signup.cfInvalid'),
+        (value, { options: { context } }) => {
+          if (
+            context?.useCodiceFiscale &&
+            (typeof value !== 'string' ||
+              value.length !== 16 ||
+              !CodiceFiscale.check(value))
+          ) {
+            return false;
+          }
           return true;
-        }
-        if (
-          typeof value !== 'string' ||
-          value.length !== 16 ||
-          !CodiceFiscale.check(value)
-        ) {
-          return false;
-        }
-        return true;
-      }),
+        },
+      ),
     birthCountry: yup
       .string()
       .required(
@@ -94,20 +108,23 @@ export const signupYupSchema = (t: TFunction, useCodiceFiscale: boolean) =>
       .string()
       .min(1, t('errors.field.required', { field: t('profile.address') })),
     streetName: yup.string().notRequired().nullable().min(1).max(255),
-    streetNumber: yup
-      .number()
-      .integer()
-      .notRequired()
-      .nullable()
-      .min(1)
-      .max(99999),
+    streetNumber: yup.string().notRequired().nullable().min(1).max(20),
     postalCode: yup
       .string()
       .notRequired()
       .nullable()
       .length(5, t('errors.field.invalid')),
     city: yup.string().notRequired().nullable().min(1).max(255),
-    province: yup.string().notRequired().nullable().min(2).max(2),
+    // province should be min max 2 when country is IT
+    province: yup
+      .string()
+      .notRequired()
+      .nullable()
+      .when('country', {
+        is: 'IT',
+        then: (schema) => schema.min(2).max(2),
+        otherwise: (schema) => schema.min(1).max(255),
+      }),
     country: yup.string().notRequired().nullable().min(2).max(2),
     signatureB64: yup
       .string()

@@ -1,36 +1,32 @@
-import { useState } from 'react';
 import {
+  Button,
+  Image,
   Navbar,
   NavbarBrand,
   NavbarContent,
   NavbarItem,
   NavbarMenu,
   NavbarMenuItem,
-  Dropdown,
-  DropdownTrigger,
-  DropdownMenu,
-  DropdownItem,
   NavbarMenuToggle,
-  Image,
   Skeleton,
-  Button,
 } from '@heroui/react';
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   AiFillSetting,
   AiOutlineHome,
   AiOutlineLogout,
   AiOutlineUser,
 } from 'react-icons/ai';
-import { useTranslation } from 'react-i18next';
-import logo from '../../assets/images/logo_small.png';
-import logoDark from '../../assets/images/logo-dark.png';
-import useUserStore from '../../store/user';
 import { Link, useLocation } from 'react-router';
-import ChangeLanguage from './ChangeLanguage';
-import UserData from './UserData';
+import logoDark from '../../assets/images/logo-dark.png';
+import logo from '../../assets/images/logo_small.png';
 import LoginBtn from '../../pages/auth/LoginBtn';
 import SignupBtn from '../../pages/auth/SignupBtn';
+import useUserStore from '../../store/user';
+import ChangeLanguage from './ChangeLanguage';
 import ToggleTheme from './ToggleTheme';
+import UserData from './UserData';
 
 const Header = () => {
   const { t } = useTranslation();
@@ -81,29 +77,9 @@ const Header = () => {
 
         <NavbarContent justify="end" className="hidden sm:flex">
           {user ? (
-            <Dropdown placement="bottom-end">
-              <DropdownTrigger>
-                <NavbarItem className="cursor-pointer mt-2 mr-2 min-w-20">
-                  <UserData />
-                </NavbarItem>
-              </DropdownTrigger>
-              <DropdownMenu aria-label={t('header.userActions')}>
-                <DropdownItem key="profile" textValue={t('header.profile')}>
-                  <Link to="/profile" className="w-full inline-block">
-                    <AiOutlineUser className="mr-2 inline-block" />
-                    {t('header.profile')}
-                  </Link>
-                </DropdownItem>
-                <DropdownItem
-                  key="logout"
-                  onPress={logout}
-                  textValue={t('auth.logout')}
-                >
-                  <AiOutlineLogout className="mr-2 inline-block" />
-                  {t('auth.logout')}
-                </DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
+            <NavbarItem className="cursor-pointer mt-2 mr-2 min-w-20">
+              <UserData to="/profile" />
+            </NavbarItem>
           ) : (
             <div className="flex gap-2 items-center">
               <NavbarItem>

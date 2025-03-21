@@ -24,12 +24,12 @@ import { format, isToday } from 'date-fns';
 import parsePhoneNumber from 'libphonenumber-js';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AiOutlineSignature } from 'react-icons/ai';
+import { AiOutlineLogout, AiOutlineSignature } from 'react-icons/ai';
 import { BiTime } from 'react-icons/bi';
-import { FaIdCard } from 'react-icons/fa';
 import {
   FiCalendar,
   FiCode,
+  FiCreditCard,
   FiHome,
   FiMail,
   FiMapPin,
@@ -44,6 +44,7 @@ const Profile = () => {
   const { t, i18n } = useTranslation();
 
   const user = useUserStore((store) => store.user);
+  const logout = useUserStore((store) => store.logout);
   const fetchUser = useUserStore((store) => store.fetchUser);
   const token = useUserStore((store) => store.accessToken);
 
@@ -186,22 +187,22 @@ const Profile = () => {
                 <div>
                   <div className="flex items-center space-x-2 mb-2">
                     <FiMail className="text-gray-500" />
-                    <span className="font-semibold text-gray-700 dark:text-gray-300">
+                    <span className="font-semibold text-foreground-900">
                       {t('profile.email')}:
                     </span>
                   </div>
-                  <p className="text-foreground-500">{user.email}</p>
+                  <p className="text-foreground-600">{user.email}</p>
                 </div>
                 <div>
                   <div className="flex items-center space-x-2 mb-2">
                     <FiPhone className="text-gray-500" />
-                    <span className="font-semibold text-gray-700 dark:text-gray-300">
+                    <span className="font-semibold text-foreground-900">
                       {t('profile.phoneNumber')}:
                     </span>
                   </div>
-                  <p className="text-foreground-500">
+                  <p className="text-foreground-600">
                     {phoneCountry && hasFlag(phoneCountry) && (
-                      <span className="mr-2">
+                      <span className="mr-[6px]">
                         {getUnicodeFlagIcon(phoneCountry)}
                       </span>
                     )}
@@ -211,35 +212,38 @@ const Profile = () => {
                 <div>
                   <div className="flex items-center space-x-2 mb-2">
                     <FiHome className="text-gray-500" />
-                    <span className="font-semibold text-gray-700 dark:text-gray-300">
+                    <span className="font-semibold text-foreground-900">
                       {t('profile.address')}:
                     </span>
                   </div>
-                  <p className="text-foreground-500">{user.address}</p>
-                </div>
-                <div>
-                  <div className="flex items-center space-x-2 mb-2">
-                    <Code size="sm">
-                      <FiMapPin className="text-gray-500" />
-                    </Code>
-                    <span className="font-semibold text-gray-700 dark:text-gray-300">
-                      {t('profile.birthComune')}:
-                    </span>
-                  </div>
-                  <p className="text-foreground-500">
-                    {user.birthComune || '-'}
+                  <p className="text-foreground-600">
+                    {user.country && hasFlag(user.country) && (
+                      <span className="mr-[6px]">
+                        {getUnicodeFlagIcon(user.country)}
+                      </span>
+                    )}
+                    {user.address}
                   </p>
                 </div>
+                {user.birthComune && (
+                  <div>
+                    <div className="flex items-center space-x-2 mb-2">
+                      <FiMapPin className="text-gray-500" />
+                      <span className="font-semibold text-foreground-900">
+                        {t('profile.birthComune')}:
+                      </span>
+                    </div>
+                    <p className="text-foreground-600">{user.birthComune}</p>
+                  </div>
+                )}
                 <div>
                   <div className="flex items-center space-x-2 mb-2">
-                    <Code size="sm">
-                      <FiCalendar className="text-gray-500" />
-                    </Code>
-                    <span className="font-semibold text-gray-700 dark:text-gray-300">
+                    <FiCalendar className="text-gray-500" />
+                    <span className="font-semibold text-foreground-900">
                       {t('profile.birthDate')}:
                     </span>
                   </div>
-                  <p className="text-foreground-500">
+                  <p className="text-foreground-600">
                     {format(user.birthDate, 'dd MMMM yyyy', {
                       locale: dateFnsLang(i18n),
                     }) || '-'}
@@ -248,46 +252,53 @@ const Profile = () => {
                 </div>
                 <div>
                   <div className="flex items-center space-x-2 mb-2">
-                    <Code size="sm">
-                      <FiMapPin className="text-gray-500" />
-                    </Code>
-                    <span className="font-semibold text-gray-700 dark:text-gray-300">
+                    <FiMapPin className="text-gray-500" />
+                    <span className="font-semibold text-foreground-900">
                       {t('profile.birthCountry')}:
                     </span>
                   </div>
-                  <p className="text-foreground-500">
+                  <p className="text-foreground-600">
                     {hasFlag(user.birthCountry) && (
-                      <span className="mr-2">
+                      <span className="mr-[6px]">
                         {getUnicodeFlagIcon(user.birthCountry)}
                       </span>
                     )}
-                    {t(`countries.${user.birthCountry}`) || '-'}
+                    {t(`countries.${user.birthCountry}`)}
                   </p>
                 </div>
-                <div>
-                  <div className="flex items-center space-x-2 mb-2">
-                    <Code size="sm">
+                {user.codiceFiscale && (
+                  <div>
+                    <div className="flex items-center space-x-2 mb-2">
                       <FiCode className="text-gray-500" />
-                    </Code>
-                    <span className="font-semibold text-gray-700 dark:text-gray-300">
-                      {t('profile.codiceFiscale')}:
-                    </span>
+                      <span className="font-semibold text-foreground-900">
+                        {t('profile.codiceFiscale')}:
+                      </span>
+                    </div>
+                    <Code size="md">{user.codiceFiscale}</Code>
                   </div>
-                  <Code size="md">{user.codiceFiscale || '-'}</Code>
-                </div>
+                )}
                 <div>
                   <div className="flex items-center space-x-2 mb-2">
-                    <FaIdCard className="text-gray-500" />
-                    <span className="font-semibold text-gray-700 dark:text-gray-300">
+                    <FiCreditCard className="text-gray-500" />
+                    <span className="font-semibold text-foreground-900">
                       {t('profile.membershipCardNumber')}:
                     </span>
                   </div>
-                  <p className="text-foreground-500">
+                  <p className="text-foreground-600">
                     {user.membershipCardNumber
                       ? t('profile.card', { n: user.membershipCardNumber })
                       : t('profile.notAMember')}
                   </p>
                 </div>
+              </div>
+
+              <Divider className="my-4" />
+
+              <div className="flex justify-center">
+                <Button color="danger" onPress={logout}>
+                  <AiOutlineLogout className="mr-2 inline-block" />
+                  {t('auth.logout')}
+                </Button>
               </div>
             </CardBody>
           ) : (

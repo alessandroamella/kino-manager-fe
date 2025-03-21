@@ -9,7 +9,7 @@ import { parseAddress } from '@/utils/parseAddress';
 import { UTCDateMini } from '@date-fns/utc';
 import type { CalendarDate } from '@heroui/react';
 import {
-  Alert,
+  addToast,
   Autocomplete,
   AutocompleteItem,
   Button,
@@ -29,13 +29,14 @@ import {
   Tooltip,
 } from '@heroui/react';
 import { yupResolver } from '@hookform/resolvers/yup';
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 import CodiceFiscale from 'codice-fiscale-js';
+import { hasFlag } from 'country-flag-icons';
+import getUnicodeFlagIcon from 'country-flag-icons/unicode';
 import { format, formatDate, subYears } from 'date-fns';
-import { AnimatePresence, motion } from 'framer-motion';
 import countries from 'i18n-iso-countries';
 import parsePhoneNumber from 'libphonenumber-js';
-import { omit, pick } from 'lodash';
+import { debounce, omit, pick } from 'lodash';
 import { Key, useCallback, useEffect, useMemo, useState } from 'react';
 import ReactGA from 'react-ga4';
 import { Controller, useForm } from 'react-hook-form';
@@ -68,12 +69,9 @@ const Signup = () => {
 
   const [loading, setLoading] = useState(false);
 
-  const validationSchema = useMemo(
-    () => signupYupSchema(t, useCodiceFiscale),
-    [t, useCodiceFiscale],
-  );
-
   const [isSignatureModalOpen, setIsSignatureModalOpen] = useState(false);
+
+  const validationSchema = useMemo(() => signupYupSchema(t), [t]);
 
   const {
     register,
@@ -85,9 +83,8 @@ const Signup = () => {
     formState: { errors, isValid, touchedFields },
   } = useForm<FormData>({
     mode: 'onBlur',
-    resolver: yupResolver(validationSchema, {
-      context: { useCodiceFiscale },
-    }),
+    context: { useCodiceFiscale },
+    resolver: yupResolver(validationSchema),
     defaultValues: {
       codiceFiscale: null,
       birthComune: null,
@@ -104,13 +101,14 @@ const Signup = () => {
   const [countriesList, setCountriesList] = useState<Country[]>([]);
   const [countrySearchTerm, setCountrySearchTerm] = useState('');
   const [countrySuggestions, setCountrySuggestions] = useState<Country[]>([]);
-  const [signupError, setSignupError] = useState<string | null>(null);
+  // const [signupError, setSignupError] = useState<string | null>(null);
 
   const codiceFiscaleValue = watch('codiceFiscale')?.toUpperCase() || '';
   const birthComune = watch('birthComune');
   const birthCountry = watch('birthCountry');
   const address = watch('address');
   const phoneNumber = watch('phoneNumber');
+  const country = watch('country');
   const gender = watch('gender');
   const signatureB64 = watch('signatureB64');
   const acceptTerms = watch('acceptTerms');
@@ -305,7 +303,7 @@ const Signup = () => {
   const [search] = useSearchParams();
 
   const onSubmit = async (formData: FormData) => {
-    setSignupError(null);
+    // setSignupError(null);
     setLoading(true);
     console.log('Form Data:', formData);
     try {
@@ -353,6 +351,7 @@ const Signup = () => {
 
       delete obj.birthProvince;
       delete obj.acceptTerms;
+      delete obj.repeatPassword;
 
       const objNormalized = normalize(omit(obj, ['password']));
 
@@ -386,11 +385,29 @@ const Signup = () => {
       );
     } catch (error) {
       console.error('Error signing up:', getErrorMsg(error));
-      setSignupError(
-        (error as AxiosError)?.response?.status === 409
-          ? t('errors.auth.userAlreadyExists')
-          : getErrorMsg(error),
-      );
+      // setSignupError(
+      //   (error as AxiosError)?.response?.status === 409
+      //     ? t('errors.auth.userAlreadyExists')
+      //     : getErrorMsg(error),
+      // );
+
+      // <Alert
+      //   color="danger"
+      //   title={t('signup.errorTitle')}
+      //   description={signupError}
+      //   onClose={() => setSignupError(null)}
+      //   closeButtonProps={{
+      //     'aria-label': t('signup.errorCloseAria'),
+      //     type: 'button',
+      //     onPress: () => setSignupError(null),
+      //   }}
+      // />
+
+      addToast({
+        title: t('signup.errorTitle'),
+        description: getErrorMsg(error),
+        color: 'danger',
+      });
     } finally {
       setLoading(false);
     }
@@ -405,23 +422,29 @@ const Signup = () => {
     }
   }
 
-  function handleOnPlaceSelect(place: google.maps.places.PlaceResult | null) {
-    if (!place) {
+  const handleOnPlaceSelect = debounce(
+    (place: google.maps.places.PlaceResult | null) => {
+      if (!place) {
+        console.log('Place cleared');
+        trigger('address');
+        return;
+      }
+
+      setValue('address', place.formatted_address);
       trigger('address');
-      return;
-    }
 
-    setValue('address', place.formatted_address);
-    trigger('address');
+      const parsed = parseAddress(place);
+      console.log('Parsed address:', parsed);
 
-    const parsed = parseAddress(place);
-    setValue('streetName', parsed.streetName);
-    setValue('streetNumber', parsed.streetNumber);
-    setValue('postalCode', parsed.postalCode);
-    setValue('city', parsed.city);
-    setValue('province', parsed.province);
-    setValue('country', parsed.country);
-  }
+      setValue('streetName', parsed.streetName);
+      setValue('streetNumber', parsed.streetNumber);
+      setValue('postalCode', parsed.postalCode);
+      setValue('city', parsed.city);
+      setValue('province', parsed.province);
+      setValue('country', parsed.country);
+    },
+    300,
+  );
 
   function handleSignatureSave(signature: string | null) {
     if (signature) {
@@ -447,29 +470,6 @@ const Signup = () => {
           isOpen={isSignatureModalOpen}
           setIsOpen={setIsSignatureModalOpen}
         />
-        <AnimatePresence>
-          {signupError && (
-            <motion.div
-              className="sticky top-20 mx-4 md:w-fit rounded-xl md:ml-auto z-10"
-              initial={{ opacity: 0, y: -50 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -50 }}
-              transition={{ duration: 0.3, ease: 'easeInOut' }}
-            >
-              <Alert
-                color="danger"
-                title={t('signup.errorTitle')}
-                description={signupError}
-                onClose={() => setSignupError(null)}
-                closeButtonProps={{
-                  'aria-label': t('signup.errorCloseAria'),
-                  type: 'button',
-                  onPress: () => setSignupError(null),
-                }}
-              />
-            </motion.div>
-          )}
-        </AnimatePresence>
         <Card className="w-fit mx-auto">
           <Form
             onSubmit={handleSubmit(onSubmit)}
@@ -530,7 +530,7 @@ const Signup = () => {
             />
             <Input
               isDisabled={loading}
-              label={t('signup.password')}
+              label={t('auth.password')}
               placeholder={t('signup.passwordPlaceholder')}
               type="password"
               {...register('password')}
@@ -540,6 +540,18 @@ const Signup = () => {
               minLength={8}
               autoComplete="new-password"
               description={t('signup.passwordDisclaimer')}
+              isRequired
+            />
+            <Input
+              isDisabled={loading}
+              label={t('auth.repeatPassword')}
+              placeholder={t('signup.repeatPasswordPlaceholder')}
+              type="password"
+              {...register('repeatPassword')}
+              isInvalid={!!errors.repeatPassword}
+              errorMessage={errors.repeatPassword?.message}
+              minLength={8}
+              autoComplete="new-password"
               isRequired
             />
 
@@ -727,7 +739,12 @@ const Signup = () => {
               onPlaceSelect={handleOnPlaceSelect}
               description={
                 address
-                  ? t('signup.addressSelected', { address: address })
+                  ? t('signup.addressSelected', {
+                      address:
+                        country && hasFlag(country)
+                          ? `${getUnicodeFlagIcon(country)} ${address}`
+                          : address,
+                    })
                   : t('signup.addressDescription')
               }
               onBlur={() => trigger('address')}
@@ -801,11 +818,14 @@ const Signup = () => {
               )}
             </div>
 
+            {errors.codiceFiscale?.message}
+
             <Button
               color="primary"
               type="submit"
               className="w-full"
-              isDisabled={loading || !isValid}
+              onPress={() => !isValid && trigger()}
+              isDisabled={loading}
             >
               {t('signup.registerButton')}
             </Button>

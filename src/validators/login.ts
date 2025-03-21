@@ -4,7 +4,6 @@ import { signupYupSchema } from './signup';
 
 export const loginYupSchema = (t: TFunction) =>
   yup.object({
-    email: signupYupSchema(t, false).fields.email as yup.StringSchema<string>,
-    password: signupYupSchema(t, false).fields
-      .password as yup.StringSchema<string>,
+    email: signupYupSchema(t).fields.email as yup.StringSchema<string>,
+    password: signupYupSchema(t).fields.password as yup.StringSchema<string>,
   });

@@ -24,7 +24,8 @@
   },
   "auth": {
     "password": "Password",
-    "logout": "Esci",
+    "repeatPassword": "Ripeti Password",
+    "logout": "Logout",
     "login": "Accedi",
     "signup": "Registrati",
     "resetPassword": "Reimposta password"
@@ -46,8 +47,8 @@
     "emailPlaceholder": "Inserisci la tua email",
     "phoneNumber": "Numero di telefono",
     "phoneNumberPlaceholder": "Inserisci il tuo numero di telefono",
-    "password": "Password",
     "passwordPlaceholder": "Inserisci la tua password",
+    "repeatPasswordPlaceholder": "Ripeti la tua password",
     "personalDataHeading": "Dati personali",
     "personalDataDescription": "Se hai il codice fiscale, inseriscilo per compilare automaticamente i tuoi dati personali.\nSe non hai il codice fiscale o non te lo ricordi, clicca su \"Manuale\" per inserire i dati manualmente.",
     "cfTab": "Codice Fiscale",
@@ -126,13 +127,14 @@
       "noUppercase": "La password deve contenere almeno una lettera maiuscola",
       "noLowercase": "La password deve contenere almeno una lettera minuscola",
       "noDigit": "La password deve contenere almeno un numero",
-      "noLeadingTrailingSpaces": "La password non deve iniziare o finire con uno spazio"
+      "noLeadingTrailingSpaces": "La password non deve iniziare o finire con uno spazio",
+      "mismatch": "Le password non corrispondono"
     },
     "terms": {
       "accept": "Devi accettare i Termini di Servizio e l'Informativa sulla Privacy"
     },
     "scanner": {
-      "qrCodeNotSupported": "Il formato QR code non è supportato dal tuo browser.",
+      "qrCodeNotSupported": "Il formato codice QR non è supportato dal tuo browser.",
       "barcodeApiError": "Errore nell'inizializzazione dello scanner di codici a barre.",
       "videoElementError": "Elemento video non trovato.",
       "cameraAccessError": "Impossibile accedere alla fotocamera. Controlla i permessi della fotocamera.",
@@ -160,7 +162,7 @@
     },
     "startScan": "Inizia scansione",
     "stopScan": "Ferma scansione",
-    "showQrCode": "Mostra QR Code",
+    "showQrCode": "Mostra codice QR",
     "scanQrCode": "Scansiona questo codice QR all'ingresso",
     "scanQrCodeShort": "QR entrata"
   },
@@ -225,7 +227,7 @@
     "country": "Paese",
     "birthProvince": "Provincia di Nascita",
     "noCardAssigned": "Nessuna tessera assegnata",
-    "notAMember": "Non tesserato",
+    "notAMember": "Non (ancora) tesserato",
     "membershipCardNumber": "Numero tessera",
     "membershipCardNumberShort": "Tessera",
     "verified": "Verificato",

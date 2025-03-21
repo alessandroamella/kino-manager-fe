@@ -1,8 +1,9 @@
-import { User, Skeleton } from '@heroui/react';
+import { Skeleton, User } from '@heroui/react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router';
 import useUserStore from '../../store/user';
 
-const UserData = () => {
+const UserData = ({ to }: { to?: string }) => {
   const user = useUserStore((store) => store.user);
   const loading = useUserStore((store) => store.loading);
   const { t } = useTranslation();
@@ -10,6 +11,7 @@ const UserData = () => {
   return (
     <Skeleton isLoaded={!!user && !loading}>
       <User
+        {...(to ? { as: Link, to } : {})}
         name={user?.firstName || '-'}
         description={
           user?.membershipCardNumber &&
