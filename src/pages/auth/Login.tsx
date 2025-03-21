@@ -1,7 +1,7 @@
 import PageTitle from '@/components/navigation/PageTitle';
 import ScrollTop from '@/components/navigation/ScrollTop';
 import { loginYupSchema } from '@/validators/login';
-import { Alert, Button, Card, Form, Input } from '@heroui/react';
+import { Alert, Button, Card, Divider, Form, Input } from '@heroui/react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { omit } from 'lodash';
 import { useEffect, useMemo, useState } from 'react';
@@ -108,11 +108,11 @@ const Login = () => {
     <>
       <PageTitle title="login" />
       <ScrollTop />
-      <main className="py-12 mb-2 flex flex-col gap-4">
-        <Card className="w-fit mx-auto">
+      <main className="py-12 mb-2 flex px-8 sm:px-12 items-center flex-col gap-4">
+        <Card className="w-full md:w-fit pb-5">
           <Form
             onSubmit={handleSubmit(onSubmit)}
-            className="max-w-lg md:min-w-[500px] mx-auto mt-2 md:mt-4 p-6 space-y-4"
+            className="max-w-lg w-full md:min-w-[500px] mx-auto mt-2 md:mt-4 p-6 space-y-4"
           >
             <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
               {t('login.title')}
@@ -184,6 +184,8 @@ const Login = () => {
             </Button>
           </Form>
 
+          <Divider className="mb-4 md:mt-2 md:mb-6 mx-6" />
+
           {[
             ['forgotPassword', 'forgot-password', 'resetPassword'],
             ['noAccount', 'signup', 'signup'],
@@ -200,6 +202,7 @@ const Login = () => {
                 to={`/auth/${href}`}
                 size="sm"
                 type="button"
+                color={k1 === 'forgotPassword' ? 'default' : 'secondary'}
                 variant="bordered"
                 className="text-small w-full"
               >

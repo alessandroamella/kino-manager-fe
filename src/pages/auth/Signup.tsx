@@ -385,23 +385,6 @@ const Signup = () => {
       );
     } catch (error) {
       console.error('Error signing up:', getErrorMsg(error));
-      // setSignupError(
-      //   (error as AxiosError)?.response?.status === 409
-      //     ? t('errors.auth.userAlreadyExists')
-      //     : getErrorMsg(error),
-      // );
-
-      // <Alert
-      //   color="danger"
-      //   title={t('signup.errorTitle')}
-      //   description={signupError}
-      //   onClose={() => setSignupError(null)}
-      //   closeButtonProps={{
-      //     'aria-label': t('signup.errorCloseAria'),
-      //     type: 'button',
-      //     onPress: () => setSignupError(null),
-      //   }}
-      // />
 
       addToast({
         title: t('signup.errorTitle'),
@@ -829,6 +812,8 @@ const Signup = () => {
             >
               {t('signup.registerButton')}
             </Button>
+
+            <Divider className="mt-4" />
 
             <div className="flex flex-col gap-1 mt-6 items-center w-full">
               <p className="text-foreground-600 text-small">
