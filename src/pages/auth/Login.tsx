@@ -109,7 +109,7 @@ const Login = () => {
       <PageTitle title="login" />
       <ScrollTop />
       <main className="py-12 mb-2 flex px-8 sm:px-12 items-center flex-col gap-4">
-        <Card className="w-full md:w-fit pb-5">
+        <Card className="w-full md:w-fit pb-4">
           <Form
             onSubmit={handleSubmit(onSubmit)}
             className="max-w-lg w-full md:min-w-[500px] mx-auto mt-2 md:mt-4 p-6 space-y-4"
