@@ -325,7 +325,10 @@
     "noSerialSupport": "This browser does not support serial communication",
     "purchasesList": "Purchases List",
     "connected": "Connected",
-    "disconnected": "Disconnected"
+    "disconnected": "Disconnected",
+    "purchaseDate": "Purchase Date",
+    "itemDetails": "Item Details",
+    "noPurchases": "No purchases"
   },
   "paymentMethod": {
     "CASH": "Cash",

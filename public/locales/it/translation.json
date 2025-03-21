@@ -333,7 +333,10 @@
     "noSerialSupport": "Il tuo browser non supporta la comunicazione seriale",
     "purchasesList": "Lista Acquisti",
     "connected": "Connesso",
-    "disconnected": "Disconnesso"
+    "disconnected": "Disconnesso",
+    "purchaseDate": "Data Acquisto",
+    "itemDetails": "Dettagli Articolo",
+    "noPurchases": "Nessun acquisto"
   },
   "paymentMethod": {
     "CASH": "Contanti",

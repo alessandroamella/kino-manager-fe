@@ -22,7 +22,7 @@ import { formatDate } from 'date-fns';
 import { clamp } from 'lodash';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FaPrint } from 'react-icons/fa';
+import { FaExclamationTriangle, FaPrint } from 'react-icons/fa';
 import { FiDownload } from 'react-icons/fi';
 
 const PurchasesTable = () => {
@@ -61,22 +61,25 @@ const PurchasesTable = () => {
   };
 
   const columns = [
-    { key: 'id', label: 'ID' },
-    { key: 'purchaseDate', label: 'Purchase Date' },
-    { key: 'itemDetails', label: 'Item Details' },
-    { key: 'actions', label: 'Actions' },
+    { key: 'id', label: 'items.id' },
+    { key: 'purchaseDate', label: 'cashier.purchaseDate' },
+    { key: 'itemDetails', label: 'cashier.itemDetails' },
+    { key: 'actions', label: 'admin.ctions' },
   ];
 
   return isLoading ? (
     <div className="flex justify-center items-center h-48">
       <Spinner size="lg" />
     </div>
-  ) : error ? (
-    <Alert color="danger" className="mb-4" title={t('errors.error')}>
-      {error}
+  ) : error || !purchases ? (
+    <Alert
+      color="danger"
+      className="mb-4"
+      title={t('errors.error')}
+      icon={<FaExclamationTriangle />}
+    >
+      {error || t('cashier.noPurchases')}
     </Alert>
-  ) : !purchases ? (
-    <div>No purchases data available.</div>
   ) : (
     <>
       <div className="flex items-center mb-4 flex-row justify-between">
@@ -93,14 +96,14 @@ const PurchasesTable = () => {
       </div>
       <Table
         isVirtualized
-        rowHeight={50}
-        maxTableHeight={clamp(purchases.length, 1, 4) * 100}
+        rowHeight={150}
+        maxTableHeight={clamp(purchases.length, 1, 4) * 170}
         isStriped
-        aria-label="Purchases Table"
+        aria-label={t('cashier.purchasesList')}
       >
         <TableHeader>
           {columns.map((column) => (
-            <TableColumn key={column.key}>{column.label}</TableColumn>
+            <TableColumn key={column.key}>{t(column.label)}</TableColumn>
           ))}
         </TableHeader>
         <TableBody

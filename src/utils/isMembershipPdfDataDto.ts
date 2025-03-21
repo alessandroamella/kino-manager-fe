@@ -16,7 +16,7 @@ export function isMembershipPdfDataDto(
     isValid(new Date(obj.birthDate)) &&
     typeof obj.birthComune === 'string' &&
     typeof obj.streetName === 'string' &&
-    typeof obj.streetNumber === 'number' &&
+    typeof obj.streetNumber === 'string' &&
     typeof obj.postalCode === 'string' &&
     typeof obj.city === 'string' &&
     typeof obj.province === 'string' &&
