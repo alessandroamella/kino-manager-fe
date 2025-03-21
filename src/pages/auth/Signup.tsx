@@ -801,8 +801,6 @@ const Signup = () => {
               )}
             </div>
 
-            {errors.codiceFiscale?.message}
-
             <Button
               color="primary"
               type="submit"

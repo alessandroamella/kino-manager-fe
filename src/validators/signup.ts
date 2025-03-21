@@ -108,12 +108,19 @@ export const signupYupSchema = (t: TFunction) =>
       .string()
       .min(1, t('errors.field.required', { field: t('profile.address') })),
     streetName: yup.string().notRequired().nullable().min(1).max(255),
-    streetNumber: yup.string().notRequired().nullable().min(1).max(20),
+    streetNumber: yup.string().notRequired().nullable(),
     postalCode: yup
       .string()
       .notRequired()
       .nullable()
-      .length(5, t('errors.field.invalid')),
+      .when('country', {
+        is: 'IT',
+        then: (schema) =>
+          schema.length(
+            5,
+            t('errors.field.invalid', { field: t('profile.postalCode') }),
+          ),
+      }),
     city: yup.string().notRequired().nullable().min(1).max(255),
     // province should be min max 2 when country is IT
     province: yup
@@ -122,8 +129,11 @@ export const signupYupSchema = (t: TFunction) =>
       .nullable()
       .when('country', {
         is: 'IT',
-        then: (schema) => schema.min(2).max(2),
-        otherwise: (schema) => schema.min(1).max(255),
+        then: (schema) =>
+          schema.length(
+            2,
+            t('errors.field.invalid', { field: t('profile.province') }),
+          ),
       }),
     country: yup.string().notRequired().nullable().min(2).max(2),
     signatureB64: yup
