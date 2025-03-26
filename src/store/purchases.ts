@@ -1,16 +1,14 @@
-import { Category, CategoryWithItems } from '@/types/Category';
+import { CategoryWithItems } from '@/types/Category';
 import axios from 'axios';
 import { create } from 'zustand';
 import { getErrorMsg } from '../types/error';
-import { Item } from '../types/Item';
+import { ItemWithCategory } from '../types/Item';
 import { Purchase, PurchaseExtended } from '../types/Purchase';
 import { PurchasedItemNoPurchaseId } from '../types/PurchasedItem';
 
 type CreatePurchase = Pick<Purchase, 'discount' | 'paymentMethod'> & {
   purchasedItems: PurchasedItemNoPurchaseId[];
 };
-
-type ItemWithCategory = Omit<Item, 'categoryId'> & { category: Category };
 
 interface PurchasesState {
   items: ItemWithCategory[];

@@ -1,25 +1,34 @@
+import ChangeLanguage from '@/components/header/ChangeLanguage';
 import ToggleTheme from '@/components/header/ToggleTheme';
 import Price from '@/components/items/Price';
 import PageTitle from '@/components/navigation/PageTitle';
 import ScrollTop from '@/components/navigation/ScrollTop';
 import Logo from '@/components/ui/Logo';
+import useIsTailwindLg from '@/hooks/useIsTailwindLg';
 import { cn } from '@/lib/utils';
+import { ItemWithCategory } from '@/types/Item';
 import { PaymentMethod } from '@/types/PaymentMethod';
 import { wait } from '@/utils/wait';
 import {
+  addToast,
   Alert,
   BreadcrumbItem,
   Breadcrumbs,
   Button,
   Divider,
   Image,
+  Input,
   NumberInput,
   Spinner,
+  Tooltip,
 } from '@heroui/react';
-import { sumBy } from 'lodash';
+import Fuse from 'fuse.js';
+import { clamp, sumBy } from 'lodash';
 import { round } from 'number-precision';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { isMacOs, isMobile, isWindows } from 'react-device-detect';
 import { useTranslation } from 'react-i18next';
+import { BiSearch, BiSolidKeyboard } from 'react-icons/bi';
 import {
   FaCheck,
   FaCreditCard,
@@ -28,11 +37,13 @@ import {
   FaMoneyBillWave,
   FaPlus,
 } from 'react-icons/fa';
-import { FiArrowLeft, FiX } from 'react-icons/fi';
+import { FiArrowLeft, FiArrowRight, FiHome, FiX } from 'react-icons/fi';
+import { TbDeviceDesktopOff } from 'react-icons/tb';
 import { useShallow } from 'zustand/shallow';
 import usePurchasesStore from '../../store/purchases';
 import useUserStore from '../../store/user';
 import CashierSerialDisplay from './CashierSerialDisplay';
+import CashierShortcutsInfo from './CashierShortcutsInfo';
 import PurchasesTable from './PurchasesTable';
 
 const CashierRegister = () => {
@@ -58,13 +69,27 @@ const CashierRegister = () => {
     })),
   );
 
+  const fuse = useRef(
+    new Fuse<ItemWithCategory>(items, {
+      ignoreDiacritics: true,
+      minMatchCharLength: 1,
+      threshold: 0.4,
+      keys: ['name', 'description', 'category.name'],
+    }),
+  );
+
+  // update fuse collection when items change
+  useEffect(() => {
+    fuse.current.setCollection(items);
+  }, [items]);
+
   const { i18n, t } = useTranslation();
   const accessToken = useUserStore((store) => store.accessToken);
 
   const [purchaseItems, setPurchaseItems] = useState<
     { itemId: number; quantity: number }[]
   >([]);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  // const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [discount, setDiscount] = useState<number>(0);
   const [currentCategory, setCurrentCategory] = useState<number | null>(null);
 
@@ -82,22 +107,21 @@ const CashierRegister = () => {
     };
   }, []);
 
+  const [searchQuery, setSearchQuery] = useState('');
+  const isSearching = useMemo(() => searchQuery.length > 0, [searchQuery]);
+
+  useEffect(() => {
+    if (isSearching && currentCategory !== null) {
+      setCurrentCategory(null);
+    }
+  }, [currentCategory, isSearching]);
+
   const isFetching = useRef(false);
   useEffect(() => {
     if (!accessToken || isFetching.current) return;
     isFetching.current = true;
     fetchAllData(accessToken);
   }, [accessToken, fetchAllData]);
-
-  useEffect(() => {
-    if (successMessage) {
-      ScrollTop.scrollTop({ elem: selectorRef.current });
-      const timer = setTimeout(() => {
-        setSuccessMessage(null);
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [successMessage]);
 
   const handleAddItemToPurchase = useCallback(
     (itemId: number) => {
@@ -147,6 +171,8 @@ const CashierRegister = () => {
       }
     | undefined
   >(undefined);
+
+  const searchInputRef = useRef<HTMLInputElement | null>(null);
 
   const submitPurchase = async (paymentMethod: PaymentMethod) => {
     if (!accessToken) {
@@ -214,9 +240,14 @@ const CashierRegister = () => {
       await wait(500);
       setPurchaseItems([]);
       setDiscount(0);
-      setSuccessMessage(t('cashier.purchaseLoggedSuccessfully'));
+      addToast({
+        title: t('common.success'),
+        description: t('cashier.purchaseLoggedSuccessfully'),
+        color: 'success',
+      });
       setCurrentCategory(null);
       setPaymentAndTotal(undefined);
+      searchInputRef.current?.focus();
     }
   };
 
@@ -230,9 +261,71 @@ const CashierRegister = () => {
     [items],
   );
 
-  const currentItems = currentCategory
-    ? getItemsInCategory(currentCategory)
-    : [];
+  const getItemsBySearch = useCallback(
+    (query: string) => {
+      if (!query) {
+        return [];
+      }
+      const results = fuse.current.search(query);
+      return results.map((result) => result.item);
+    },
+    [fuse],
+  );
+
+  const currentItems = useMemo(() => {
+    return isSearching
+      ? getItemsBySearch(searchQuery)
+      : currentCategory
+      ? getItemsInCategory(currentCategory)
+      : [];
+  }, [
+    currentCategory,
+    getItemsBySearch,
+    getItemsInCategory,
+    isSearching,
+    searchQuery,
+  ]);
+
+  const isTwLarge = useIsTailwindLg();
+
+  const [searchSelectedIndex, setSearchSelectedIndex] = useState(0);
+
+  const searchSelectedItem = useMemo(() => {
+    return currentItems[clamp(searchSelectedIndex, 0, currentItems.length - 1)];
+  }, [currentItems, searchSelectedIndex]);
+
+  const handleInputPress = useCallback(
+    (e: React.KeyboardEvent) => {
+      setSearchSelectedIndex((prev) => {
+        const add = (n: number) => {
+          e.preventDefault();
+          return clamp(prev + n, 0, currentItems.length - 1);
+        };
+        console.log('Key pressed:', e.key, 'Prev:', prev);
+        if (e.key === 'ArrowRight') {
+          return add(1);
+        } else if (e.key === 'ArrowLeft') {
+          return add(-1);
+        } else if (e.key === 'ArrowDown') {
+          return add(isTwLarge ? 5 : 2);
+        } else if (e.key === 'ArrowUp') {
+          return add(-(isTwLarge ? 5 : 2));
+        } else if (e.key === 'Enter') {
+          if (searchSelectedItem) {
+            handleAddItemToPurchase(searchSelectedItem.id);
+          }
+          return prev;
+        }
+        return 0;
+      });
+    },
+    [
+      currentItems.length,
+      handleAddItemToPurchase,
+      isTwLarge,
+      searchSelectedItem,
+    ],
+  );
 
   const getItemById = useCallback(
     (itemId: number) => items.find((item) => item.id === itemId),
@@ -285,77 +378,134 @@ const CashierRegister = () => {
 
   const serialSectionRef = useRef<HTMLDivElement | null>(null);
 
+  const [shortcutsInfoOpen, setShortcutsInfoOpen] = useState(false);
+  const openShortcutsInfo = () => setShortcutsInfoOpen(true);
+
   return (
     <>
       <PageTitle title="cashier" />
       <ScrollTop />
+      <CashierShortcutsInfo
+        isOpen={shortcutsInfoOpen}
+        onOpenChange={setShortcutsInfoOpen}
+      />
       <header className="bg-background-100 lg:bg-inherit lg:min-h-32 p-4 lg:p-8 flex gap-4 justify-between">
         <div className="max-w-28">
           <Logo />
         </div>
         <div>
-          {successMessage && <Alert color="success">{successMessage}ok</Alert>}
-          {purchaseError && <Alert color="danger">{purchaseError}</Alert>}
+          {purchaseError && (
+            <Alert title={t('common.error')} color="danger">
+              {purchaseError}
+            </Alert>
+          )}
         </div>
-        <div className="flex items-center gap-2">
-          <Button
-            variant="bordered"
-            color={isSerialConnected ? 'success' : 'danger'}
-            onPress={() =>
-              serialSectionRef.current?.scrollIntoView({
-                block: 'center',
-                behavior: 'smooth',
-              })
-            }
-          >
-            <FaMicrochip />
-            <span
-              className={cn('hidden lg:inline relative', {
-                'animate-pulse': !isSerialConnected,
-              })}
+        <div className="flex items-center flex-wrap gap-2">
+          <ChangeLanguage />
+          {hasSerial && (
+            <Button
+              variant="bordered"
+              color={isSerialConnected ? 'success' : 'danger'}
+              onPress={() =>
+                serialSectionRef.current?.scrollIntoView({
+                  block: 'center',
+                  behavior: 'smooth',
+                })
+              }
             >
-              {isSerialConnected ? (
-                <FaCheck className="text-success" />
-              ) : (
-                t('cashier.disconnected')
-              )}
-            </span>
-          </Button>
+              <FaMicrochip />
+              <span
+                className={cn('hidden lg:inline relative', {
+                  'animate-pulse': !isSerialConnected,
+                })}
+              >
+                {isSerialConnected ? (
+                  <FaCheck className="text-success" />
+                ) : (
+                  t('cashier.disconnected')
+                )}
+              </span>
+            </Button>
+          )}
           <ToggleTheme />
         </div>
       </header>
-      <main className="p-4 lg:-mt-6 lg:p-8">
+
+      {(isWindows || isMacOs || isMobile) && (
+        <div className="m-4">
+          <Alert
+            icon={<TbDeviceDesktopOff />}
+            color="warning"
+            title={t('cashier.notSupported')}
+          >
+            {t('cashier.notSupportedInfo')}
+          </Alert>
+        </div>
+      )}
+      <main className="p-8 lg:-mt-6 lg:p-8">
         {/* Category and Item Selection */}
         <div className="grid lg:gap-8 grid-cols-1 lg:grid-cols-3 lg:h-[80vh] overflow-y-auto">
           <div className="lg:col-span-2" ref={selectorRef}>
             <div className="mb-8">
-              <Breadcrumbs>
-                <BreadcrumbItem>
-                  <Button
-                    variant="bordered"
-                    size="lg"
-                    onPress={() => setCurrentCategory(null)}
-                  >
-                    <FiArrowLeft className="text-danger" />
-                    {t('cashier.selectCategory')}
-                  </Button>
-                </BreadcrumbItem>
-
-                {currentCategory && (
+              <div className="flex items-center justify-between">
+                <Breadcrumbs>
                   <BreadcrumbItem>
-                    {categories.find((cat) => cat.id === currentCategory)?.name}
+                    <Button
+                      variant="bordered"
+                      size="lg"
+                      isDisabled={currentCategory === null}
+                      onPress={() => setCurrentCategory(null)}
+                    >
+                      {currentCategory ? (
+                        <FiArrowLeft className="text-danger" />
+                      ) : (
+                        <FiHome />
+                      )}
+                      {t('cashier.selectCategory')}
+                    </Button>
                   </BreadcrumbItem>
-                )}
-              </Breadcrumbs>
+
+                  {currentCategory && (
+                    <BreadcrumbItem>
+                      {
+                        categories.find((cat) => cat.id === currentCategory)
+                          ?.name
+                      }
+                    </BreadcrumbItem>
+                  )}
+                </Breadcrumbs>
+
+                <Tooltip content={t('cashier.shortcutsInfo')}>
+                  <Button isIconOnly onPress={openShortcutsInfo}>
+                    <BiSolidKeyboard />
+                  </Button>
+                </Tooltip>
+              </div>
             </div>
 
-            {currentCategory === null ? (
+            <div className="mb-4 px-1">
+              <Input
+                onKeyDown={handleInputPress}
+                autoFocus
+                ref={searchInputRef}
+                placeholder={t('cashier.searchItem')}
+                startContent={
+                  <BiSearch className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
+                }
+                type="search"
+                value={searchQuery}
+                onValueChange={setSearchQuery}
+              />
+            </div>
+
+            {!isSearching && currentCategory === null ? (
               <div className="grid grid-cols-2 lg:grid-cols-5 gap-2">
                 {categories.map((category) => (
                   <Button
                     key={category.id}
                     variant="bordered"
                     color="secondary"
+                    tabIndex={-1}
                     className="h-auto p-2 flex flex-col items-center justify-center min-w-28 min-h-28"
                     onPress={() => setCurrentCategory(category.id)}
                   >
@@ -383,17 +533,41 @@ const CashierRegister = () => {
                     {errorItems}
                   </Alert>
                 ) : (
-                  <div className="grid grid-cols-2 lg:grid-cols-5 gap-2">
+                  <div
+                    tabIndex={-1}
+                    onKeyDown={handleInputPress}
+                    className="max-h-72 outline-none overflow-y-auto grid grid-cols-2 lg:grid-cols-5 gap-2"
+                  >
                     {currentItems.map((item) => (
                       <Button
                         key={item.id}
                         variant="bordered"
+                        tabIndex={-1}
                         color={
-                          justAddedItem === item.id ? 'success' : 'primary'
+                          (
+                            justAddedItem
+                              ? justAddedItem === item.id
+                              : searchSelectedItem?.id === item.id
+                          )
+                            ? 'success'
+                            : 'primary'
                         }
-                        className="h-auto p-2 flex flex-col items-center justify-center min-w-28 min-h-28"
+                        className={cn(
+                          'h-auto outline-none p-2 flex flex-col items-center justify-center min-w-28 min-h-28',
+                          {
+                            'bg-foreground-100':
+                              !justAddedItem &&
+                              searchSelectedItem?.id === item.id,
+                            'bg-success-100': justAddedItem === item.id,
+                          },
+                        )}
                         onPress={() => handleAddItemToPurchase(item.id)}
                       >
+                        <div className="text-xs flex items-center gap-1 text-foreground-500">
+                          {item.category.name}
+                          <FiArrowRight />
+                        </div>
+
                         {item.imageUrl && (
                           <Image
                             src={item.imageUrl}
@@ -403,7 +577,7 @@ const CashierRegister = () => {
                             className="object-contain -mb-1 rounded-md"
                           />
                         )}
-                        <span className="text-foreground font-medium leading-none text-wrap text-large">
+                        <span className="text-foreground font-semibold leading-none text-wrap text-large">
                           {item.name}
                         </span>
                         {item.description && (
@@ -417,7 +591,11 @@ const CashierRegister = () => {
                       </Button>
                     ))}
                     {currentItems.length === 0 && (
-                      <div>No items in this category.</div>
+                      <Alert
+                        color="danger"
+                        title={t('cashier.noItems')}
+                        className="min-w-48 w-full"
+                      />
                     )}
                   </div>
                 )}
@@ -440,7 +618,13 @@ const CashierRegister = () => {
                     return (
                       <div
                         key={purchaseItem.itemId}
-                        className="flex items-center justify-between p-2 rounded-md bg-gray-100 dark:bg-gray-800"
+                        className={cn(
+                          'flex items-center justify-between p-2 rounded-md bg-gray-100 dark:bg-gray-800',
+                          {
+                            'bg-success-100 dark:bg-success-100':
+                              justAddedItem === purchaseItem.itemId,
+                          },
+                        )}
                       >
                         <p className="line-clamp-1">
                           {itemDetails?.name}
@@ -453,6 +637,7 @@ const CashierRegister = () => {
                         <div className="flex items-center gap-2">
                           <Button
                             isIconOnly
+                            tabIndex={-1}
                             size="sm"
                             color="warning"
                             variant="bordered"
@@ -470,6 +655,7 @@ const CashierRegister = () => {
                           </p>
                           <Button
                             isIconOnly
+                            tabIndex={-1}
                             size="sm"
                             color="warning"
                             variant="bordered"
@@ -496,6 +682,7 @@ const CashierRegister = () => {
                           </span>
                           <Button
                             isIconOnly
+                            tabIndex={-1}
                             size="sm"
                             variant="bordered"
                             color="danger"
@@ -511,7 +698,7 @@ const CashierRegister = () => {
                   })}
                 </div>
               ) : (
-                <p>{t('cashier.noItemsInPurchase')}</p>
+                <p>{t('cashier.noItems')}</p>
               )}
             </div>
 
@@ -523,6 +710,7 @@ const CashierRegister = () => {
                 label={t('cashier.discount')}
                 startContent="-"
                 endContent="€"
+                tabIndex={-1}
                 placeholder={t('cashier.discountPlaceholder')}
                 className="w-full col-span-2"
                 value={discount}

@@ -64,7 +64,7 @@ const PurchasesTable = () => {
     { key: 'id', label: 'items.id' },
     { key: 'purchaseDate', label: 'cashier.purchaseDate' },
     { key: 'itemDetails', label: 'cashier.itemDetails' },
-    { key: 'actions', label: 'admin.ctions' },
+    { key: 'actions', label: 'admin.actions' },
   ];
 
   return isLoading ? (
@@ -190,7 +190,7 @@ const PurchasesTable = () => {
                           </>
                         );
                       } else {
-                        return 'No items';
+                        return t('cashier.noItems');
                       }
                     case 'actions':
                       return (

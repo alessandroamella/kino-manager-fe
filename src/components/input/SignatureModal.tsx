@@ -1,17 +1,17 @@
 import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
   Button,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
 } from '@heroui/react';
-import { useRef, useMemo, useState } from 'react';
-import SignatureCanvas from 'react-signature-canvas';
+import { useWindowSize } from '@react-hook/window-size';
+import { useMemo, useRef, useState } from 'react';
+import { isMobile } from 'react-device-detect';
 import { useTranslation } from 'react-i18next';
 import { FaCheck, FaEraser } from 'react-icons/fa';
-import { isMobile } from 'react-device-detect';
-import { useWindowSize } from '@react-hook/window-size';
+import SignatureCanvas from 'react-signature-canvas';
 
 interface SignatureModalProps {
   isOpen: boolean;

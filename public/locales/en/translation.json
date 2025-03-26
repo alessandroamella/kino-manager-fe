@@ -313,9 +313,10 @@
     "purchaseLoggedSuccessfully": "Purchase logged successfully",
     "logPurchase": "Log Purchase",
     "selectCategory": "Select Category",
+    "searchItem": "Search Item",
     "selectItem": "Select Item",
     "currentPurchase": "Current Purchase",
-    "noItemsInPurchase": "No items in purchase",
+    "noItems": "No items",
     "discount": "Discount",
     "discountPlaceholder": "Enter discount",
     "enterAmountGiven": "TOTAL: {{amount}}. Enter cash amount given by customer:",
@@ -328,7 +329,10 @@
     "disconnected": "Disconnected",
     "purchaseDate": "Purchase Date",
     "itemDetails": "Item Details",
-    "noPurchases": "No purchases"
+    "noPurchases": "No purchases",
+    "shortcutsInfo": "Keyboard shortcuts (Italian)",
+    "notSupported": "Not supported",
+    "notSupportedInfo": "We recommend using Linux to access all features, including serial communication with Arduino and thermal printer support."
   },
   "paymentMethod": {
     "CASH": "Cash",

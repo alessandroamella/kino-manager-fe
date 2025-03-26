@@ -1,19 +1,19 @@
-import { useTranslation } from 'react-i18next';
 import {
-  Dropdown,
-  DropdownTrigger,
-  DropdownMenu,
-  DropdownItem,
   Button,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
   DropdownProps,
+  DropdownTrigger,
 } from '@heroui/react';
 import { Key } from 'react';
+import { useTranslation } from 'react-i18next';
 import { CgChevronDown } from 'react-icons/cg';
 
-function ChangeLanguage({
+const ChangeLanguage = ({
   className,
   ...rest
-}: Omit<DropdownProps, 'children'>) {
+}: Omit<DropdownProps, 'children'>) => {
   const { t, i18n } = useTranslation();
 
   const changeLanguage = (lng: Key) => {
@@ -33,6 +33,6 @@ function ChangeLanguage({
       </DropdownMenu>
     </Dropdown>
   );
-}
+};
 
 export default ChangeLanguage;

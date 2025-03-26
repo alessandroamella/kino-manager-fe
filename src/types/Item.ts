@@ -10,3 +10,7 @@ export interface Item extends Pick<BaseDocument, 'id'> {
   cost: string | null;
   category: Category | null;
 }
+
+export type ItemWithCategory = Omit<Item, 'categoryId'> & {
+  category: Category;
+};
