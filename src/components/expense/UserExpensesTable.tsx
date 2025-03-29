@@ -79,7 +79,7 @@ const UserExpensesTable = ({
         >
           <TableHeader>
             <TableColumn>{t('expenses.userTable.user')}</TableColumn>
-            <TableColumn>{t('expenses.userTable.totalAmount')}</TableColumn>
+            <TableColumn>{t('expenses.userTable.totalDebt')}</TableColumn>
           </TableHeader>
           <TableBody
             items={userExpenseData}
@@ -94,7 +94,7 @@ const UserExpensesTable = ({
                     {item.user ? getUserStr(item.user) : `#${item.userId}`}
                   </TableCell>
                   <TableCell>
-                    <Price price={item.totalAmount} round={false} />
+                    <Price price={-item.totalAmount} round={false} />
                   </TableCell>
                 </TableRow>
               );

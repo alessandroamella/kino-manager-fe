@@ -1,6 +1,8 @@
+import AttendanceTable from '@/components/attendance/AttendanceTable';
 import PageTitle from '@/components/navigation/PageTitle';
 import ScrollTop from '@/components/navigation/ScrollTop';
 import { getUserStr } from '@/lib/utils';
+import useOpeningDatesStore from '@/store/dates';
 import downloadStreamedFile from '@/utils/download';
 import { isMembershipPdfDataDto } from '@/utils/isMembershipPdfDataDto';
 import {
@@ -32,7 +34,6 @@ import { useTranslation } from 'react-i18next';
 import { FaCashRegister, FaExternalLinkAlt, FaTimes } from 'react-icons/fa';
 import { FiCheck, FiDownload, FiPrinter } from 'react-icons/fi';
 import { GiHamburger } from 'react-icons/gi';
-import { MdQrCode } from 'react-icons/md';
 import { Link } from 'react-router';
 import StatsCharts from '../../components/admin/StatsCharts';
 import ViewSignatureModal from '../../components/admin/ViewSignatureModal';
@@ -118,6 +119,8 @@ const AdminPanel = () => {
   const availableCards = useMemo(() => {
     return cards?.filter((card) => !card.member);
   }, [cards]);
+
+  const openingDays = useOpeningDatesStore((store) => store.dates);
 
   const handleAssignCard = async (
     user: MemberExtended,
@@ -273,15 +276,6 @@ const AdminPanel = () => {
             >
               <GiHamburger className="mr-2" />
               {t('pages.menu')}
-            </Button>
-            <Button
-              isDisabled={location.pathname.replace(/\//g, '') === 'cashier'}
-              as={Link}
-              color="success"
-              to="/admin/scan-attendance"
-            >
-              <MdQrCode className="mr-2" />
-              {t('attendance.scanQrCodeShort')}
             </Button>
           </div>
         </div>
@@ -508,6 +502,20 @@ const AdminPanel = () => {
             </TableBody>
           </Table>
         </div>
+
+        <Divider className="my-12" />
+
+        {openingDays ? (
+          <AttendanceTable
+            error={error}
+            isLoading={loading}
+            openingDays={openingDays}
+          />
+        ) : (
+          <Skeleton>
+            <div className="w-full h-96" />
+          </Skeleton>
+        )}
 
         <Divider className="my-12" />
 

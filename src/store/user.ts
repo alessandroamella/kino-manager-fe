@@ -7,7 +7,7 @@ import { sha256 } from '../utils/sha256';
 
 type MemberExtended = Member & {
   isVerified: boolean;
-  emailHash: string;
+  emailHash?: string;
 };
 
 interface UserState {
@@ -39,7 +39,13 @@ const useUserStore = create<UserState>()(
             },
           });
           console.log('User data:', data);
-          const emailHash = await sha256(data.email);
+          let emailHash;
+          try {
+            emailHash = await sha256(data.email);
+          } catch (err) {
+            // probably crypto not available
+            console.error('Error hashing email:', err);
+          }
 
           const { accessToken, ...memberData } = data;
 

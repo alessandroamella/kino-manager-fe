@@ -21,7 +21,9 @@ const UserData = ({ to }: { to?: string }) => {
         }
         avatarProps={{
           name: `${user?.firstName || '-'} ${user?.lastName || '-'}`,
-          src: `https://gravatar.com/avatar/${user?.emailHash || '-'}`,
+          src:
+            user?.emailHash &&
+            `https://gravatar.com/avatar/${user?.emailHash || '-'}`,
         }}
       />
     </Skeleton>

@@ -3,7 +3,6 @@ import { lazy, StrictMode, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router';
 import AppProvider from './AppProvider.tsx';
-import ScanAttendanceQr from './components/attendance/ScanAttendanceQr';
 import Docs from './components/docs';
 import Layout from './components/layout';
 import ProtectedRoute from './components/navigation/ProtectedRoute';
@@ -49,14 +48,6 @@ createRoot(document.getElementById('root')!).render(
                   element={
                     <Suspense fallback={<Spinner />}>
                       <AdminPanel />
-                    </Suspense>
-                  }
-                />
-                <Route
-                  path="scan-attendance"
-                  element={
-                    <Suspense fallback={<Spinner />}>
-                      <ScanAttendanceQr />
                     </Suspense>
                   }
                 />

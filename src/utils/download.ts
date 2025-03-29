@@ -1,4 +1,5 @@
 import axios, { isAxiosError } from 'axios';
+import { saveAs } from 'file-saver';
 
 const downloadStreamedFile = async ({
   url,
@@ -34,21 +35,7 @@ const downloadStreamedFile = async ({
       responseType: 'blob', // Important for binary data
     });
 
-    const blob = new Blob([response.data]); // Create Blob from response data
-
-    // Create file link in browser's memory
-    const href = URL.createObjectURL(blob);
-
-    // Create "a" HTML element with href to file & click
-    const link = document.createElement('a');
-    link.href = href;
-    link.setAttribute('download', filename); // Use provided filename
-    document.body.appendChild(link);
-    link.click();
-
-    // Clean up "a" element & remove ObjectURL
-    document.body.removeChild(link);
-    URL.revokeObjectURL(href);
+    saveAs(response.data, filename);
 
     if (onComplete) {
       onComplete();
@@ -56,7 +43,7 @@ const downloadStreamedFile = async ({
   } catch (error) {
     console.error('Error downloading file:', error);
     if (onComplete) {
-      onComplete(); // Still call onComplete to signal end, even with error
+      onComplete(); // still call onComplete to signal end, even with error
     }
     throw new Error(
       `Failed to download file: ${
@@ -64,7 +51,7 @@ const downloadStreamedFile = async ({
         (error as Error)?.message ||
         error
       }`,
-    ); // Re-throw for caller to handle
+    );
   }
 };
 

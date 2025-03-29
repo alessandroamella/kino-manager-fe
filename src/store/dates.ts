@@ -1,8 +1,8 @@
-import { create } from 'zustand';
-import axios from 'axios';
+import { OpeningDay } from '@/types/OpeningDay';
 import { UTCDateMini } from '@date-fns/utc';
+import axios from 'axios';
 import { isAfter, isBefore } from 'date-fns';
-import { OpeningDay, OpeningDayResponse } from '@/types/OpeningDay';
+import { create } from 'zustand';
 
 interface OpeningDatesState {
   dates: OpeningDay[];
@@ -24,10 +24,11 @@ const useOpeningDatesStore = create<OpeningDatesState>((set, get) => ({
     set({ isLoading: true, error: null });
 
     try {
-      const { data } = await axios.get<OpeningDayResponse[]>('/v1/opening-day');
+      const { data } = await axios.get<OpeningDay[]>('/v1/opening-day');
 
       const dates = data.map((day) => ({
         id: day.id,
+        name: day.name,
         openTimeUTC: new UTCDateMini(day.openTimeUTC),
         closeTimeUTC: new UTCDateMini(day.closeTimeUTC),
       }));

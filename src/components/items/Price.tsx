@@ -18,7 +18,9 @@ function formatPrice(
     maximumFractionDigits: actualDecimalDigits,
   });
 
-  return `${currencySymbol}${formatter.format(price)}`;
+  return `${price < 0 ? '-' : ''}${currencySymbol}${formatter.format(
+    Math.abs(price),
+  )}`;
 }
 
 const Price = ({

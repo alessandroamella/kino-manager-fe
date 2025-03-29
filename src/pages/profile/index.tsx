@@ -1,4 +1,4 @@
-import AttendanceQr from '@/components/attendance/AttendanceQr';
+import LogAttendanceModal from '@/components/attendance/LogAttendanceModal';
 import SignatureModal from '@/components/input/SignatureModal';
 import PageTitle from '@/components/navigation/PageTitle';
 import ScrollTop from '@/components/navigation/ScrollTop';
@@ -110,13 +110,16 @@ const Profile = () => {
 
   return (
     <>
+      <PageTitle title="profile" />
+      <ScrollTop />
+
       <SignatureModal
         isOpen={isSignatureModalOpen}
         setIsOpen={setIsSignatureModalOpen}
         onSaveSignature={addSignature}
       />
-      <PageTitle title="profile" />
-      <ScrollTop />
+      <LogAttendanceModal />
+
       <main className="mx-auto py-6 bg-background-50 -mt-2 md:mt-0 md:p-6 md:px-12 lg:px-16 xl:px-24">
         <Card shadow={isMobile ? 'none' : undefined}>
           <CardHeader className="flex justify-between items-center px-4 md:px-6 py-3 border-b-2 border-gray-200 dark:border-gray-700">
@@ -148,7 +151,11 @@ const Profile = () => {
               <div className="flex items-center space-x-4 mt-2 mb-6 mx-auto">
                 <Avatar
                   size="lg"
-                  src={`https://gravatar.com/avatar/${user.emailHash}`}
+                  name={`${user.firstName} ${user.lastName}`}
+                  src={
+                    user.emailHash &&
+                    `https://gravatar.com/avatar/${user.emailHash}`
+                  }
                 />
                 <div>
                   <h3 className="text-xl font-bold flex items-center gap-1 text-gray-900 dark:text-white">
@@ -176,12 +183,6 @@ const Profile = () => {
                 </div>
               </div>
               <Divider className="mb-4" />
-
-              <div className="flex justify-center">
-                <AttendanceQr />
-              </div>
-
-              <Divider className="my-4" />
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-4 md:px-8 lg:px-12">
                 <div>

@@ -106,6 +106,9 @@
       "userAlreadyExists": "It seems like you already have an account. Please log in instead.",
       "noTokenProvided": "No token provided"
     },
+    "checkIn": {
+      "eventNotFound": "The event you are trying to check in to was not found."
+    },
     "docs": {
       "notFound": "The document you are looking was not found. It may have been moved or deleted."
     },
@@ -141,22 +144,29 @@
     }
   },
   "attendance": {
-    "title": "Register attendance",
     "checkedInSuccess": "Attendance checked-in successfully!",
     "checkedIn": "You are checked-in!",
+    "canCloseWindow": "You can close this window now and enjoy the event.",
+    "title": "Event Attendance",
+    "tableAriaLabel": "List of Events and Attendance",
+    "noEvents": "No events found.",
+    "eventName": "Event Name",
+    "defaultEventName": "Event",
+    "openTime": "Opening Time",
+    "closeTime": "Closing Time",
+    "viewAttendanceAction": "View attendance for {{eventName}}",
     "modal": {
-      "header": "Confirm Attendance",
-      "name": "Name",
-      "email": "Email",
-      "confirmPrompt": "Do you want to log attendance for this user?",
-      "errorFetchingUser": "Error fetching user data.",
-      "fetchingUser": "Fetching user data..."
+      "header": "Attendance for: {{eventName}}",
+      "attendeeCount": "{{count}} Attendees",
+      "ariaLabel": "Attendance list for {{eventName}}",
+      "member": "Member",
+      "checkInTime": "Check-in Time",
+      "memberId": "Member ID",
+      "noAttendees": "No attendees recorded for this event yet."
     },
-    "startScan": "Start Scan",
-    "stopScan": "Stop Scan",
-    "showQrCode": "Show QR Code",
-    "scanQrCode": "Scan this QR code at the entrance!",
-    "scanQrCodeShort": "Entrance QR"
+    "downloadQrToast": "Downloading QR code...",
+    "viewAttendanceTooltip": "View attendance for this event",
+    "downloadQrTooltip": "Download QR code for this event"
   },
   "home": {
     "kinoCafeTitle": "Kinó Café: Your space, your way",
@@ -384,7 +394,7 @@
     "userTable": {
       "ariaLabel": "User Expense Summary Table",
       "user": "User",
-      "totalAmount": "Total Amount",
+      "totalDebt": "Total Debt",
       "loading": "Loading expense summary...",
       "empty": "No debts!"
     },

@@ -112,6 +112,9 @@
       "userAlreadyExists": "Sembra che tu abbia già un account. Effettua l'accesso.",
       "noTokenProvided": "Nessun token fornito"
     },
+    "checkIn": {
+      "eventNotFound": "L'evento a cui stai cercando di registrarti non è stato trovato."
+    },
     "docs": {
       "notFound": "Il documento che stai cercando non è stato trovato. Potrebbe essere stato spostato o eliminato."
     },
@@ -147,24 +150,31 @@
     }
   },
   "attendance": {
-    "title": "Registra la tua presenza",
     "checkedInSuccess": "Presenza registrata con successo!",
     "checkedIn": "Sei registrata/o!",
+    "canCloseWindow": "Ora puoi chiudere questa finestra ora e goderti l'evento.",
     "checkedIn_male": "Sei registrato!",
     "checkedIn_female": "Sei registrata!",
+    "title": "Presenza all'evento",
+    "tableAriaLabel": "Elenco di eventi e presenze",
+    "noEvents": "Nessun evento trovato.",
+    "eventName": "Nome evento",
+    "defaultEventName": "Evento",
+    "openTime": "Orario di apertura",
+    "closeTime": "Orario di chiusura",
+    "viewAttendanceAction": "Visualizza la presenza per {{eventName}}",
     "modal": {
-      "header": "Conferma Presenza",
-      "name": "Nome",
-      "email": "Email",
-      "confirmPrompt": "Vuoi registrare la presenza per questo utente?",
-      "errorFetchingUser": "Errore nel recupero dei dati utente.",
-      "fetchingUser": "Recupero dati utente..."
+      "header": "Presenza per: {{eventName}}",
+      "attendeeCount": "{{count}} Partecipanti",
+      "ariaLabel": "Elenco presenze per {{eventName}}",
+      "member": "Membro",
+      "checkInTime": "Orario di check-in",
+      "memberId": "ID membro",
+      "noAttendees": "Nessun partecipante registrato per questo evento."
     },
-    "startScan": "Inizia scansione",
-    "stopScan": "Ferma scansione",
-    "showQrCode": "Mostra codice QR",
-    "scanQrCode": "Scansiona questo codice QR all'ingresso",
-    "scanQrCodeShort": "QR entrata"
+    "downloadQrToast": "Scaricamento del codice QR...",
+    "viewAttendanceTooltip": "Visualizza la presenza per questo evento",
+    "downloadQrTooltip": "Scarica il codice QR per questo evento"
   },
   "home": {
     "kinoCafeTitle": "Kinó Café: Il tuo spazio, a modo tuo",
@@ -390,9 +400,9 @@
       "confirmDelete": "Sei sicuro di voler eliminare questa spesa?"
     },
     "userTable": {
-      "ariaLabel": "Tabella Riepilogo Spese Utente",
+      "ariaLabel": "Tabella riepilogo spese utente",
       "user": "Utente",
-      "totalAmount": "Importo Totale",
+      "totalDebt": "Debito totale",
       "loading": "Caricamento riepilogo spese...",
       "empty": "Nessun debito!"
     },

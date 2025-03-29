@@ -4,7 +4,7 @@ import { loginYupSchema } from '@/validators/login';
 import { Alert, Button, Card, Divider, Form, Input } from '@heroui/react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { omit } from 'lodash';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import {
@@ -32,6 +32,8 @@ const Login = () => {
     register,
     handleSubmit,
     formState: { errors, isValid },
+    watch,
+    trigger,
   } = useForm<FormData>({
     mode: 'onBlur',
     resolver: yupResolver(validationSchema),
@@ -44,6 +46,21 @@ const Login = () => {
     },
   });
   const [alertError, setAlertError] = useState<string | null>(null);
+
+  const email = watch('email');
+  const password = watch('password');
+
+  // sometimes, autocomplete completes both but just password
+  // is triggered, so when pwd changes, if email len > 0,
+  // trigger email validation
+
+  const justCheckedEmail = useRef('');
+  useEffect(() => {
+    if (email !== justCheckedEmail.current && password && email.length > 0) {
+      trigger('email');
+      justCheckedEmail.current = email;
+    }
+  }, [email, password, trigger]);
 
   const login = useUserStore((store) => store.login);
   const error = useUserStore((store) => store.error);
