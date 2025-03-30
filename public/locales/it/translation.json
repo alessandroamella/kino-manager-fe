@@ -356,6 +356,22 @@
     "deletePurchaseConfirm": "Sei sicuro di voler eliminare l'acquisto con ID {{id}}?",
     "deletePurchaseSuccess": "Acquisto con ID {{id}} eliminato con successo"
   },
+  "serial": {
+    "webSerialNotSupported": "L'API Web Serial non è supportata nel tuo browser.",
+    "errorRequestPort": "Errore nella richiesta della porta: {{error}}",
+    "connected": "Connessione seriale stabilita con successo.",
+    "errorOpenPort": "Errore nell'apertura della porta: {{error}}",
+    "alreadyDisconnected": "Già disconnesso.",
+    "errorCancellingReader": "Errore nell'annullamento del lettore: {{error}}",
+    "errorClosingWritable": "Errore nella chiusura dello stream scrivibile: {{error}}",
+    "writableLocked": "Lo stream scrivibile è bloccato.",
+    "errorAbortingWriter": "Errore nell'interruzione dello scrittore: {{error}}",
+    "disconnected": "Connessione seriale chiusa.",
+    "errorDisconnecting": "Errore durante la disconnessione: {{error}}",
+    "disconnectEventDetected": "Evento di disconnessione seriale rilevato.",
+    "errorReading": "Errore nella lettura dei dati: {{error}}",
+    "notConnectedOrWritable": "Non connesso o impossibile scrivere dati."
+  },
   "paymentMethod": {
     "CASH": "Contanti",
     "CARD": "Carta"

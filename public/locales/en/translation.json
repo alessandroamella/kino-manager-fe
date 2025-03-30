@@ -348,6 +348,22 @@
     "deletePurchaseConfirm": "Are you sure you want to delete purchase with ID {{id}}?",
     "deletePurchaseSuccess": "Purchase with ID {{id}} deleted successfully"
   },
+  "serial": {
+    "webSerialNotSupported": "Web Serial API is not supported in your browser.",
+    "errorRequestPort": "Error requesting port: {{error}}",
+    "connected": "Serial connection established successfully.",
+    "errorOpenPort": "Error opening port: {{error}}",
+    "alreadyDisconnected": "Already disconnected.",
+    "errorCancellingReader": "Error cancelling reader: {{error}}",
+    "errorClosingWritable": "Error closing writable stream: {{error}}",
+    "writableLocked": "Writable stream is locked.",
+    "errorAbortingWriter": "Error aborting writer: {{error}}",
+    "disconnected": "Serial connection closed.",
+    "errorDisconnecting": "Error during disconnection: {{error}}",
+    "disconnectEventDetected": "Serial disconnect event detected.",
+    "errorReading": "Error reading data: {{error}}",
+    "notConnectedOrWritable": "Not connected or unable to write data."
+  },
   "paymentMethod": {
     "CASH": "Cash",
     "CARD": "Card"

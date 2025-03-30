@@ -142,7 +142,8 @@ const CashierSerialDisplay = ({
             '|' +
             toFixedItalian(itemAndTotal.total)
           : // impossible case
-            (console.log('sa ghé????'), null)) + '\n';
+            (console.log('sa ghé???? paymentAndTotal:', paymentAndTotal),
+            null)) + '\n';
 
       console.log(
         'Sending item to ESP32:',

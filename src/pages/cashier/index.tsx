@@ -42,6 +42,7 @@ import { TbDeviceDesktopOff } from 'react-icons/tb';
 import { useShallow } from 'zustand/shallow';
 import usePurchasesStore from '../../store/purchases';
 import useUserStore from '../../store/user';
+import CashierLedMatrixControl from './CashierLedMatrixControl';
 import CashierSerialDisplay from './CashierSerialDisplay';
 import CashierShortcutsInfo from './CashierShortcutsInfo';
 import PurchasesTable from './PurchasesTable';
@@ -755,12 +756,15 @@ const CashierRegister = () => {
         <div ref={serialSectionRef}>
           <div className="flex justify-center gap-4">
             {hasSerial ? (
-              <CashierSerialDisplay
-                itemAndTotal={itemAndTotal}
-                paymentAndTotal={paymentAndTotal}
-                isConnected={isSerialConnected}
-                setIsConnected={setIsSerialConnected}
-              />
+              <>
+                <CashierSerialDisplay
+                  itemAndTotal={itemAndTotal}
+                  paymentAndTotal={paymentAndTotal}
+                  isConnected={isSerialConnected}
+                  setIsConnected={setIsSerialConnected}
+                />
+                <CashierLedMatrixControl />
+              </>
             ) : (
               <p>{t('cashier.noSerialSupport')}</p>
             )}
