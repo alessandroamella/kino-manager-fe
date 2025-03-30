@@ -1,6 +1,9 @@
+import { cn } from '@/lib/utils';
 import useUserStore from '@/store/user';
 import { getErrorMsg } from '@/types/error';
-import { OpeningDay } from '@/types/OpeningDay';
+import { Member } from '@/types/Member';
+import { OpeningDayWithAttendees } from '@/types/OpeningDay';
+import { dateFnsLang } from '@/utils/dateFnsLang';
 import downloadStreamedFile from '@/utils/download';
 import {
   addToast,
@@ -15,31 +18,65 @@ import {
   TableRow,
   Tooltip,
 } from '@heroui/react';
+import { isAfter } from 'date-fns';
 import { formatInTimeZone } from 'date-fns-tz';
 import { clamp } from 'lodash';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BiQr } from 'react-icons/bi';
-import { FaExclamationTriangle } from 'react-icons/fa';
-import { MdPeople } from 'react-icons/md';
+import { FaExclamationTriangle, FaUsers } from 'react-icons/fa';
 import AttendanceModal from './AttendanceModal'; // Import the modal
 
+const dateFormat = 'dd/MM/yyyy HH:mm';
+const dateFormatLong = 'eeee d MMMM yyyy';
+
+const DateEntry = ({ date }: { date: Date }) => {
+  const { i18n } = useTranslation();
+
+  return (
+    <div>
+      <p
+        className={cn({
+          'text-foreground-500': isAfter(new Date(), date),
+          'font-semibold': !isAfter(new Date(), date),
+        })}
+      >
+        {formatInTimeZone(date, 'Europe/Rome', dateFormat, {
+          locale: dateFnsLang(i18n),
+        })}
+      </p>
+      <small
+        className={cn('text-foreground-600', {
+          'text-foreground-500': isAfter(new Date(), date),
+        })}
+      >
+        {formatInTimeZone(date, 'Europe/Rome', dateFormatLong, {
+          locale: dateFnsLang(i18n),
+        })}
+      </small>
+    </div>
+  );
+};
+
 interface AttendanceTableProps {
-  openingDays: OpeningDay[];
+  openingDays: OpeningDayWithAttendees[];
+  users: Member[];
   isLoading: boolean;
   error: string | null;
 }
 
 const AttendanceTable = ({
   openingDays,
+  users,
   isLoading,
   error,
 }: AttendanceTableProps) => {
   const { t } = useTranslation();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedEvent, setSelectedEvent] = useState<OpeningDay | null>(null);
+  const [selectedEvent, setSelectedEvent] =
+    useState<OpeningDayWithAttendees | null>(null);
 
-  const handleViewAttendance = (event: OpeningDay) => {
+  const handleViewAttendance = (event: OpeningDayWithAttendees) => {
     setSelectedEvent(event);
     setIsModalOpen(true);
   };
@@ -54,10 +91,9 @@ const AttendanceTable = ({
     { key: 'name', label: 'attendance.eventName' },
     { key: 'openTime', label: 'attendance.openTime' },
     { key: 'closeTime', label: 'attendance.closeTime' },
+    { key: 'participants', label: 'attendance.participants' },
     { key: 'actions', label: 'admin.actions' },
   ];
-
-  const dateFormat = useMemo(() => 'dd/MM/yyyy HH:mm', []);
 
   const token = useUserStore((state) => state.accessToken);
 
@@ -144,17 +180,13 @@ const AttendanceTable = ({
                         case 'name':
                           return item.name || t('attendance.defaultEventName');
                         case 'openTime':
-                          return formatInTimeZone(
-                            item.openTimeUTC,
-                            'Europe/Rome',
-                            dateFormat,
-                          );
+                          return <DateEntry date={item.openTimeUTC} />;
                         case 'closeTime':
-                          return formatInTimeZone(
-                            item.closeTimeUTC,
-                            'Europe/Rome',
-                            dateFormat,
-                          );
+                          return <DateEntry date={item.closeTimeUTC} />;
+                        case 'participants':
+                          return Number.isInteger(item.attendances.length)
+                            ? item.attendances.length
+                            : '-';
                         case 'actions':
                           return (
                             <div className="flex gap-2">
@@ -175,7 +207,7 @@ const AttendanceTable = ({
                                     },
                                   )}
                                 >
-                                  <MdPeople />
+                                  <FaUsers />
                                 </Button>
                               </Tooltip>
                               <Tooltip
@@ -215,6 +247,7 @@ const AttendanceTable = ({
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         event={selectedEvent}
+        users={users}
       />
     </>
   );

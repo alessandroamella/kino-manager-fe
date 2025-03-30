@@ -154,10 +154,12 @@
     "defaultEventName": "Event",
     "openTime": "Opening Time",
     "closeTime": "Closing Time",
+    "participants": "Participants",
     "viewAttendanceAction": "View attendance for {{eventName}}",
     "modal": {
       "header": "Attendance for: {{eventName}}",
-      "attendeeCount": "{{count}} Attendees",
+      "attendeeCount_one": "{{count}} participant",
+      "attendeeCount_other": "{{count}} participants",
       "ariaLabel": "Attendance list for {{eventName}}",
       "member": "Member",
       "checkInTime": "Check-in Time",
@@ -166,7 +168,7 @@
     },
     "downloadQrToast": "Downloading QR code...",
     "viewAttendanceTooltip": "View attendance for this event",
-    "downloadQrTooltip": "Download QR code for this event"
+    "downloadQrTooltip": "Download QR code to put at the entrance for this event"
   },
   "home": {
     "kinoCafeTitle": "Kinó Café: Your space, your way",

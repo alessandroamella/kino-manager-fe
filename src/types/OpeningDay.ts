@@ -6,3 +6,10 @@ export interface OpeningDay extends Pick<BaseDocument, 'id'> {
   openTimeUTC: UTCDate;
   closeTimeUTC: UTCDate;
 }
+
+export interface OpeningDayWithAttendees extends OpeningDay {
+  attendances: {
+    memberId: number;
+    checkInUTC: UTCDate;
+  }[];
+}

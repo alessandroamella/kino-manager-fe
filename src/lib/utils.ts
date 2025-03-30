@@ -6,7 +6,13 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function getUserStr(user: Member, showEmail = false) {
+export function getUserStr(
+  user: Member,
+  options?: {
+    showEmail?: boolean;
+  },
+) {
+  const { showEmail = false } = options || {};
   return `${user.firstName} ${user.lastName} (#${user.id}${
     showEmail ? ` - ${user.email}` : ''
   })`;

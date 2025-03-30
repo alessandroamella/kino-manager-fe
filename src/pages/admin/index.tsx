@@ -2,7 +2,7 @@ import AttendanceTable from '@/components/attendance/AttendanceTable';
 import PageTitle from '@/components/navigation/PageTitle';
 import ScrollTop from '@/components/navigation/ScrollTop';
 import { getUserStr } from '@/lib/utils';
-import useOpeningDatesStore from '@/store/dates';
+import { OpeningDayWithAttendees } from '@/types/OpeningDay';
 import downloadStreamedFile from '@/utils/download';
 import { isMembershipPdfDataDto } from '@/utils/isMembershipPdfDataDto';
 import {
@@ -120,8 +120,6 @@ const AdminPanel = () => {
     return cards?.filter((card) => !card.member);
   }, [cards]);
 
-  const openingDays = useOpeningDatesStore((store) => store.dates);
-
   const handleAssignCard = async (
     user: MemberExtended,
     cardNumber: number | null,
@@ -234,6 +232,38 @@ const AdminPanel = () => {
   };
 
   const [viewingSignature, setViewingSignature] = useState<string | null>(null);
+
+  const [openingDays, setOpeningDays] = useState<
+    OpeningDayWithAttendees[] | null
+  >(null);
+
+  useEffect(() => {
+    const fetchOpeningDays = async () => {
+      if (!token) {
+        console.error('No access token found, not fetching opening days');
+        return;
+      }
+      setLoading(true);
+      setError(null);
+      try {
+        const { data } = await axios.get<OpeningDayWithAttendees[]>(
+          '/v1/opening-day/with-attendees',
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          },
+        );
+        console.log('Opening days:', data);
+        setOpeningDays(data);
+      } catch (err) {
+        setError(getErrorMsg(err));
+        console.error('Error fetching opening days:', getErrorMsg(err));
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOpeningDays();
+  }, [setError, token]);
 
   return loading ? (
     <Skeleton>
@@ -505,10 +535,11 @@ const AdminPanel = () => {
 
         <Divider className="my-12" />
 
-        {openingDays ? (
+        {openingDays && users ? (
           <AttendanceTable
             error={error}
             isLoading={loading}
+            users={users}
             openingDays={openingDays}
           />
         ) : (

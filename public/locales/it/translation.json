@@ -155,17 +155,19 @@
     "canCloseWindow": "Ora puoi chiudere questa finestra ora e goderti l'evento.",
     "checkedIn_male": "Sei registrato!",
     "checkedIn_female": "Sei registrata!",
-    "title": "Presenza all'evento",
+    "title": "Eventi e presenze",
     "tableAriaLabel": "Elenco di eventi e presenze",
     "noEvents": "Nessun evento trovato.",
     "eventName": "Nome evento",
     "defaultEventName": "Evento",
     "openTime": "Orario di apertura",
     "closeTime": "Orario di chiusura",
-    "viewAttendanceAction": "Visualizza la presenza per {{eventName}}",
+    "participants": "Partecipanti",
+    "viewAttendanceAction": "Visualizza le presenze per {{eventName}}",
     "modal": {
       "header": "Presenza per: {{eventName}}",
-      "attendeeCount": "{{count}} Partecipanti",
+      "attendeeCount_one": "{{count}} partecipante",
+      "attendeeCount_other": "{{count}} partecipanti",
       "ariaLabel": "Elenco presenze per {{eventName}}",
       "member": "Membro",
       "checkInTime": "Orario di check-in",
@@ -173,8 +175,8 @@
       "noAttendees": "Nessun partecipante registrato per questo evento."
     },
     "downloadQrToast": "Scaricamento del codice QR...",
-    "viewAttendanceTooltip": "Visualizza la presenza per questo evento",
-    "downloadQrTooltip": "Scarica il codice QR per questo evento"
+    "viewAttendanceTooltip": "Visualizza le presenze per questo evento",
+    "downloadQrTooltip": "Scarica il codice QR da mettere all'ingresso per questo evento"
   },
   "home": {
     "kinoCafeTitle": "Kinó Café: Il tuo spazio, a modo tuo",

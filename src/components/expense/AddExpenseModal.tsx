@@ -234,7 +234,7 @@ const AddExpenseModal = ({
                             })}
                             key={user.id.toString()}
                           >
-                            {getUserStr(user, true)}
+                            {getUserStr(user, { showEmail: true })}
                           </SelectItem>
                         ))}
                       </SelectSection>

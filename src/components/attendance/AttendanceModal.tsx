@@ -1,17 +1,15 @@
 import { getUserStr } from '@/lib/utils';
-import useUserStore from '@/store/user';
 import { Attendance } from '@/types/Attendance';
-import { getErrorMsg } from '@/types/error';
-import { OpeningDay } from '@/types/OpeningDay';
+import { Member } from '@/types/Member';
+import { OpeningDayWithAttendees } from '@/types/OpeningDay';
+import { dateFnsLang } from '@/utils/dateFnsLang';
 import {
-  Alert,
   Button,
   Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
   ModalHeader,
-  Spinner,
   Table,
   TableBody,
   TableCell,
@@ -19,70 +17,62 @@ import {
   TableHeader,
   TableRow,
 } from '@heroui/react';
-import axios from 'axios';
-import { format } from 'date-fns';
-import { clamp } from 'lodash';
-import { useEffect, useMemo, useState } from 'react';
+import { formatInTimeZone } from 'date-fns-tz';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FaExclamationTriangle, FaUsers } from 'react-icons/fa';
+import { FaUsers } from 'react-icons/fa';
+
+type MemberWithAttendance = Member & Pick<Attendance, 'checkInUTC'>;
 
 interface AttendanceModalProps {
   isOpen: boolean;
   onClose: () => void;
-  event: OpeningDay | null; // Pass the full event details
+  event: OpeningDayWithAttendees | null;
+  users: Member[];
 }
 
-const AttendanceModal = ({ isOpen, onClose, event }: AttendanceModalProps) => {
-  const { t } = useTranslation();
-  const token = useUserStore((store) => store.accessToken);
+const AttendanceModal = ({
+  isOpen,
+  onClose,
+  event,
+  users,
+}: AttendanceModalProps) => {
+  const { i18n, t } = useTranslation();
 
-  const [attendanceData, setAttendanceData] = useState<Attendance[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const usersById = useMemo(() => {
+    const map = new Map<number, Member>();
+    users.forEach((user) => {
+      map.set(user.id, user);
+    });
+    return map;
+  }, [users]);
 
-  const dateFormat = useMemo(() => 'dd/MM/yyyy HH:mm', []);
-  const timeFormat = useMemo(() => 'HH:mm:ss', []);
-
-  useEffect(() => {
-    if (isOpen && event?.id && token) {
-      const fetchAttendance = async () => {
-        setIsLoading(true);
-        setError(null);
-        setAttendanceData([]); // Clear previous data
-        try {
-          const { data } = await axios.get<Attendance[]>(
-            `/v1/attendance/event/${event.id}`,
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            },
-          );
-          setAttendanceData(data);
-        } catch (err) {
-          console.error('Error fetching attendance:', err);
-          setError(getErrorMsg(err));
-        } finally {
-          setIsLoading(false);
-        }
-      };
-      fetchAttendance();
-    } else if (!isOpen) {
-      // Clear state when modal closes
-      setAttendanceData([]);
-      setError(null);
-      setIsLoading(false);
+  const attendees = useMemo<MemberWithAttendance[]>(() => {
+    if (!event?.attendances || !usersById) {
+      return [];
     }
-  }, [isOpen, event?.id, token]);
+
+    return event.attendances
+      .map((attendanceRecord) => ({
+        checkInUTC: attendanceRecord.checkInUTC,
+        ...usersById.get(attendanceRecord.memberId)!,
+      }))
+      .filter((user) => user?.id);
+  }, [event?.attendances, usersById]);
 
   const eventName = event?.name || t('attendance.defaultEventName');
 
   const columns = [
     { key: 'member', label: 'attendance.modal.member' },
+    { key: 'email', label: 'profile.email' },
+    { key: 'phoneNumber', label: 'profile.phoneNumber' },
     { key: 'checkInTime', label: 'attendance.modal.checkInTime' },
-    { key: 'memberId', label: 'attendance.modal.memberId' },
   ];
 
+  const attendeeCount = attendees.length;
+
   return (
-    <Modal isOpen={isOpen} onOpenChange={onClose} size="3xl">
+    <Modal isOpen={isOpen} onOpenChange={onClose} size="4xl">
       <ModalContent>
         {(modalOnClose) => (
           <>
@@ -90,79 +80,90 @@ const AttendanceModal = ({ isOpen, onClose, event }: AttendanceModalProps) => {
               {t('attendance.modal.header', { eventName })}
               {event && (
                 <span className="text-sm font-normal text-gray-500">
-                  {format(event.openTimeUTC, dateFormat)}
+                  {formatInTimeZone(
+                    event.openTimeUTC,
+                    'Europe/Rome',
+                    'eeee d MMMM yyyy',
+                    {
+                      locale: dateFnsLang(i18n),
+                    },
+                  )}
                 </span>
               )}
             </ModalHeader>
             <ModalBody className="max-h-[70vh] overflow-y-auto">
-              {isLoading ? (
-                <div className="flex justify-center items-center h-40">
-                  <Spinner size="lg" />
+              {/* Removed Loading and Error states related to fetching */}
+              <>
+                <div className="mb-4 flex items-center gap-2 text-lg font-medium">
+                  <FaUsers />
+                  <span>
+                    {t('attendance.modal.attendeeCount', {
+                      count: attendeeCount,
+                    })}
+                  </span>
                 </div>
-              ) : error ? (
-                <Alert
-                  color="danger"
-                  title={t('errors.error')}
-                  icon={<FaExclamationTriangle />}
+                <Table
+                  isVirtualized
+                  rowHeight={50}
+                  maxTableHeight={300}
+                  isStriped
+                  aria-label={t('attendance.modal.ariaLabel', { eventName })}
                 >
-                  {error}
-                </Alert>
-              ) : (
-                <>
-                  <div className="mb-4 flex items-center gap-2 text-lg font-medium">
-                    <FaUsers />
-                    <span>
-                      {t('attendance.modal.attendeeCount', {
-                        count: attendanceData.length,
-                      })}
-                    </span>
-                  </div>
-                  <Table
-                    isVirtualized
-                    rowHeight={50}
-                    maxTableHeight={clamp(attendanceData.length, 1, 6) * 55} // Adjust multiplier as needed
-                    isStriped
-                    aria-label={t('attendance.modal.ariaLabel', { eventName })}
+                  <TableHeader>
+                    {columns.map((column) => (
+                      <TableColumn key={column.key}>
+                        {t(column.label)}
+                      </TableColumn>
+                    ))}
+                  </TableHeader>
+                  <TableBody
+                    items={attendees}
+                    emptyContent={t('attendance.modal.noAttendees')}
                   >
-                    <TableHeader>
-                      {columns.map((column) => (
-                        <TableColumn key={column.key}>
-                          {t(column.label)}
-                        </TableColumn>
-                      ))}
-                    </TableHeader>
-                    <TableBody
-                      items={attendanceData}
-                      emptyContent={t('attendance.modal.noAttendees')}
-                    >
-                      {(item) => (
-                        <TableRow key={item.id}>
-                          {(columnKey) => {
-                            switch (columnKey) {
-                              case 'member':
-                                return (
-                                  <TableCell>
-                                    {getUserStr(item.member)}
-                                  </TableCell>
-                                );
-                              case 'checkInTime':
-                                return (
-                                  <TableCell>
-                                    {format(item.checkInUTC, timeFormat)}
-                                  </TableCell>
-                                );
-                              case 'memberId':
-                                return <TableCell>{item.member.id}</TableCell>;
-                              default:
-                                return <TableCell>-</TableCell>;
-                            }
-                          }}
-                        </TableRow>
-                      )}
-                    </TableBody>
-                  </Table>
-                </>
-              )}
+                    {(attendeeUser) => (
+                      <TableRow key={attendeeUser.id}>
+                        {(columnKey) => {
+                          switch (columnKey) {
+                            case 'member':
+                              return (
+                                <TableCell>
+                                  {getUserStr(attendeeUser)}
+                                </TableCell>
+                              );
+                            case 'email':
+                              return (
+                                <TableCell>
+                                  {attendeeUser.email || '-'}
+                                </TableCell>
+                              );
+                            case 'phoneNumber':
+                              return (
+                                <TableCell>
+                                  {attendeeUser.phoneNumber || '-'}
+                                </TableCell>
+                              );
+                            case 'checkInTime':
+                              return (
+                                <TableCell>
+                                  {attendeeUser.checkInUTC
+                                    ? formatInTimeZone(
+                                        new Date(attendeeUser.checkInUTC),
+                                        'Europe/Rome',
+                                        'dd/MM/yyyy HH:mm:ss',
+                                      )
+                                    : '-'}
+                                </TableCell>
+                              );
+                            // Add more cases if needed
+                            default:
+                              return <TableCell>-</TableCell>;
+                          }
+                        }}
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </>
             </ModalBody>
             <ModalFooter>
               <Button color="primary" variant="flat" onPress={modalOnClose}>
