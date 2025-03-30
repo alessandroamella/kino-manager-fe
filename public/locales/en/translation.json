@@ -344,7 +344,9 @@
     "noPurchases": "No purchases",
     "shortcutsInfo": "Keyboard shortcuts (Italian)",
     "notSupported": "Not supported",
-    "notSupportedInfo": "We recommend using Linux to access all features, including serial communication with Arduino and thermal printer support."
+    "notSupportedInfo": "We recommend using Linux to access all features, including serial communication with Arduino and thermal printer support.",
+    "deletePurchaseConfirm": "Are you sure you want to delete purchase with ID {{id}}?",
+    "deletePurchaseSuccess": "Purchase with ID {{id}} deleted successfully"
   },
   "paymentMethod": {
     "CASH": "Cash",

@@ -55,6 +55,18 @@ const AdminPanel = () => {
   const token = useUserStore((store) => store.accessToken);
   const [cards, setCards] = useState<MembershipCardExtended[] | null>(null);
 
+  const userWithCards = useMemo(() => {
+    if (!users || !cards) return null;
+
+    return users.map((user) => {
+      const card = cards.find((c) => c.member?.id === user.id);
+      return {
+        ...user,
+        membershipCardNumber: card ? card.number : null,
+      };
+    });
+  }, [cards, users]);
+
   const setError = useCallback((err: string | null) => {
     _setError(err);
     ScrollTop.scrollTop();
@@ -324,213 +336,225 @@ const AdminPanel = () => {
               {t('admin.exportToExcel')}
             </Button>
           </div>
-          <Table
-            isVirtualized
-            rowHeight={50}
-            isStriped
-            maxTableHeight={clamp(users.length, 1, 5) * 100}
-            aria-label="Users table"
-            className="table pr-2"
-          >
-            <TableHeader>
-              <TableColumn>{t('admin.actions')}</TableColumn>
-              <TableColumn>
-                {t('profile.membershipCardNumberShort')}
-              </TableColumn>
-              <TableColumn>{t('profile.firstName')}</TableColumn>
-              <TableColumn>{t('profile.lastName')}</TableColumn>
-              <TableColumn className="min-w-32">
-                {t('profile.gender')}
-              </TableColumn>
-              <TableColumn>{t('profile.birthDate')}</TableColumn>
-              <TableColumn className="min-w-36">
-                {t('admin.bornIn')}
-              </TableColumn>
-              <TableColumn>{t('profile.email')}</TableColumn>
-              <TableColumn>{t('profile.phoneNumber')}</TableColumn>
-              <TableColumn>{t('profile.codiceFiscale')}</TableColumn>
-              <TableColumn className="min-w-[26rem]">
-                {t('profile.address')}
-              </TableColumn>
-              <TableColumn className="min-w-52">
-                {t('profile.streetName')}
-              </TableColumn>
-              <TableColumn>{t('profile.streetNumber')}</TableColumn>
-              <TableColumn>{t('profile.postalCode')}</TableColumn>
-              <TableColumn className="min-w-52">
-                {t('profile.city')}
-              </TableColumn>
-              <TableColumn>{t('profile.province')}</TableColumn>
-              <TableColumn>{t('profile.country')}</TableColumn>
-              <TableColumn>{t('profile.birthProvince')}</TableColumn>
-              <TableColumn>{t('profile.birthComune')}</TableColumn>
-              <TableColumn>{t('profile.birthCountry')}</TableColumn>
-              <TableColumn>{t('profile.memberSince')}</TableColumn>
-              <TableColumn>{t('admin.isAdmin')}</TableColumn>
-              <TableColumn>{t('admin.ipAddress')}</TableColumn>
-              <TableColumn>{t('signup.signature')}</TableColumn>
-            </TableHeader>
-            <TableBody items={users}>
-              {(user) => (
-                <TableRow key={user.id}>
-                  <TableCell>
-                    {isMembershipPdfDataDto(user) && (
-                      <Tooltip content={t('admin.downloadMembershipForm')}>
-                        <Button
-                          variant="light"
-                          aria-label="Edit"
-                          onPress={() => handleDownloadMembershipFormPDF(user)}
-                          isIconOnly
-                        >
-                          <FiPrinter size={18} />
-                        </Button>
-                      </Tooltip>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    {user.membershipCardNumber ? (
-                      user.membershipCardNumber
-                    ) : availableCards && availableCards.length > 0 ? (
-                      <Dropdown>
-                        <DropdownTrigger>
-                          <Button variant="bordered" size="sm">
-                            {t('admin.assignCard')}
+          {userWithCards ? (
+            <Table
+              isVirtualized
+              rowHeight={50}
+              isStriped
+              maxTableHeight={clamp(users.length, 1, 5) * 100}
+              aria-label="Users table"
+              className="table pr-2"
+            >
+              <TableHeader>
+                <TableColumn>{t('admin.actions')}</TableColumn>
+                <TableColumn>
+                  {t('profile.membershipCardNumberShort')}
+                </TableColumn>
+                <TableColumn>{t('profile.firstName')}</TableColumn>
+                <TableColumn>{t('profile.lastName')}</TableColumn>
+                <TableColumn className="min-w-32">
+                  {t('profile.gender')}
+                </TableColumn>
+                <TableColumn>{t('profile.birthDate')}</TableColumn>
+                <TableColumn className="min-w-36">
+                  {t('admin.bornIn')}
+                </TableColumn>
+                <TableColumn>{t('profile.email')}</TableColumn>
+                <TableColumn>{t('profile.phoneNumber')}</TableColumn>
+                <TableColumn>{t('profile.codiceFiscale')}</TableColumn>
+                <TableColumn className="min-w-[26rem]">
+                  {t('profile.address')}
+                </TableColumn>
+                <TableColumn className="min-w-52">
+                  {t('profile.streetName')}
+                </TableColumn>
+                <TableColumn>{t('profile.streetNumber')}</TableColumn>
+                <TableColumn>{t('profile.postalCode')}</TableColumn>
+                <TableColumn className="min-w-52">
+                  {t('profile.city')}
+                </TableColumn>
+                <TableColumn>{t('profile.province')}</TableColumn>
+                <TableColumn>{t('profile.country')}</TableColumn>
+                <TableColumn>{t('profile.birthProvince')}</TableColumn>
+                <TableColumn>{t('profile.birthComune')}</TableColumn>
+                <TableColumn>{t('profile.birthCountry')}</TableColumn>
+                <TableColumn>{t('profile.memberSince')}</TableColumn>
+                <TableColumn>{t('admin.isAdmin')}</TableColumn>
+                <TableColumn>{t('admin.ipAddress')}</TableColumn>
+                <TableColumn>{t('signup.signature')}</TableColumn>
+              </TableHeader>
+              <TableBody items={userWithCards}>
+                {(user) => (
+                  <TableRow key={user.id}>
+                    <TableCell>
+                      {isMembershipPdfDataDto(user) && (
+                        <Tooltip content={t('admin.downloadMembershipForm')}>
+                          <Button
+                            variant="light"
+                            aria-label="Edit"
+                            onPress={() =>
+                              handleDownloadMembershipFormPDF(user)
+                            }
+                            isIconOnly
+                          >
+                            <FiPrinter size={18} />
                           </Button>
-                        </DropdownTrigger>
-                        <DropdownMenu
-                          aria-label="Membership Card Number"
-                          selectionMode="single"
-                          onSelectionChange={(selected) =>
-                            handleAssignCard(
-                              user,
-                              selected.currentKey !== undefined
-                                ? parseInt(selected.currentKey)
-                                : null,
+                        </Tooltip>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {user.membershipCardNumber ? (
+                        user.membershipCardNumber
+                      ) : availableCards && availableCards.length > 0 ? (
+                        <Dropdown>
+                          <DropdownTrigger>
+                            <Button variant="bordered" size="sm">
+                              {t('admin.assignCard')}
+                            </Button>
+                          </DropdownTrigger>
+                          <DropdownMenu
+                            aria-label="Membership Card Number"
+                            selectionMode="single"
+                            onSelectionChange={(selected) =>
+                              handleAssignCard(
+                                user,
+                                selected.currentKey !== undefined
+                                  ? parseInt(selected.currentKey)
+                                  : null,
+                              )
+                            }
+                          >
+                            {availableCards.map((card) => (
+                              <DropdownItem key={card.number}>
+                                {t('profile.card', { n: card.number })}
+                              </DropdownItem>
+                            ))}
+                          </DropdownMenu>
+                        </Dropdown>
+                      ) : cards === null ? ( // Check cards directly instead of availableCards for loading state
+                        <Spinner size="sm" />
+                      ) : (
+                        '-'
+                      )}
+                    </TableCell>
+                    <TableCell>{user.firstName}</TableCell>
+                    <TableCell>{user.lastName}</TableCell>
+                    <TableCell>{t(`gender.${user.gender}`)}</TableCell>
+
+                    <TableCell>
+                      {user.birthDate
+                        ? format(user.birthDate, 'dd/MM/yyyy')
+                        : '-'}
+                    </TableCell>
+
+                    <TableCell className="min-w-32">
+                      <span className="flex items-center">
+                        {hasFlag(user.birthCountry) &&
+                          getUnicodeFlagIcon(user.birthCountry) + ' '}
+
+                        {user.birthComune
+                          ? `${user.birthComune}${
+                              user.birthProvince
+                                ? ` (${user.birthProvince})`
+                                : ''
+                            }`
+                          : t(`countries.${user.birthCountry}`)}
+                      </span>
+                    </TableCell>
+
+                    <TableCell>{user.email}</TableCell>
+                    <TableCell className="min-w-36">
+                      {user.phoneNumber.toString()}
+                    </TableCell>
+                    <TableCell>
+                      <Code>{user.codiceFiscale || '-'}</Code>
+                    </TableCell>
+
+                    <TableCell>{user.address}</TableCell>
+                    <TableCell>{user.streetName || '-'}</TableCell>
+
+                    <TableCell>{user.streetNumber || '-'}</TableCell>
+
+                    <TableCell>{user.postalCode || '-'}</TableCell>
+
+                    <TableCell>{user.city || '-'}</TableCell>
+                    <TableCell>{user.province || '-'}</TableCell>
+
+                    <TableCell>{user.country || '-'}</TableCell>
+
+                    <TableCell>{user.birthProvince || '-'}</TableCell>
+
+                    <TableCell>{user.birthComune || '-'}</TableCell>
+
+                    <TableCell>{t(`countries.${user.birthCountry}`)}</TableCell>
+
+                    <TableCell>
+                      {user.memberSince ? (
+                        format(user.memberSince, 'dd/MM/yyyy')
+                      ) : (
+                        <FaTimes color="red" />
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {user.isAdmin ? (
+                        <FiCheck color="green" />
+                      ) : (
+                        <FaTimes color="red" />
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {user.ipAddress ? (
+                        <Tooltip
+                          content={
+                            user.deviceInfo ? (
+                              <ul>
+                                {Object.entries(user.deviceInfo).map(
+                                  ([key, value]) => (
+                                    <li key={key}>{`${key}: ${
+                                      typeof value === 'boolean'
+                                        ? value
+                                          ? t('common.yes')
+                                          : t('common.no')
+                                        : value
+                                    }`}</li>
+                                  ),
+                                )}
+                              </ul>
+                            ) : (
+                              '-'
                             )
                           }
                         >
-                          {availableCards.map((card) => (
-                            <DropdownItem key={card.number}>
-                              {t('profile.card', { n: card.number })}
-                            </DropdownItem>
-                          ))}
-                        </DropdownMenu>
-                      </Dropdown>
-                    ) : cards === null ? ( // Check cards directly instead of availableCards for loading state
-                      <Spinner size="sm" />
-                    ) : (
-                      '-'
-                    )}
-                  </TableCell>
-                  <TableCell>{user.firstName}</TableCell>
-                  <TableCell>{user.lastName}</TableCell>
-                  <TableCell>{t(`gender.${user.gender}`)}</TableCell>
-
-                  <TableCell>
-                    {user.birthDate
-                      ? format(user.birthDate, 'dd/MM/yyyy')
-                      : '-'}
-                  </TableCell>
-
-                  <TableCell className="min-w-32">
-                    <span className="flex items-center">
-                      {hasFlag(user.birthCountry) &&
-                        getUnicodeFlagIcon(user.birthCountry) + ' '}
-
-                      {user.birthComune
-                        ? `${user.birthComune}${
-                            user.birthProvince ? ` (${user.birthProvince})` : ''
-                          }`
-                        : t(`countries.${user.birthCountry}`)}
-                    </span>
-                  </TableCell>
-
-                  <TableCell>{user.email}</TableCell>
-                  <TableCell className="min-w-36">
-                    {user.phoneNumber.toString()}
-                  </TableCell>
-                  <TableCell>
-                    <Code>{user.codiceFiscale || '-'}</Code>
-                  </TableCell>
-
-                  <TableCell>{user.address}</TableCell>
-                  <TableCell>{user.streetName || '-'}</TableCell>
-
-                  <TableCell>{user.streetNumber || '-'}</TableCell>
-
-                  <TableCell>{user.postalCode || '-'}</TableCell>
-
-                  <TableCell>{user.city || '-'}</TableCell>
-                  <TableCell>{user.province || '-'}</TableCell>
-
-                  <TableCell>{user.country || '-'}</TableCell>
-
-                  <TableCell>{user.birthProvince || '-'}</TableCell>
-
-                  <TableCell>{user.birthComune || '-'}</TableCell>
-
-                  <TableCell>{t(`countries.${user.birthCountry}`)}</TableCell>
-
-                  <TableCell>
-                    {user.memberSince ? (
-                      format(user.memberSince, 'dd/MM/yyyy')
-                    ) : (
-                      <FaTimes color="red" />
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    {user.isAdmin ? (
-                      <FiCheck color="green" />
-                    ) : (
-                      <FaTimes color="red" />
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    {user.ipAddress ? (
-                      <Tooltip
-                        content={
-                          user.deviceInfo ? (
-                            <ul>
-                              {Object.entries(user.deviceInfo).map(
-                                ([key, value]) => (
-                                  <li key={key}>{`${key}: ${
-                                    typeof value === 'boolean'
-                                      ? value
-                                        ? t('common.yes')
-                                        : t('common.no')
-                                      : value
-                                  }`}</li>
-                                ),
-                              )}
-                            </ul>
-                          ) : (
-                            '-'
-                          )
-                        }
-                      >
-                        <p>{user.ipAddress}</p>
-                      </Tooltip>
-                    ) : (
-                      '-'
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    {user.signatureR2Key ? (
-                      <Button
-                        variant="light"
-                        isIconOnly
-                        onPress={() => setViewingSignature(user.signatureR2Key)}
-                      >
-                        <FaExternalLinkAlt />
-                      </Button>
-                    ) : (
-                      <FaTimes className="mx-auto" color="red" />
-                    )}
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
+                          <p>{user.ipAddress}</p>
+                        </Tooltip>
+                      ) : (
+                        '-'
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {user.signatureR2Key ? (
+                        <Button
+                          variant="light"
+                          isIconOnly
+                          onPress={() =>
+                            setViewingSignature(user.signatureR2Key)
+                          }
+                        >
+                          <FaExternalLinkAlt />
+                        </Button>
+                      ) : (
+                        <FaTimes className="mx-auto" color="red" />
+                      )}
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          ) : (
+            <Skeleton>
+              <div className="w-full h-96" />
+            </Skeleton>
+          )}
         </div>
 
         <Divider className="my-12" />

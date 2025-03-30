@@ -31,6 +31,7 @@ interface PurchasesState {
     accessToken: string,
     purchase: CreatePurchase,
   ) => Promise<boolean>;
+  deletePurchase: (accessToken: string, purchaseId: number) => Promise<void>;
 }
 
 const usePurchasesStore = create<PurchasesState>((set, get) => ({
@@ -156,6 +157,21 @@ const usePurchasesStore = create<PurchasesState>((set, get) => ({
     } catch (error) {
       set({ purchaseError: getErrorMsg(error), creatingPurchase: false });
       return false;
+    }
+  },
+
+  deletePurchase: async (accessToken: string, purchaseId: number) => {
+    try {
+      await axios.delete(`/v1/purchase/${purchaseId}`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      set((state) => ({
+        purchases: state.purchases.filter(
+          (purchase) => purchase.id !== purchaseId,
+        ),
+      }));
+    } catch (error) {
+      set({ errorPurchases: getErrorMsg(error) });
     }
   },
 }));

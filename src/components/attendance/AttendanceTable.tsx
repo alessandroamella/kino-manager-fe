@@ -218,11 +218,14 @@ const AttendanceTable = ({
                                   variant="flat"
                                   isIconOnly
                                   onPress={() => downloadQrCode(item.id)}
-                                  aria-label={t('attendance.downloadQrAction', {
-                                    eventName:
-                                      item.name ||
-                                      t('attendance.defaultEventName'),
-                                  })}
+                                  aria-label={t(
+                                    'attendance.downloadQrTooltip',
+                                    {
+                                      eventName:
+                                        item.name ||
+                                        t('attendance.defaultEventName'),
+                                    },
+                                  )}
                                 >
                                   <BiQr />
                                 </Button>

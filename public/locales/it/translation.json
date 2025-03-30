@@ -352,7 +352,9 @@
     "noPurchases": "Nessun acquisto",
     "shortcutsInfo": "Scorciatoie da tastiera",
     "notSupported": "Non supportato",
-    "notSupportedInfo": "Ti consigliamo di utilizzare Linux per accedere a tutte le funzionalità, inclusa la comunicazione seriale con Arduino e il supporto alla stampante termica."
+    "notSupportedInfo": "Ti consigliamo di utilizzare Linux per accedere a tutte le funzionalità, inclusa la comunicazione seriale con Arduino e il supporto alla stampante termica.",
+    "deletePurchaseConfirm": "Sei sicuro di voler eliminare l'acquisto con ID {{id}}?",
+    "deletePurchaseSuccess": "Acquisto con ID {{id}} eliminato con successo"
   },
   "paymentMethod": {
     "CASH": "Contanti",

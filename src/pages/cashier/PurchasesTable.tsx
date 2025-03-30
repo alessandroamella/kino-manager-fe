@@ -5,9 +5,14 @@ import { getErrorMsg } from '@/types/error';
 import { Item } from '@/types/Item';
 import downloadStreamedFile from '@/utils/download';
 import {
+  addToast,
   Alert,
   Button,
   Divider,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
   Listbox,
   ListboxItem,
   Spinner,
@@ -20,13 +25,15 @@ import {
 } from '@heroui/react';
 import { formatDate } from 'date-fns';
 import { clamp } from 'lodash';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FaExclamationTriangle, FaPrint } from 'react-icons/fa';
+import { BsThreeDots } from 'react-icons/bs';
+import { FaExclamationTriangle, FaTrash } from 'react-icons/fa';
 import { FiDownload } from 'react-icons/fi';
 
 const PurchasesTable = () => {
   const purchases = usePurchasesStore((store) => store.purchases);
+  const deletePurchase = usePurchasesStore((store) => store.deletePurchase);
 
   const isLoading = usePurchasesStore((store) => store.loadingPurchases);
   const error = usePurchasesStore((store) => store.errorPurchases);
@@ -66,6 +73,28 @@ const PurchasesTable = () => {
     { key: 'itemDetails', label: 'cashier.itemDetails' },
     { key: 'actions', label: 'admin.actions' },
   ];
+
+  const deletePurchaseConfirm = useCallback(
+    async (id: number) => {
+      if (!token) {
+        window.alert('Please login to delete data');
+        return;
+      }
+
+      // ask for confirmation
+      const confirmDelete = window.confirm(
+        t('cashier.deletePurchaseConfirm', { id }),
+      );
+      if (!confirmDelete) return;
+
+      await deletePurchase(token, id);
+      addToast({
+        title: t('cashier.deletePurchaseSuccess', { id }),
+        color: 'success',
+      });
+    },
+    [deletePurchase, t, token],
+  );
 
   return isLoading ? (
     <div className="flex justify-center items-center h-48">
@@ -194,15 +223,26 @@ const PurchasesTable = () => {
                       }
                     case 'actions':
                       return (
-                        <Button
-                          color="primary"
-                          isIconOnly
-                          onPress={() => {
-                            // Do something with the item
-                          }}
-                        >
-                          <FaPrint />
-                        </Button>
+                        <Dropdown>
+                          <DropdownTrigger>
+                            <Button variant="bordered">
+                              <BsThreeDots />
+                            </Button>
+                          </DropdownTrigger>
+                          <DropdownMenu aria-label="Static Actions">
+                            <DropdownItem
+                              color="danger"
+                              key="delete"
+                              className="text-danger w-full"
+                              onPress={() => deletePurchaseConfirm(item.id)}
+                            >
+                              <span className="text-center flex items-center gap-2">
+                                <FaTrash />
+                                {t('admin.delete')}
+                              </span>
+                            </DropdownItem>
+                          </DropdownMenu>
+                        </Dropdown>
                       );
                     default:
                       return null;
