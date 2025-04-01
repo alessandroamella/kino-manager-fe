@@ -26,11 +26,12 @@ const useOpeningDatesStore = create<OpeningDatesState>((set, get) => ({
     try {
       const { data } = await axios.get<OpeningDay[]>('/v1/opening-day');
 
-      const dates = data.map((day) => ({
+      const dates: OpeningDay[] = data.map((day) => ({
         id: day.id,
         name: day.name,
         openTimeUTC: new UTCDateMini(day.openTimeUTC),
         closeTimeUTC: new UTCDateMini(day.closeTimeUTC),
+        eventThumbnailUrl: null,
       }));
       console.log('Fetched opening dates:', dates);
 

@@ -126,12 +126,8 @@ const Profile = () => {
     }
   }, []);
 
-  console.log('aa');
-
   useEffect(() => {
-    console.log('no token');
     if (!token) return;
-    console.log('fetching user');
     fetchAttendedEvents(token);
   }, [fetchAttendedEvents, token]);
 
