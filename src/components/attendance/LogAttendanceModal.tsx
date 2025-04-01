@@ -116,7 +116,7 @@ const LogAttendanceModal = () => {
     modalBodyContent = (
       <div className="flex flex-col items-center justify-center gap-4 py-4">
         <Spinner size="lg" color="primary" />
-        <p>{t('attendance.pleaseWait')}</p>
+        <p>{t('common.loading')}</p>
       </div>
     );
   } else if (checkInError) {

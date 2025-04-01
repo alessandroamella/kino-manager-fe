@@ -115,25 +115,23 @@ const Profile = () => {
     null,
   );
 
-  const fetchAttendedEvents = useCallback(async () => {
-    if (!token) {
-      return;
-    }
-    try {
-      const response = await axios.get('/v1/member/events-attended', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setAttendedEvents(response.data);
-    } catch (err) {
-      console.error('Error fetching attended events:', getErrorMsg(err));
-    }
-  }, [token]);
-
   useEffect(() => {
-    if (token) {
-      fetchAttendedEvents();
+    async function fetchAttendedEvents() {
+      if (!token) {
+        return;
+      }
+      try {
+        const response = await axios.get('/v1/member/events-attended', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setAttendedEvents(response.data);
+      } catch (err) {
+        console.error('Error fetching attended events:', getErrorMsg(err));
+      }
     }
-  }, [fetchAttendedEvents, token]);
+
+    fetchAttendedEvents();
+  }, [token]);
 
   return (
     <>
