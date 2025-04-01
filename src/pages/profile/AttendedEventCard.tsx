@@ -62,7 +62,7 @@ const AttendedEventCard = ({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
     >
-      <Card className="max-w-[400px] overflow-hidden">
+      <Card className="max-w-[300px] md:max-w-[400px] overflow-hidden">
         <CardHeader className="flex flex-col gap-2 bg-gradient-to-r from-purple-600 to-blue-500 text-white p-4">
           <div className="flex justify-between items-center w-full">
             <h2 className="text-xl font-bold">{openingDay.name}</h2>
