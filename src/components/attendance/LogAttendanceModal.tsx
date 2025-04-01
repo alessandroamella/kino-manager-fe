@@ -17,7 +17,11 @@ import { useTranslation } from 'react-i18next';
 import { FiAlertTriangle, FiCheckCircle } from 'react-icons/fi';
 import { useSearchParams } from 'react-router';
 
-const LogAttendanceModal = () => {
+const LogAttendanceModal = ({
+  fetchAttendedEvents,
+}: {
+  fetchAttendedEvents: (token: string) => void;
+}) => {
   const { t } = useTranslation();
 
   const token = useUserStore((store) => store.accessToken);
@@ -58,6 +62,8 @@ const LogAttendanceModal = () => {
         // Success!
         console.log('Checked in to event successfully');
         // No need to set success state explicitly, absence of error implies success
+
+        fetchAttendedEvents(token); // Fetch attended events after successful check-in
       } catch (err) {
         const errorMsg = getErrorMsg(err);
         console.error('Error checking in to event:', errorMsg);
@@ -67,7 +73,7 @@ const LogAttendanceModal = () => {
         setIsLoading(false);
       }
     },
-    [t, token, user], // Keep dependencies that affect the function's behavior
+    [fetchAttendedEvents, t, token, user], // Keep dependencies that affect the function's behavior
   );
 
   // --- Effect to Trigger Check-in ---

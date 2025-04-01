@@ -115,23 +115,21 @@ const Profile = () => {
     null,
   );
 
-  useEffect(() => {
-    async function fetchAttendedEvents() {
-      if (!token) {
-        return;
-      }
-      try {
-        const response = await axios.get('/v1/member/events-attended', {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setAttendedEvents(response.data);
-      } catch (err) {
-        console.error('Error fetching attended events:', getErrorMsg(err));
-      }
+  const fetchAttendedEvents = useCallback(async (token: string) => {
+    try {
+      const response = await axios.get('/v1/member/events-attended', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setAttendedEvents(response.data);
+    } catch (err) {
+      console.error('Error fetching attended events:', getErrorMsg(err));
     }
+  }, []);
 
-    fetchAttendedEvents();
-  }, [token]);
+  useEffect(() => {
+    if (!token) return;
+    fetchAttendedEvents(token);
+  }, [fetchAttendedEvents, token]);
 
   return (
     <>
@@ -143,7 +141,7 @@ const Profile = () => {
         setIsOpen={setIsSignatureModalOpen}
         onSaveSignature={addSignature}
       />
-      <LogAttendanceModal />
+      <LogAttendanceModal fetchAttendedEvents={fetchAttendedEvents} />
 
       <main className="mx-auto py-6 bg-background-50 -mt-2 md:mt-0 md:p-6 md:px-12 lg:px-16 xl:px-24">
         <Card shadow={isMobile ? 'none' : undefined}>
