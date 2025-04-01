@@ -172,7 +172,10 @@
       "member": "Membro",
       "checkInTime": "Orario di check-in",
       "memberId": "ID membro",
-      "noAttendees": "Nessun partecipante registrato per questo evento."
+      "noAttendees": "Nessun partecipante registrato per questo evento.",
+      "checkInUrl": "URL per la registrazione all'evento",
+      "copyCheckInUrl": "Copia URL registrazione evento",
+      "checkInUrlCopied": "URL registrazione evento copiato negli appunti"
     },
     "downloadQrToast": "Scaricamento del codice QR...",
     "viewAttendanceTooltip": "Visualizza le presenze per questo evento",
@@ -266,14 +269,16 @@
     "welcome_female": "Benvenuta al Kinó Café!",
     "welcomeMessage": "Siamo felici di averti con noi.",
     "attendedEvents": "Eventi a cui hai partecipato",
-    "eventOfDate": "Evento del {{date}}"
+    "eventOfDate": "Evento del {{date}}",
+    "noAttendedEvents": "Nessun evento a cui hai partecipato",
+    "attendEventMessage": "Puoi partecipare agli eventi al Kinó Café. Consulta il calendario per partecipare ai nostri eventi!"
   },
   "attendedEvent": {
     "thumbnail": "copertina",
     "youWereThere": "Eri presente!",
     "eventTime": "Orario Evento",
     "yourCheckIn": "Il tuo Check-in",
-    "viewEventPhotos": "Visualizza Foto Evento",
+    "viewEventPhotos": "Foto dell'evento",
     "openGallery": "Apri Galleria"
   },
   "languages": {

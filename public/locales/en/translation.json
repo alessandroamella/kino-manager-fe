@@ -164,7 +164,10 @@
       "member": "Member",
       "checkInTime": "Check-in Time",
       "memberId": "Member ID",
-      "noAttendees": "No attendees recorded for this event yet."
+      "noAttendees": "No attendees recorded for this event yet.",
+      "checkInUrl": "Event registration URL",
+      "copyCheckInUrl": "Copy event registration URL",
+      "checkInUrlCopied": "Event registration URL copied to clipboard"
     },
     "downloadQrToast": "Downloading QR code...",
     "viewAttendanceTooltip": "View attendance for this event",
@@ -258,7 +261,9 @@
     "welcome": "Welcome to Kinó Café!",
     "welcomeMessage": "We're glad to have you on board.",
     "attendedEvents": "Attended Events",
-    "eventOfDate": "Event of {{date}}"
+    "eventOfDate": "Event of {{date}}",
+    "noAttendedEvents": "No attended events yet",
+    "attendEventMessage": "You can attend events at Kinó Café. Check out our calendar to see what's coming up!"
   },
   "attendedEvent": {
     "thumbnail": "thumbnail",

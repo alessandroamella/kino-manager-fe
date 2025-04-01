@@ -214,9 +214,7 @@ const Profile = () => {
                         <FiCalendar className="text-primary" size={20} />
                       </div>
                       <h3 className="font-bold text-lg text-foreground-900">
-                        {attendedEvents.length > 0
-                          ? t('profile.attendedEvents')
-                          : t('profile.noAttendedEvents')}
+                        {t('profile.attendedEvents')}
                       </h3>
                       {attendedEvents.length > 0 && (
                         <span className="bg-primary/20 text-primary text-xs font-medium px-2 py-1 rounded-full">
@@ -264,7 +262,7 @@ const Profile = () => {
                           />
                         </div>
                         <p className="text-foreground-700 mb-2">
-                          {t('profile.noEventsYet')}
+                          {t('profile.noAttendedEvents')}
                         </p>
                         <p className="text-sm text-foreground-500">
                           {t('profile.attendEventMessage')}
