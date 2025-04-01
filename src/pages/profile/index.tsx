@@ -2,6 +2,7 @@ import LogAttendanceModal from '@/components/attendance/LogAttendanceModal';
 import SignatureModal from '@/components/input/SignatureModal';
 import PageTitle from '@/components/navigation/PageTitle';
 import ScrollTop from '@/components/navigation/ScrollTop';
+import { AttendedEvent } from '@/types/AttendedEvent';
 import { getErrorMsg } from '@/types/error';
 import {
   addToast,
@@ -28,6 +29,7 @@ import { AiOutlineLogout, AiOutlineSignature } from 'react-icons/ai';
 import { BiTime } from 'react-icons/bi';
 import {
   FiCalendar,
+  FiChevronRight,
   FiCode,
   FiCreditCard,
   FiHome,
@@ -39,6 +41,7 @@ import { useLocation } from 'react-router';
 import useUserStore from '../../store/user';
 import { dateFnsLang } from '../../utils/dateFnsLang';
 import useIsMobile from '../../utils/isMobile';
+import AttendedEventCard from './AttendedEventCard';
 
 const Profile = () => {
   const { t, i18n } = useTranslation();
@@ -107,6 +110,30 @@ const Profile = () => {
   );
 
   const [isSignatureModalOpen, setIsSignatureModalOpen] = useState(false);
+
+  const [attendedEvents, setAttendedEvents] = useState<AttendedEvent[] | null>(
+    null,
+  );
+
+  const fetchAttendedEvents = useCallback(async () => {
+    if (!token) {
+      return;
+    }
+    try {
+      const response = await axios.get('/v1/member/events-attended', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setAttendedEvents(response.data);
+    } catch (err) {
+      console.error('Error fetching attended events:', getErrorMsg(err));
+    }
+  }, [token]);
+
+  useEffect(() => {
+    if (token) {
+      fetchAttendedEvents();
+    }
+  }, [fetchAttendedEvents, token]);
 
   return (
     <>
@@ -183,6 +210,75 @@ const Profile = () => {
                 </div>
               </div>
               <Divider className="mb-4" />
+              {attendedEvents && (
+                <>
+                  <div className="flex flex-col w-full">
+                    <div className="flex items-center space-x-3 mb-4">
+                      <div className="bg-primary/10 p-2 rounded-full">
+                        <FiCalendar className="text-primary" size={20} />
+                      </div>
+                      <h3 className="font-bold text-lg text-foreground-900">
+                        {attendedEvents.length > 0
+                          ? t('profile.attendedEvents')
+                          : t('profile.noAttendedEvents')}
+                      </h3>
+                      {attendedEvents.length > 0 && (
+                        <span className="bg-primary/20 text-primary text-xs font-medium px-2 py-1 rounded-full">
+                          {attendedEvents.length}
+                        </span>
+                      )}
+                    </div>
+
+                    {attendedEvents.length > 0 ? (
+                      <div className="relative w-full mb-4">
+                        <div
+                          className="flex overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide"
+                          style={{
+                            scrollbarWidth: 'none',
+                            msOverflowStyle: 'none',
+                          }}
+                        >
+                          <div className="flex space-x-4 px-2">
+                            {attendedEvents.map((event) => (
+                              <div
+                                className="snap-start flex-shrink-0"
+                                key={new Date(event.checkInUTC).toUTCString()}
+                              >
+                                <AttendedEventCard attendedEvent={event} />
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        {attendedEvents.length > 1 && (
+                          <div className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center justify-center bg-background/80 backdrop-blur-sm p-1 rounded-l-lg shadow-md">
+                            <div className="text-xs text-foreground-700 px-2 flex items-center gap-2">
+                              <span>Scroll</span>
+                              <FiChevronRight />
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="bg-foreground-100/50 rounded-lg p-6 flex flex-col items-center justify-center text-center mb-4">
+                        <div className="bg-foreground-200/50 p-4 rounded-full mb-4">
+                          <FiCalendar
+                            size={24}
+                            className="text-foreground-500"
+                          />
+                        </div>
+                        <p className="text-foreground-700 mb-2">
+                          {t('profile.noEventsYet')}
+                        </p>
+                        <p className="text-sm text-foreground-500">
+                          {t('profile.attendEventMessage')}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                  <Divider className="my-4" />
+                </>
+              )}
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-4 md:px-8 lg:px-12">
                 <div>

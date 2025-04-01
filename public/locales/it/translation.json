@@ -264,7 +264,17 @@
     "noSignatureMessage": "Non hai ancora aggiunto una firma. Aggiungine una per completare il tuo profilo e poter diventare tesserato",
     "welcome_male": "Benvenuto al Kinó Café!",
     "welcome_female": "Benvenuta al Kinó Café!",
-    "welcomeMessage": "Siamo felici di averti con noi."
+    "welcomeMessage": "Siamo felici di averti con noi.",
+    "attendedEvents": "Eventi a cui hai partecipato",
+    "eventOfDate": "Evento del {{date}}"
+  },
+  "attendedEvent": {
+    "thumbnail": "copertina",
+    "youWereThere": "Eri presente!",
+    "eventTime": "Orario Evento",
+    "yourCheckIn": "Il tuo Check-in",
+    "viewEventPhotos": "Visualizza Foto Evento",
+    "openGallery": "Apri Galleria"
   },
   "languages": {
     "it": "Italiano",

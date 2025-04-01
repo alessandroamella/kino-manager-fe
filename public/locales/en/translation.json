@@ -256,7 +256,17 @@
     "noSignature": "No signature",
     "noSignatureMessage": "You haven't added a signature yet. Please add one to complete your profile in order to be eligible for a membership card",
     "welcome": "Welcome to Kinó Café!",
-    "welcomeMessage": "We're glad to have you on board."
+    "welcomeMessage": "We're glad to have you on board.",
+    "attendedEvents": "Attended Events",
+    "eventOfDate": "Event of {{date}}"
+  },
+  "attendedEvent": {
+    "thumbnail": "thumbnail",
+    "youWereThere": "You were there!",
+    "eventTime": "Event Time",
+    "yourCheckIn": "Your Check-in",
+    "viewEventPhotos": "View Event Photos",
+    "openGallery": "Open Gallery"
   },
   "languages": {
     "it": "Italian",

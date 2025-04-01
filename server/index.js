@@ -54,6 +54,7 @@ app.use(
           'https://www.googletagmanager.com',
           'https://gravatar.com',
           'https://kinocafe-static.bitrey.it',
+          'https://static.bitrey.it',
         ],
         connectSrc: [
           "'self'",
