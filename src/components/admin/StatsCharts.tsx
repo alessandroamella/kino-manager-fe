@@ -12,7 +12,7 @@ import {
   Tooltip,
 } from 'chart.js';
 import { differenceInYears } from 'date-fns';
-import { chain } from 'lodash';
+import { chain, range } from 'lodash';
 import { Bar, Line, Pie } from 'react-chartjs-2';
 import { useTranslation } from 'react-i18next';
 
@@ -69,17 +69,19 @@ const StatsCharts = ({ users }: UserDataVisualizationsProps) => {
     ageCounts.set(age, (ageCounts.get(age) || 0) + 1); // Increment count for this age using Map
   });
 
-  // Sort ages for the line chart to be in order
-  const sortedAges = Array.from(ageCounts.keys()).sort((a, b) => a - b);
+  const ageRange = range(
+    Math.min(...ageCounts.keys()), // Minimum age
+    Math.max(...ageCounts.keys()) + 1, // Maximum age + 1 for inclusive range
+  );
+
   const ageChartData = {
-    labels: sortedAges, // Use individual ages as labels
+    labels: ageRange,
     datasets: [
       {
         label: t('charts.ageDistribution'),
-        data: sortedAges.map((age) => ageCounts.get(age)), // Use counts for each age using Map
+        data: ageRange.map((age) => ageCounts.get(age) || 0), // Use counts for each age using Map
         borderColor: 'rgba(75, 192, 192, 1)',
-        tension: 0.4, // Optional: Add tension for smoother line
-        fill: false, // Optional: Remove fill for a cleaner line chart
+        tension: 0.4,
       },
     ],
   };
@@ -111,12 +113,13 @@ const StatsCharts = ({ users }: UserDataVisualizationsProps) => {
   };
 
   return (
-    <main className="flex gap-4 flex-row flex-wrap justify-center items-center">
-      <div className="w-56 m-5">
+    <main className="gap-8 grid grid-cols-1 md:grid-cols-2 justify-center items-center">
+      <div className="w-full h-72 flex justify-center">
         <Pie
           data={genderChartData}
           options={{
             responsive: true,
+            maintainAspectRatio: false,
             plugins: {
               legend: {
                 position: 'top' as const,
@@ -130,11 +133,12 @@ const StatsCharts = ({ users }: UserDataVisualizationsProps) => {
         />
       </div>
 
-      <div className="w-96 m-5">
+      <div className="w-full h-72 flex justify-center">
         <Line
           data={ageChartData}
           options={{
             responsive: true,
+            maintainAspectRatio: false,
             plugins: {
               legend: {
                 position: 'top' as const,
@@ -163,11 +167,12 @@ const StatsCharts = ({ users }: UserDataVisualizationsProps) => {
         />
       </div>
 
-      <div className="w-96 m-5">
+      <div className="w-full h-96 flex justify-center md:col-span-2 mr-2">
         <Bar
           data={cityChartData}
           options={{
             responsive: true,
+            maintainAspectRatio: false,
             plugins: {
               legend: {
                 position: 'top' as const,

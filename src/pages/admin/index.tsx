@@ -6,9 +6,13 @@ import { OpeningDayWithAttendees } from '@/types/OpeningDay';
 import downloadStreamedFile from '@/utils/download';
 import { isMembershipPdfDataDto } from '@/utils/isMembershipPdfDataDto';
 import {
+  Accordion,
+  AccordionItem,
   addToast,
   Alert,
   Button,
+  Card,
+  CardBody,
   Code,
   Divider,
   Dropdown,
@@ -591,7 +595,19 @@ const AdminPanel = () => {
 
         {users.length > 0 && (
           <>
-            <StatsCharts users={users} />
+            <Card>
+              <CardBody>
+                <Accordion>
+                  <AccordionItem
+                    key="1"
+                    aria-label="Accordion 1"
+                    title={t('charts.charts')}
+                  >
+                    <StatsCharts users={users} />
+                  </AccordionItem>
+                </Accordion>
+              </CardBody>
+            </Card>
             <Divider className="my-12" />
           </>
         )}

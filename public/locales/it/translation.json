@@ -462,6 +462,7 @@
     }
   },
   "charts": {
+    "charts": "Statistiche e Grafici",
     "genderDistribution": "Distribuzione per genere",
     "ageDistribution": "Distribuzione per età",
     "numberOfUsers": "Numero di Utenti",

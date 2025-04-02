@@ -454,6 +454,7 @@
     }
   },
   "charts": {
+    "charts": "Statistics and Charts",
     "genderDistribution": "Gender Distribution",
     "ageDistribution": "User Age Distribution",
     "numberOfUsers": "Number of Users",
