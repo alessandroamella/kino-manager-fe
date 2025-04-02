@@ -39,6 +39,7 @@ app.use(
           'https://maps.gstatic.com',
           'https://www.googletagmanager.com',
           'https://unpkg.com',
+          "'sha256-f7qoEK4P8VgPdPQa2uOb8DGnuvCBiAT4Xha206/wY/I='",
         ],
         styleSrc: [
           "'self'",

@@ -72,11 +72,17 @@
         <p>
           Ci scusiamo per l'inconveniente, ma stiamo eseguendo alcuni lavori di
           manutenzione in questo momento. Se hai bisogno, puoi sempre
-          <a href="mailto:#">contattarci</a>
-          , altrimenti saremo di nuovo online a breve!
+          <a id="contact-email" href="#">contattarci</a>, altrimenti saremo di nuovo online a breve!
         </p>
         <p class="signature">&mdash; Il Team</p>
       </div>
     </main>
+
+    <!-- dynamically write email to avoid spam -->
+    <script>
+      const elem = document.getElementById('contact-email');
+      elem.href =
+        'mailto:' + 'kinocafesancesario' + '@' + 'gmail' + '.' + 'com';
+    </script>
   </body>
 </html>
