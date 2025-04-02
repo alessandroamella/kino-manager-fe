@@ -431,17 +431,19 @@ const Profile = () => {
                     {user.membershipCardNumber
                       ? t('profile.card', { n: user.membershipCardNumber })
                       : t('profile.notAMember')}
-                    <Tooltip content={t('profile.downloadMembershipForm')}>
-                      <Button
-                        isIconOnly
-                        size="sm"
-                        variant="ghost"
-                        onPress={downloadMembershipCardPdf}
-                        className="ml-2"
-                      >
-                        <FaFileAlt />
-                      </Button>
-                    </Tooltip>
+                    {user.membershipCardNumber && (
+                      <Tooltip content={t('profile.downloadMembershipForm')}>
+                        <Button
+                          isIconOnly
+                          size="sm"
+                          variant="ghost"
+                          onPress={downloadMembershipCardPdf}
+                          className="ml-2"
+                        >
+                          <FaFileAlt />
+                        </Button>
+                      </Tooltip>
+                    )}
                   </p>
                 </div>
               </div>
