@@ -1,5 +1,7 @@
 import 'dotenv/config';
 import express from 'express';
+import fs from 'fs';
+import { readFile } from 'fs/promises';
 import helmet from 'helmet';
 import { join } from 'path';
 import permissionsPolicy from 'permissions-policy';
@@ -86,6 +88,31 @@ app.use(
 const publicDir = join(process.cwd(), 'public');
 console.log('Serving static files from:', publicDir);
 app.use(express.static(publicDir));
+
+app.use((req, res, next) => {
+  // Check if the request is for a static file or API
+  if (req.path.startsWith('/api') || req.path.includes('.')) {
+    return next();
+  }
+
+  // Try to serve the index.html from the build directory
+  const indexPath = join(process.cwd(), 'dist', 'index.html');
+
+  fs.access(indexPath, fs.constants.F_OK, async (err) => {
+    if (err) {
+      // If index.html doesn't exist, serve the fallback HTML
+      console.log(`Build not available, serving fallback HTML for ${req.path}`);
+      res.setHeader('Content-Type', 'text/html');
+      const fallbackHtml = await readFile(
+        join(process.cwd(), 'fallback.html'),
+        'utf-8',
+      );
+      return res.status(503).send(fallbackHtml);
+    }
+    // If the build exists, let ViteExpress handle it
+    next();
+  });
+});
 
 ViteExpress.listen(app, port, () => {
   console.log(`Server is running on port ${port}`);
