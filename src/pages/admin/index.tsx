@@ -584,7 +584,14 @@ const AdminPanel = () => {
         <h2 className="text-2xl font-semibold mb-4">{t('admin.cards')}</h2>
         {cards ? (
           <div className="w-full overflow-x-auto max-w-[92vw] md:max-w-[94vw]">
-            <Table isStriped aria-label="Cards table" className="table">
+            <Table
+              isVirtualized
+              rowHeight={50}
+              maxTableHeight={clamp(cards.length, 1, 5) * 100}
+              isStriped
+              aria-label="Cards table"
+              className="table"
+            >
               <TableHeader>
                 <TableColumn>
                   {t('profile.membershipCardNumberShort')}
