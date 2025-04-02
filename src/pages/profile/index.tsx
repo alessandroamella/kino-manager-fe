@@ -4,6 +4,7 @@ import PageTitle from '@/components/navigation/PageTitle';
 import ScrollTop from '@/components/navigation/ScrollTop';
 import { AttendedEvent } from '@/types/AttendedEvent';
 import { getErrorMsg } from '@/types/error';
+import downloadStreamedFile from '@/utils/download';
 import {
   addToast,
   Alert,
@@ -27,6 +28,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AiOutlineLogout, AiOutlineSignature } from 'react-icons/ai';
 import { BiTime } from 'react-icons/bi';
+import { FaFileAlt } from 'react-icons/fa';
 import {
   FiCalendar,
   FiChevronRight,
@@ -131,6 +133,36 @@ const Profile = () => {
     fetchAttendedEvents(token);
   }, [fetchAttendedEvents, token]);
 
+  const downloadMembershipCardPdf = useCallback(async () => {
+    if (!token || !user?.id) {
+      console.error('No token provided to downloadMembershipCardPdf');
+      addToast({
+        title: t('errors.error'),
+        description: t('errors.generic'),
+        color: 'danger',
+      });
+      return;
+    }
+    try {
+      addToast({
+        title: t('profile.downloadingMembershipCard'),
+        color: 'primary',
+      });
+      await downloadStreamedFile({
+        url: `v1/membership-pdf/${user.id}`,
+        filename: `membership-form-${user.id}.pdf`,
+        token,
+      });
+    } catch (err) {
+      console.error('Error downloading membership card:', getErrorMsg(err));
+      addToast({
+        title: t('errors.error'),
+        description: t('errors.generic'),
+        color: 'danger',
+      });
+    }
+  }, [token, user?.id, t]);
+
   return (
     <>
       <PageTitle title="profile" />
@@ -149,6 +181,11 @@ const Profile = () => {
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
               {t('profile.myProfile')}
             </h2>
+
+            <Button color="danger" variant="ghost" onPress={logout}>
+              <AiOutlineLogout className="mr-2 inline-block" />
+              {t('auth.logout')}
+            </Button>
           </CardHeader>
           {user ? (
             <CardBody className="px-4 py-4">
@@ -379,17 +416,19 @@ const Profile = () => {
                     {user.membershipCardNumber
                       ? t('profile.card', { n: user.membershipCardNumber })
                       : t('profile.notAMember')}
+                    <Tooltip content={t('profile.downloadMembershipForm')}>
+                      <Button
+                        isIconOnly
+                        size="sm"
+                        variant="ghost"
+                        onPress={downloadMembershipCardPdf}
+                        className="ml-2"
+                      >
+                        <FaFileAlt />
+                      </Button>
+                    </Tooltip>
                   </p>
                 </div>
-              </div>
-
-              <Divider className="my-4" />
-
-              <div className="flex justify-center">
-                <Button color="danger" onPress={logout}>
-                  <AiOutlineLogout className="mr-2 inline-block" />
-                  {t('auth.logout')}
-                </Button>
               </div>
             </CardBody>
           ) : (

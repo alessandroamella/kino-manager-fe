@@ -6,6 +6,7 @@ import { OpeningDayWithAttendees } from '@/types/OpeningDay';
 import downloadStreamedFile from '@/utils/download';
 import { isMembershipPdfDataDto } from '@/utils/isMembershipPdfDataDto';
 import {
+  addToast,
   Alert,
   Button,
   Code,
@@ -193,9 +194,25 @@ const AdminPanel = () => {
             return card;
           }) || null,
       );
+
+      addToast({
+        title: t('admin.cardAssigned', {
+          number: cardNumber,
+          user: user.firstName + ' ' + user.lastName,
+        }),
+        color: 'success',
+      });
     } catch (err) {
       setError(getErrorMsg(err));
       console.error('Error assigning card:', getErrorMsg(err));
+
+      addToast({
+        title: t('admin.errorAssigningCard', {
+          number: cardNumber,
+          user: user.firstName + ' ' + user.lastName,
+        }),
+        color: 'danger',
+      });
     } finally {
       setLoading(false);
     }
@@ -203,14 +220,14 @@ const AdminPanel = () => {
 
   const [isExporting, setIsExporting] = useState(false);
 
-  const handleDownloadMembershipFormPDF = async ({ id }: MemberExtended) => {
+  const downloadMembershipFormPDF = async (id: number) => {
     if (!token) {
       window.alert('Please login to download the form');
       return;
     }
     try {
       downloadStreamedFile({
-        url: `v1/admin/membership-form/${id}`,
+        url: `v1/membership-pdf/${id}`,
         filename: `membership-form-${id}.pdf`,
         token,
       });
@@ -388,13 +405,11 @@ const AdminPanel = () => {
                   <TableRow key={user.id}>
                     <TableCell>
                       {isMembershipPdfDataDto(user) && (
-                        <Tooltip content={t('admin.downloadMembershipForm')}>
+                        <Tooltip content={t('profile.downloadMembershipForm')}>
                           <Button
                             variant="light"
                             aria-label="Edit"
-                            onPress={() =>
-                              handleDownloadMembershipFormPDF(user)
-                            }
+                            onPress={() => downloadMembershipFormPDF(user.id)}
                             isIconOnly
                           >
                             <FiPrinter size={18} />

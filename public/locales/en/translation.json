@@ -263,7 +263,9 @@
     "attendedEvents": "Attended Events",
     "eventOfDate": "Event of {{date}}",
     "noAttendedEvents": "No attended events yet",
-    "attendEventMessage": "You can attend events at Kinó Café. Check out our calendar to see what's coming up!"
+    "attendEventMessage": "You can attend events at Kinó Café. Check out our calendar to see what's coming up!",
+    "downloadingMembershipCard": "Downloading membership card...",
+    "downloadMembershipForm": "Download Membership Card"
   },
   "attendedEvent": {
     "thumbnail": "thumbnail",
@@ -317,9 +319,10 @@
     "verifyUserWarning": "Card #{{number}} will be assigned to user {{user}}, who will become al Almo member. This is irreversible. Please be sure you have the correct data before clicking 'Ok'.",
     "cardAlreadyAssigned": "This user already has a membership card assigned. You cannot change it.",
     "assignCard": "Assign Card",
-    "downloadMembershipForm": "Download Membership Card",
     "deviceInfo": "Device Info",
-    "ipAddress": "IP Address"
+    "ipAddress": "IP Address",
+    "cardAssigned": "Card {{number}} assigned to user {{user}}",
+    "errorAssigningCard": "Error assigning card {{number}} to user {{user}}"
   },
   "signature": {
     "openModalButton": "Write signature",
