@@ -24,7 +24,7 @@ import { hasFlag } from 'country-flag-icons';
 import getUnicodeFlagIcon from 'country-flag-icons/unicode';
 import { format, isToday } from 'date-fns';
 import parsePhoneNumber from 'libphonenumber-js';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AiOutlineLogout, AiOutlineSignature } from 'react-icons/ai';
 import { BiTime } from 'react-icons/bi';
@@ -39,7 +39,7 @@ import {
   FiMapPin,
   FiPhone,
 } from 'react-icons/fi';
-import { useLocation } from 'react-router';
+import { useLocation, useSearchParams } from 'react-router';
 import useUserStore from '../../store/user';
 import { dateFnsLang } from '../../utils/dateFnsLang';
 import useIsMobile from '../../utils/isMobile';
@@ -162,6 +162,21 @@ const Profile = () => {
       });
     }
   }, [token, user?.id, t]);
+
+  const [search, setSearch] = useSearchParams();
+
+  const downloadPdfSearch = search.get('download-membership-pdf');
+  const isDownloadingPdf = useRef(false);
+
+  useEffect(() => {
+    if (downloadPdfSearch || !isDownloadingPdf.current) {
+      isDownloadingPdf.current = true;
+      downloadMembershipCardPdf().finally(() => {
+        search.delete('download-membership-pdf');
+        setSearch(search);
+      });
+    }
+  }, [downloadMembershipCardPdf, downloadPdfSearch, search, setSearch]);
 
   return (
     <>
