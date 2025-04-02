@@ -586,8 +586,8 @@ const AdminPanel = () => {
           <div className="w-full overflow-x-auto max-w-[92vw] md:max-w-[94vw]">
             <Table
               isVirtualized
-              rowHeight={50}
-              maxTableHeight={clamp(cards.length, 1, 5) * 100}
+              rowHeight={30}
+              maxTableHeight={clamp(cards.length, 1, 5) * 60}
               isStriped
               aria-label="Cards table"
               className="table"
