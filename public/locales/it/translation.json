@@ -272,7 +272,7 @@
     "eventOfDate": "Evento del {{date}}",
     "noAttendedEvents": "Nessun evento a cui hai partecipato",
     "attendEventMessage": "Puoi partecipare agli eventi al Kinó Café. Consulta il calendario per partecipare ai nostri eventi!",
-    "downloadingMembershipCard": "Scaricamento tessera...",
+    "downloadingMembershipCard": "Scaricamento modulo di iscrizione...",
     "downloadMembershipForm": "Scarica modulo di iscrizione"
   },
   "attendedEvent": {

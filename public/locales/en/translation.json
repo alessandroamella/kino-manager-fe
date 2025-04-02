@@ -264,8 +264,8 @@
     "eventOfDate": "Event of {{date}}",
     "noAttendedEvents": "No attended events yet",
     "attendEventMessage": "You can attend events at Kinó Café. Check out our calendar to see what's coming up!",
-    "downloadingMembershipCard": "Downloading membership card...",
-    "downloadMembershipForm": "Download Membership Card"
+    "downloadingMembershipCard": "Downloading membership form...",
+    "downloadMembershipForm": "Download membership form"
   },
   "attendedEvent": {
     "thumbnail": "thumbnail",
