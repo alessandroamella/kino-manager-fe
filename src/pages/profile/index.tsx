@@ -169,7 +169,7 @@ const Profile = () => {
   const isDownloadingPdf = useRef(false);
 
   useEffect(() => {
-    if (downloadPdfSearch || !isDownloadingPdf.current) {
+    if (downloadPdfSearch === 'true' && !isDownloadingPdf.current) {
       isDownloadingPdf.current = true;
       downloadMembershipCardPdf().finally(() => {
         search.delete('download-membership-pdf');
