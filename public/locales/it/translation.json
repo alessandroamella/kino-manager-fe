@@ -73,7 +73,7 @@
     "address": "Indirizzo",
     "addressPlaceholder": "Inserisci il tuo indirizzo",
     "addressSelected": "Indirizzo selezionato: {{address}}",
-    "addressDescription": "Inserisci il tuo indirizzo di residenza",
+    "addressDescription": "Inserisci il tuo indirizzo di residenza completo",
     "registerButton": "Registrati",
     "alreadyAccount": "Hai già un account?",
     "noAccount": "Non hai un account?",

@@ -1,4 +1,4 @@
-import CodiceFiscale from 'codice-fiscale-js';
+import { isValidFiscalCode } from 'codice-fiscale-ts';
 import type { TFunction } from 'i18next';
 import parsePhoneNumber from 'libphonenumber-js';
 import * as yup from 'yup';
@@ -65,7 +65,7 @@ export const signupYupSchema = (t: TFunction) =>
             context?.useCodiceFiscale &&
             (typeof value !== 'string' ||
               value.length !== 16 ||
-              !CodiceFiscale.check(value))
+              !isValidFiscalCode(value))
           ) {
             return false;
           }

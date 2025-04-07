@@ -118,7 +118,7 @@ const LogAttendanceModal = ({
   let modalBodyContent = null;
 
   if (isLoading) {
-    modalTitle = t('attendance.checkingIn');
+    modalTitle = t('common.loading');
     modalBodyContent = (
       <div className="flex flex-col items-center justify-center gap-4 py-4">
         <Spinner size="lg" color="primary" />

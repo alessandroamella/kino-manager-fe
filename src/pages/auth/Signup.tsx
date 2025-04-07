@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 import { Comune } from '@/types/Comune';
 import { dateFnsLang } from '@/utils/dateFnsLang';
 import { parseAddress } from '@/utils/parseAddress';
-import { UTCDateMini } from '@date-fns/utc';
+import { wait } from '@/utils/wait';
 import type { CalendarDate } from '@heroui/react';
 import {
   addToast,
@@ -29,8 +29,15 @@ import {
   Tooltip,
 } from '@heroui/react';
 import { yupResolver } from '@hookform/resolvers/yup';
-import axios from 'axios';
-import CodiceFiscale from 'codice-fiscale-js';
+import axios, { isAxiosError } from 'axios';
+import {
+  calculateFiscalCode,
+  decodeFiscalCode,
+  FiscalCodeData,
+  type ForeignPerson,
+  isValidFiscalCode,
+  type ItalianPerson,
+} from 'codice-fiscale-ts';
 import { hasFlag } from 'country-flag-icons';
 import getUnicodeFlagIcon from 'country-flag-icons/unicode';
 import { format, formatDate, subYears } from 'date-fns';
@@ -121,24 +128,28 @@ const Signup = () => {
     return formatted?.country || null;
   }, [phoneNumber]);
 
-  const codiceFiscaleData = useMemo(() => {
-    if (
-      codiceFiscaleValue.length !== 16 ||
-      !CodiceFiscale.check(codiceFiscaleValue)
-    ) {
-      return null;
+  const [codiceFiscaleData, setCodiceFiscaleData] =
+    useState<FiscalCodeData | null>(null);
+
+  useEffect(() => {
+    async function updateFiscalCodeData() {
+      if (
+        codiceFiscaleValue.length !== 16 ||
+        !isValidFiscalCode(codiceFiscaleValue)
+      ) {
+        return null;
+      }
+
+      try {
+        const data = await decodeFiscalCode(codiceFiscaleValue);
+        setCodiceFiscaleData(data);
+      } catch (error) {
+        console.error('Error computing inverse CF:', error);
+        return null;
+      }
     }
 
-    try {
-      const data = CodiceFiscale.computeInverse(codiceFiscaleValue);
-      return {
-        ...data,
-        birthDate: new UTCDateMini(data.year, data.month - 1, data.day),
-      };
-    } catch (error) {
-      console.error('Error computing inverse CF:', error);
-      return null;
-    }
+    updateFiscalCodeData();
   }, [codiceFiscaleValue]);
 
   useEffect(() => {
@@ -165,51 +176,77 @@ const Signup = () => {
   }, [countrySearchTerm, countriesList, t]);
 
   useEffect(() => {
-    if (!useCodiceFiscale) {
-      return;
-    } else if (!codiceFiscaleData) {
-      setValue('birthDate', subYears(new Date(), 20));
-      setValue('birthCountry', '');
-      setValue('birthComune', null);
-      trigger(['birthDate', 'birthCountry', 'birthComune']);
-      return;
-    }
-
-    if (
-      useCodiceFiscale &&
-      codiceFiscaleValue &&
-      CodiceFiscale.check(codiceFiscaleValue)
-    ) {
-      try {
-        const data = CodiceFiscale.computeInverse(codiceFiscaleValue);
-        const birthDateFromCF = new UTCDateMini(
-          data.year,
-          data.month - 1,
-          data.day,
-        );
-
-        setValue('birthDate', birthDateFromCF);
-        setValue('birthCountry', 'IT');
-        setValue('birthComune', data.birthplace);
-        setValue('birthProvince', data.birthplaceProvincia);
-        setValue('gender', data.gender);
-        trigger(['birthDate', 'birthCountry', 'birthComune']);
-      } catch (error) {
-        console.error('Error computing inverse CF:', error);
-        setValue('birthDate', subYears(new Date(), 18));
+    async function getDataFromCF() {
+      if (!useCodiceFiscale) {
+        return;
+      } else if (!codiceFiscaleData) {
+        setValue('birthDate', subYears(new Date(), 20));
         setValue('birthCountry', '');
         setValue('birthComune', null);
-        setValue('birthProvince', null);
-        setValue('gender', null);
         trigger(['birthDate', 'birthCountry', 'birthComune']);
+        return;
+      }
+
+      if (
+        useCodiceFiscale &&
+        codiceFiscaleValue &&
+        isValidFiscalCode(codiceFiscaleValue)
+      ) {
+        try {
+          const data = await decodeFiscalCode(codiceFiscaleValue);
+
+          console.log('Decoded fiscal code:', data);
+
+          const country = data.birthPlace ? 'IT' : data.foreignCountry;
+
+          if (!country) {
+            console.warn("Can't compute country for CF:", data);
+            setValue('birthDate', subYears(new Date(), 20));
+            setValue('birthCountry', '');
+            setValue('birthComune', null);
+            trigger(['birthDate', 'birthCountry', 'birthComune']);
+            return;
+          }
+
+          setValue('birthCountry', country);
+
+          const isItalian = birthCountry === 'IT';
+
+          if (data.birthDate) setValue('birthDate', data.birthDate);
+          if (data.birthPlace) {
+            setValue('birthComune', data.birthPlace);
+          }
+          if (data.birthProvince) {
+            setValue(
+              'birthProvince',
+              isItalian ? data.birthProvince : birthCountry,
+            );
+          }
+          if (data.gender) {
+            setValue('gender', data.gender);
+          }
+          trigger(['birthDate', 'birthCountry', 'birthComune']);
+        } catch (error) {
+          console.error('Error computing inverse CF:', error);
+          setValue('birthDate', subYears(new Date(), 18));
+          setValue('birthCountry', '');
+          setValue('birthComune', null);
+          setValue('birthProvince', null);
+          setValue('gender', null);
+          trigger(['birthDate', 'birthCountry', 'birthComune']);
+        }
       }
     }
+
+    getDataFromCF();
   }, [
     codiceFiscaleValue,
     setValue,
     useCodiceFiscale,
     trigger,
     codiceFiscaleData,
+    t,
+    birthCountry,
   ]);
 
   const handleDateChange = useCallback(
@@ -232,6 +269,7 @@ const Signup = () => {
       }
       const k = key?.toString().split('|');
       if (k?.length === 2 && k.every(Boolean)) {
+        setValue('birthCountry', 'IT');
         setValue('birthComune', k[0]);
         setValue('birthProvince', k[1]);
       } else {
@@ -311,31 +349,34 @@ const Signup = () => {
       if (!useCodiceFiscale) {
         // let's try crafting a manual codice fiscale
         let cfGuessValid = true;
-        if (obj.birthCountry === 'IT' && obj.birthComune) {
-          const [day, month, year] = [
-            obj.birthDate?.getDate(),
-            obj.birthDate?.getMonth(),
-            obj.birthDate?.getFullYear(),
-          ];
-          if (!obj.birthDate || !obj.birthProvince) {
+        if (
+          !obj.birthDate ||
+          !obj.birthCountry ||
+          (obj.birthCountry === 'IT' && !obj.birthProvince)
+        ) {
+          cfGuessValid = false;
+        }
+        if (cfGuessValid) {
+          try {
+            const person = obj.birthComune
+              ? ({
+                  birthDate: obj.birthDate,
+                  birthPlace: obj.birthComune,
+                  firstName: obj.firstName,
+                  lastName: obj.lastName,
+                  gender: obj.gender,
+                } as ItalianPerson)
+              : ({
+                  birthDate: obj.birthDate,
+                  firstName: obj.firstName,
+                  lastName: obj.lastName,
+                  gender: obj.gender,
+                  foreignCountry: obj.birthCountry,
+                } as ForeignPerson);
+            obj.codiceFiscale = await calculateFiscalCode(person);
+          } catch (err) {
+            console.warn('Error creating CF:', err);
             cfGuessValid = false;
-          }
-          if (cfGuessValid) {
-            try {
-              obj.codiceFiscale = new CodiceFiscale({
-                birthplace: obj.birthComune!,
-                birthplaceProvincia: obj.birthProvince!,
-                day: day!,
-                month: month! + 1,
-                year: year!,
-                gender: obj.gender === 'F' ? 'F' : 'M',
-                name: obj.firstName!,
-                surname: obj.lastName!,
-              }).toString();
-            } catch (err) {
-              console.warn('Error creating CF:', err);
-              cfGuessValid = false;
-            }
           }
         }
 
@@ -388,7 +429,10 @@ const Signup = () => {
 
       addToast({
         title: t('signup.errorTitle'),
-        description: getErrorMsg(error),
+        description:
+          isAxiosError(error) && error.status === 409
+            ? t('errors.auth.userAlreadyExists')
+            : getErrorMsg(error),
         color: 'danger',
       });
     } finally {
@@ -568,18 +612,32 @@ const Signup = () => {
                   isInvalid={!!errors.codiceFiscale}
                   errorMessage={errors.codiceFiscale?.message}
                   maxLength={16}
+                  minLength={16}
+                  onValueChange={(v) =>
+                    v.length === 16 &&
+                    wait(50).then(() => trigger('codiceFiscale'))
+                  }
                   description={
-                    codiceFiscaleData
+                    codiceFiscaleData?.birthDate
                       ? t('signup.cfValid', {
                           date: format(
                             codiceFiscaleData.birthDate,
                             'dd/MM/yyyy',
                           ),
                           birthplace:
-                            codiceFiscaleData.birthplace.toLowerCase() ===
+                            codiceFiscaleData.birthPlace?.toLowerCase() ===
                             'modena'
                               ? 'Mudnés 🟡🔵'
-                              : codiceFiscaleData.birthplace,
+                              : codiceFiscaleData.foreignCountry &&
+                                hasFlag(codiceFiscaleData.foreignCountry)
+                              ? `${getUnicodeFlagIcon(
+                                  codiceFiscaleData.foreignCountry,
+                                )}${
+                                  codiceFiscaleData.foreignCountry === 'UA'
+                                    ? ' Слава Україні!'
+                                    : ''
+                                }`
+                              : codiceFiscaleData.birthPlace,
                         })
                       : codiceFiscaleValue.length === 16
                       ? t('signup.cfInvalid')
@@ -650,8 +708,8 @@ const Signup = () => {
                     )}
                   </Autocomplete>
 
-                  {isItalySelected && (
-                    <div className="flex gap-2 -mb-2">
+                  <div className="flex gap-2 -mb-2">
+                    {isItalySelected && (
                       <Autocomplete
                         label={t('signup.birthComune')}
                         className="col-span-2"
@@ -676,39 +734,39 @@ const Signup = () => {
                           </AutocompleteItem>
                         )}
                       </Autocomplete>
+                    )}
 
-                      <div className="flex flex-col gap-1 min-w-32">
-                        <label
-                          htmlFor="gender"
-                          className="text-small text-foreground-600"
+                    <div className="flex flex-col gap-1 min-w-32">
+                      <label
+                        htmlFor="gender"
+                        className="text-small text-foreground-600"
+                      >
+                        {t('signup.gender')}
+                      </label>
+                      <Dropdown>
+                        <DropdownTrigger>
+                          <Button variant="bordered">
+                            {t(`gender.${gender}`)}
+                          </Button>
+                        </DropdownTrigger>
+                        <DropdownMenu
+                          id="gender"
+                          onAction={(k) => setValue('gender', k.toString())}
+                          aria-label={t('signup.gender')}
+                          items={['M', 'F', 'X'].map((e) => ({
+                            key: e,
+                            label: t(`gender.${e}`),
+                          }))}
                         >
-                          {t('signup.gender')}
-                        </label>
-                        <Dropdown>
-                          <DropdownTrigger>
-                            <Button variant="bordered">
-                              {t(`gender.${gender}`)}
-                            </Button>
-                          </DropdownTrigger>
-                          <DropdownMenu
-                            id="gender"
-                            onAction={(k) => setValue('gender', k.toString())}
-                            aria-label={t('signup.gender')}
-                            items={['M', 'F', 'X'].map((e) => ({
-                              key: e,
-                              label: t(`gender.${e}`),
-                            }))}
-                          >
-                            {(item) => (
-                              <DropdownItem key={item.key}>
-                                {item.label}
-                              </DropdownItem>
-                            )}
-                          </DropdownMenu>
-                        </Dropdown>
-                      </div>
+                          {(item) => (
+                            <DropdownItem key={item.key}>
+                              {item.label}
+                            </DropdownItem>
+                          )}
+                        </DropdownMenu>
+                      </Dropdown>
                     </div>
-                  )}
+                  </div>
                 </div>
               </Tab>
             </Tabs>

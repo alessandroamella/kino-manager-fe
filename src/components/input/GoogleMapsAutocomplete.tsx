@@ -99,7 +99,7 @@ const GoogleMapsAutocomplete = ({
             language: 'it', // we need italian on the signed doc
             // usually based off Kino Cafe
             locationBias: sanCesarioCoords,
-            componentRestrictions: { country: [] }, // You can set specific countries here if needed, or leave it empty for all.
+            types: ['address'], // Restrict to address types
           },
           (predictions, status) => {
             if (

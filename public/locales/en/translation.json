@@ -67,7 +67,7 @@
     "address": "Address",
     "addressPlaceholder": "Enter your address",
     "addressSelected": "Selected address: {{address}}",
-    "addressDescription": "Enter your address of residence",
+    "addressDescription": "Enter your full address of residence",
     "registerButton": "Sign Up",
     "alreadyAccount": "Already have an account?",
     "noAccount": "Don't have an account?",
