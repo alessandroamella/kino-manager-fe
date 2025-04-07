@@ -315,7 +315,7 @@ const Signup = () => {
           );
           console.log(
             'Setting comune suggestions:',
-            data.map((e) => e.nome).join(', '),
+            data.map((e) => e.name).join(', '),
           );
           setComuneSuggestions(data);
         } catch (error) {
@@ -728,9 +728,9 @@ const Signup = () => {
                       >
                         {(item) => (
                           <AutocompleteItem
-                            key={item.nome + '|' + item.provincia.sigla}
+                            key={item.name + '|' + item.province}
                           >
-                            {item.nome}
+                            {item.name}
                           </AutocompleteItem>
                         )}
                       </Autocomplete>

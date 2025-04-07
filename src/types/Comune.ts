@@ -9,19 +9,13 @@ export interface Provincia {
   codice: string;
   regione: string;
 }
-
 export interface Comune {
-  codice: string;
-  nome: string;
-  nomeStraniero?: string;
-  codiceCatastale: string;
-  cap: string;
-  prefisso: string;
-  provincia: Provincia;
-  email?: string;
-  pec?: string;
-  telefono?: string;
-  fax?: string;
-  popolazione: number;
-  coordinate: Coordinate;
+  name: string;
+  province: string;
+}
+
+export interface ComuneFull extends Comune {
+  cadastralCode: string;
+  italianName?: string;
+  foreignName?: string;
 }
