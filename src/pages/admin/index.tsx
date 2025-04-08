@@ -33,7 +33,7 @@ import axios from 'axios';
 import { hasFlag } from 'country-flag-icons';
 import getUnicodeFlagIcon from 'country-flag-icons/unicode';
 import { format, formatDate } from 'date-fns';
-import { clamp } from 'lodash';
+import { clamp } from 'lodash-es';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FaCashRegister, FaExternalLinkAlt, FaTimes } from 'react-icons/fa';

@@ -23,7 +23,7 @@ import {
 } from '@heroui/react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import axios from 'axios';
-import { omit, orderBy } from 'lodash';
+import { omit, orderBy } from 'lodash-es';
 import { minus, round, times } from 'number-precision';
 import { useCallback, useMemo, useState } from 'react';
 import { useDropzone } from 'react-dropzone';

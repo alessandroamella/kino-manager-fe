@@ -3,7 +3,7 @@ import ScrollTop from '@/components/navigation/ScrollTop';
 import { loginYupSchema } from '@/validators/login';
 import { Alert, Button, Card, Divider, Form, Input } from '@heroui/react';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { omit } from 'lodash';
+import { omit } from 'lodash-es';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';

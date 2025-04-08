@@ -43,7 +43,7 @@ import getUnicodeFlagIcon from 'country-flag-icons/unicode';
 import { format, formatDate, subYears } from 'date-fns';
 import countries from 'i18n-iso-countries';
 import parsePhoneNumber from 'libphonenumber-js';
-import { debounce, omit, pick } from 'lodash';
+import { debounce, omit, pick } from 'lodash-es';
 import { Key, useCallback, useEffect, useMemo, useState } from 'react';
 import ReactGA from 'react-ga4';
 import { Controller, useForm } from 'react-hook-form';

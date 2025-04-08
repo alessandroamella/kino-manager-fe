@@ -12,7 +12,7 @@ import {
   Tooltip,
 } from 'chart.js';
 import { differenceInYears } from 'date-fns';
-import { chain, range } from 'lodash';
+import { chain, range } from 'lodash-es';
 import { Bar, Line, Pie } from 'react-chartjs-2';
 import { useTranslation } from 'react-i18next';
 

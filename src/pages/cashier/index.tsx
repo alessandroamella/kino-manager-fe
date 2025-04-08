@@ -23,7 +23,7 @@ import {
   Tooltip,
 } from '@heroui/react';
 import Fuse from 'fuse.js';
-import { clamp, sumBy } from 'lodash';
+import { clamp, sumBy } from 'lodash-es';
 import { round } from 'number-precision';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { isMacOs, isMobile, isWindows } from 'react-device-detect';

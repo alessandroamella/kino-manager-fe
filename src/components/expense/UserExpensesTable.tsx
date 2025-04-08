@@ -10,7 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from '@heroui/react';
-import { clamp } from 'lodash';
+import { clamp } from 'lodash-es';
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import Price from '../items/Price';

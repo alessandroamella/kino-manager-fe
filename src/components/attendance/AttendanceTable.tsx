@@ -20,7 +20,7 @@ import {
 } from '@heroui/react';
 import { isAfter } from 'date-fns';
 import { formatInTimeZone } from 'date-fns-tz';
-import { clamp } from 'lodash';
+import { clamp } from 'lodash-es';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BiQr } from 'react-icons/bi';

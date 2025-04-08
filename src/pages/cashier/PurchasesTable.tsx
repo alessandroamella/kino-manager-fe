@@ -24,7 +24,7 @@ import {
   TableRow,
 } from '@heroui/react';
 import { formatDate } from 'date-fns';
-import { clamp } from 'lodash';
+import { clamp } from 'lodash-es';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BsThreeDots } from 'react-icons/bs';

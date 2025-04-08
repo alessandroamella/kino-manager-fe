@@ -2,7 +2,7 @@ import Price from '@/components/items/Price';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import usePurchasesStore from '@/store/purchases';
 import { Image, Skeleton } from '@heroui/react';
-import { sortBy } from 'lodash';
+import { sortBy } from 'lodash-es';
 import { useEffect } from 'react';
 import { Link } from 'react-router';
 import logoDark from '../../assets/images/logo-dark.png';
