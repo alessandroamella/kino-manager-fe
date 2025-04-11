@@ -27,7 +27,6 @@ import parsePhoneNumber from 'libphonenumber-js';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AiOutlineLogout, AiOutlineSignature } from 'react-icons/ai';
-import { BiTime } from 'react-icons/bi';
 import { FaFileAlt } from 'react-icons/fa';
 import {
   FiCalendar,
@@ -239,16 +238,10 @@ const Profile = () => {
                     </span>
 
                     <div>
-                      {user.membershipCardNumber ? (
+                      {user.membershipCardNumber && (
                         <Chip color="primary" variant="flat" className="ml-1">
                           #{user.membershipCardNumber}
                         </Chip>
-                      ) : (
-                        <Tooltip content={t('profile.noCardAssigned')}>
-                          <div>
-                            <BiTime style={{ color: 'grey' }} />
-                          </div>
-                        </Tooltip>
                       )}
                     </div>
                   </h3>

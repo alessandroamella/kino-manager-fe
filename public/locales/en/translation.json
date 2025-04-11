@@ -322,7 +322,8 @@
     "deviceInfo": "Device Info",
     "ipAddress": "IP Address",
     "cardAssigned": "Card {{number}} assigned to user {{user}}",
-    "errorAssigningCard": "Error assigning card {{number}} to user {{user}}"
+    "errorAssigningCard": "Error assigning card {{number}} to user {{user}}",
+    "copyAdminEmailsTooltip": "Copy admin emails"
   },
   "signature": {
     "openModalButton": "Write signature",

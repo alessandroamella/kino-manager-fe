@@ -330,7 +330,8 @@
     "deviceInfo": "Informazioni dispositivo",
     "ipAddress": "Indirizzo IP",
     "cardAssigned": "Tessera n.{{number}} assegnata all'utente {{user}}",
-    "errorAssigningCard": "Errore nell'assegnazione della tessera {{number}} all'utente {{user}}"
+    "errorAssigningCard": "Errore nell'assegnazione della tessera {{number}} all'utente {{user}}",
+    "copyAdminEmailsTooltip": "Copia email amministratori"
   },
   "signature": {
     "openModalButton": "Firma",
