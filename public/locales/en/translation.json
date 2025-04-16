@@ -177,8 +177,10 @@
     "kinoCafeTitle": "Kinó Café: Your space, your way",
     "kinoCafeSubtitle": "A place to relax, create, meet, and celebrate - all under one roof!",
     "signup": "Sign up",
+    "exploreOurSpace": "Explore our space",
+    "exploreOurSpaceSubtitle": "Take a look at what Kinó Café has to offer",
     "aboutUsTitle": "What is Kinó Café?",
-    "aboutUsText1": "Kinó Café isn't just another coffee shop; it's a vibrant recreational center designed for YOU. We're here to be a hub for studying, working, socializing, gaming, reading, enjoying good food, or simply finding a place to unwind.",
+    "aboutUsText1": "Located within the Kinó Campus (ex cinema of San Cesario), Kinó Café is not just another bar; it's a vibrant recreational center designed for YOU. We're here to be a hub for studying, working, socializing, gaming, reading, enjoying good food, or simply finding a place to unwind.",
     "aboutUsText2": "Whether you're looking for a quiet corner or a lively evening, Kinó Café is your home away from home. Our doors are open to everyone, regardless of age, background, or interests.",
     "activitiesTitle": "What happens at Kinó?",
     "blandeActivitiesTitle": "Relaxed weekday evenings",
@@ -205,6 +207,16 @@
     "hours": "Hours",
     "minutes": "Minutes",
     "seconds": "Seconds"
+  },
+  "slideshow": {
+    "outside": "Outside",
+    "topView": "Top view",
+    "briscola": "Briscola!",
+    "peaceSign": "✌️",
+    "boardGames": "Board games",
+    "foosball": "Foosball",
+    "pingPong": "Ping Pong",
+    "playstation": "PlayStation"
   },
   "gender": {
     "M": "♂️ Male",

@@ -1,5 +1,6 @@
 import PageTitle from '@/components/navigation/PageTitle';
 import ScrollTop from '@/components/navigation/ScrollTop';
+import ImageCarousel from '@/components/ui/ImageCarousel';
 import Logo from '@/components/ui/Logo';
 import { cn } from '@/lib/utils';
 import useOpeningDatesStore from '@/store/dates';
@@ -196,6 +197,19 @@ const Homepage = () => {
               }}
             />
           </Parallax>
+        </section>
+
+        {/* Image Carousel Section */}
+        <section className="py-8 px-4 container mx-auto">
+          <div className="mb-6 text-center">
+            <h2 className="text-2xl md:text-3xl font-semibold text-gray-800 dark:text-white">
+              {t('home.exploreOurSpace')}
+            </h2>
+            <p className="text-gray-600 dark:text-gray-300 mt-2 max-w-2xl mx-auto">
+              {t('home.exploreOurSpaceSubtitle')}
+            </p>
+          </div>
+          <ImageCarousel className="max-w-4xl mx-auto" />
         </section>
 
         <div
