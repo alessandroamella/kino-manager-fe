@@ -67,7 +67,7 @@ app.use(
           'https://*.google-analytics.com',
           'https://unpkg.com',
         ],
-        fontSrc: ["'self'", 'https://fonts.gstatic.com'],
+        fontSrc: ["'self'", 'data:', 'https://fonts.gstatic.com'],
       },
     },
   }),
