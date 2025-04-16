@@ -50,7 +50,7 @@ const ImageCarousel = ({ className = '' }: ImageCarouselProps) => {
           disableOnInteraction: false,
         }}
         effect="fade"
-        className="rounded-xl overflow-hidden shadow-xl"
+        className="md:rounded-xl overflow-hidden shadow-xl"
       >
         {images.map((image, index) => (
           <SwiperSlide key={index}>

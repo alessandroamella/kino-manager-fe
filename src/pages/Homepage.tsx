@@ -200,8 +200,8 @@ const Homepage = () => {
         </section>
 
         {/* Image Carousel Section */}
-        <section className="py-8 px-4 container mx-auto">
-          <div className="mb-6 text-center">
+        <section className="py-8 md:px-4 container mx-auto">
+          <div className="mb-6 px-4 md:px-0 text-center">
             <h2 className="text-2xl md:text-3xl font-semibold text-gray-800 dark:text-white">
               {t('home.exploreOurSpace')}
             </h2>
@@ -209,7 +209,7 @@ const Homepage = () => {
               {t('home.exploreOurSpaceSubtitle')}
             </p>
           </div>
-          <ImageCarousel className="max-w-4xl mx-auto" />
+          <ImageCarousel className="md:max-w-4xl mx-auto" />
         </section>
 
         <div
