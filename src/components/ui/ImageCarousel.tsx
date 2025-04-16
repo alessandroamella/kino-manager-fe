@@ -9,14 +9,14 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
 const images = [
-  { src: '/images/slideshow/esterno.jpg', alt: 'slideshow.outside' },
-  { src: '/images/slideshow/sopra.jpg', alt: 'slideshow.topView' },
-  { src: '/images/slideshow/giochi.jpg', alt: 'slideshow.briscola' },
-  { src: '/images/slideshow/giochi_2.jpg', alt: 'slideshow.peaceSign' },
-  { src: '/images/slideshow/giochi_3.jpg', alt: 'slideshow.boardGames' },
-  { src: '/images/slideshow/biliardino.jpg', alt: 'slideshow.foosball' },
-  { src: '/images/slideshow/ping_pong.jpg', alt: 'slideshow.pingPong' },
-  { src: '/images/slideshow/playstation.jpg', alt: 'slideshow.playstation' },
+  { src: '/images/slideshow/esterno.webp', alt: 'slideshow.outside' },
+  { src: '/images/slideshow/sopra.webp', alt: 'slideshow.topView' },
+  { src: '/images/slideshow/giochi.webp', alt: 'slideshow.briscola' },
+  { src: '/images/slideshow/giochi_2.webp', alt: 'slideshow.peaceSign' },
+  { src: '/images/slideshow/giochi_3.webp', alt: 'slideshow.boardGames' },
+  { src: '/images/slideshow/biliardino.webp', alt: 'slideshow.foosball' },
+  { src: '/images/slideshow/ping_pong.webp', alt: 'slideshow.pingPong' },
+  { src: '/images/slideshow/playstation.webp', alt: 'slideshow.playstation' },
 ];
 
 interface ImageCarouselProps {
